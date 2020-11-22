@@ -1,0 +1,191 @@
+Microsoft Developer Studio Workspace File, Format Version 5.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "Bacprim32"=".\Bacprim32\Bacprim32-95.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Vtsapi32
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "NALdum"=".\NALdum\NALdum-95.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Vtsapi32"=".\Vtsapi32\Vtsapi32-95.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "dudapi32"=".\dudapi32\dudapi32-95.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Bacprim32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Vtsapi32
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dummy 95"="..\dummy\dummy 95.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Bacprim32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name dudapi32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mstp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name NALdum
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name nalserv95
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name packet32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ptp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name sjack32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Vtsapi32
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mstp"=".\mstp\mstp-95.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name sjack32
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "nalserv95"=".\nalserv95\nalserv95\nalserv95.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Bacprim32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mstp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name packet32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ptp
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "packet32"=".\Packet32 for 95\packet32.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ptp"=".\ptp\ptp-95.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name sjack32
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "sjack32"=".\sjack\sjack32-95.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

@@ -1,0 +1,100 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Positive RemoveListElement Service Execution Tests
+  ;
+  ;  RemoveListElement.vts  remlistmmddyy.vts
+  ;
+  ;  Ver 1.0    03/02/01    P. Bowen
+  ;
+  ;  Purpose: This test group will verify correct execution of RemoveListElement
+  ;       service requests under circumstances where the service is expected
+  ;       to be successfully completed.
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+
+  SETUP Positive RemoveListElement Service Execution Tests
+  INCLUDE "..\config.vts"     ; Address of the IUT
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+
+  OBJECT2 = Device, 8001
+  OBJECT3 = Device, 8002
+
+  ;-------------------------------------------------------------------------------------
+
+  SECTION Positive RemoveListElement Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1 -- Remove List Element
+
+  DEPENDENCIES none
+
+  REFERENCE (B) Object Access Services - RemoveListELement Service
+
+  -- Step #1: Verify (read) the Time-Synchronization-Recipients property for the Device object
+
+    SEND (
+        DA = IUT_ADDR
+        PDU = Confirmed-Request
+        Service = ReadProperty
+        Object = 0, IUT_DEVICE_OBJECT
+        Property = 1, Time-Synchronization-Recipients
+    )
+
+    EXPECT (
+      SA = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, IUT_DEVICE_OBJECT
+      Property = 1, Time-Synchronization-Recipients
+      OpenTag 3
+         AL = X'0C02001F410C02001F42'   ; test passes if list contains objects
+      CloseTag 3            ; written in AddListElement test
+    )
+
+  -- Step #2: Remove the list of devices in the Time-Synchronization-Recipients
+  -- property value and receive a simple acknowledgement
+
+    SEND (
+        DA = IUT_ADDR
+        PDU = Confirmed-Request
+        Service = RemoveListElement
+        Object = 0, IUT_DEVICE_OBJECT
+        Property = 1, Time-Synchronization-Recipients
+        AL = X'3E0C02001F410C02001F423F'    ; remove objects (Device, 8001), (Device, 8002))
+ ;      OpenTag 3
+ ;      BACnetObjectIdentifier = OBJECT2, OBJECT3 ; this statement doesn't work in VTS V2.27
+ ;      CloseTag 3
+    )
+
+    EXPECT (
+      SA = IUT_ADDR
+      PDU = SimpleAck
+      Service = RemoveListElement
+      )
+
+ -- Step #4: Verify that the list elements have been removed
+
+    SEND (
+        DA = IUT_ADDR
+        PDU = Confirmed-Request
+        Service = ReadProperty
+        Object = 0, IUT_DEVICE_OBJECT
+        Property = 1, Time-Synchronization-Recipients
+    )
+
+    EXPECT (
+      SA = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, IUT_DEVICE_OBJECT
+      Property = 1, Time-Synchronization-Recipients
+      OpenTag 3   ; test passes if Time-Synchronization-Recipients list is empty
+      CloseTag 3
+    )

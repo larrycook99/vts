@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>BACnet Initialize-Routing-Table-Ack Message</title>
+</head>
+<body>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="network layer">
+	<param name="Keyword" value="NPDU">
+	<param name="Keyword" value="Initialize-Routing-Table-Ack">
+	<param name="Keyword" value="DNET">
+	<param name="Keyword" value="Number of Ports">
+	<param name="Keyword" value="response">
+	<param name="Keyword" value="Port ID">
+	<param name="Keyword" value="Connected DNET">
+	<param name="Keyword" value="Port Info">
+	<param name="Keyword" value="Port Info Length">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>BACnet Initialize-Routing-Table-Ack Message</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	 <a href="#standard">BACnet Initialize-Routing-Table-Ack Message</a><br>
+	 <a href="#response">Acknowledging Requested Routing Table Information</a><br>
+	 <a href="target.html">Selecting a Target Device</a><br>
+	 <p>
+	 <a name="standard"></a><b>BACnet Initialize-Routing-Table-Ack Message</b><br>
+	 The following is a step-by-step procedure for transmitting a 
+	 BACnet Initialize-Routing-Table-Ack Message.
+	 </p>
+	 <p>
+	 <img src="nl_initroutingack1.jpg" border="0">
+	 </p>
+	 <p>
+   	 <ol>
+	 <li>Make sure the "Ack" checkbox is checked. Note, VTS automatically sets the 
+	 Number of Ports to a value of zero when you check the "Ack" checkbox.
+	 <li>Make sure you have selected a <a href="target.html">target device</a>.
+	 <li>Click the "Send" button. 
+	 </ol>
+	 </p>
+	 <p>
+	 <a name="response"></a><b>Requesting Routing Table Information</b><br>
+	 If you want to respond to a routing table request from a device instead of 
+	 acknowledging receipt of a routing table initialization:
+	 </p>
+	 <p>
+	 <img src="nl_initroutingack2.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol>
+	 <li>Make sure the "Ack" checkbox is <b>not</b> checked.
+	 <li>Type the decimal value of the Port ID (0-255).
+	 <li>Type the decimal value for the Connected DNET (0-65535).
+	 <li>Type the Port Info as a character-string. VTS automatically calculates the 
+	 Port Info Length.
+	 <li>Click the "Add" button. VTS adds the routing information to the routing table and 
+	 automatically calculates the Number of Ports.
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="nl_initroutingack3.jpg" border="0">
+	 </p>
+	 <p>
+	 <img src="nl_initroutingack4.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=6>
+	 <li>Repeat steps 2-5 as needed to complete the routing table information.
+	 </ol>
+	 </p>
+	 <p>
+     If you need to remove entries in the routing table list:
+	 </p>
+	 <p>
+	 <img src="nl_initroutingack5.jpg" border="0">
+	 </p>
+   	 <ol start=7>
+	 <li>Select the line to delete in the list box.
+	 <li>Click the "Delete" button.
+	 </ol>
+	 </p>
+	 <p>
+	 When your routing table is complete:
+	 <img src="nl_initroutingack6.jpg" border="0">
+	 </p>
+	 <ol start=9>
+	 <li>Make sure you have selected a <a href="target.html">target device</a>.
+	 <li>Click the "Send" button. 
+	 </ol>
+	 </p>
+	 <p>
+ 	 <a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	 <a href="nl.html">Go to the <b>Previous</b> VTS Help Topic.</a><br>
+	 </p>
+	 </font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

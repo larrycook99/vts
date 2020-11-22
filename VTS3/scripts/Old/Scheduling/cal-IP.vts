@@ -1,0 +1,735 @@
+;---------------
+; Calendar Object Tests
+;
+; Ver 1.0	5/15/2002	W.Swan	Initial version
+;     1.1       5/22/2002       W.Swan  Minor revisions
+;
+; Purpose: (From 135.1P, 7.3.2.8.1)  These tests verify that the Present_Value
+; property of the Calendar object bears the relationship to Date_List specified
+; by BACnet Clause 12.8.6.
+;
+; In the REFERENCE section "(B)" refers to the BACnet standard and "(T)" refers
+;to the testing addendum.
+;---------------
+
+SETUP Calendar Object Tests
+
+;-------------------------------------------------------------------------
+;MAC Address Setup
+;-------------------------------------------------------------------------
+
+;IUT_MAC = 00602D000D0D ; MAC Address of the device you are testing.
+;MY_MAC  = 0010A4E6ED1C ; MAC Address of your VTS test machine.
+
+;NET_1 = 1, ETHERNET, 0 ; Net 1, type Ethernet, Port 0 ; Do not change
+
+--IUT_IP = 10.10.10.100
+IUT_IP = 208.6.162.35
+TD_IP = 10.10.10.36
+
+;-------------------------------------------------------------------------
+;Routing Setup by default IUT and TD are on the same Ethernet segment
+;-------------------------------------------------------------------------
+-- DNET_MSTP = <DNET>, MS/TP ; Sets the DNET of the remote MSTP network
+; Replace <DNET> with the destination network number
+;
+;Every SEND block within the script must contain either Option 1: or Option 2:
+;(See Script Customization help for more information)
+;
+;Option 1: Both the Device being tested and the VTS machine are on the same
+;          segment
+; DESTINATION = IUT_MAC
+;
+;Option 2: Device being tested is on MS/TP and the VTS machine is on Ethernet
+; DA = Broadcast
+; DNET = DNET_MSTP
+; DADR = IUT_MAC
+;------------------------------------------------------------------------
+
+
+;-----------------------------------------------------------------------
+; Variable Setup (Combined with Test Notes)
+;-----------------------------------------------------------------------
+;
+; Each object and instance below must match the object or property in the
+;EPICS. These variables are referenced within the body of this script.
+;-------------------------------------------------------------------------
+; TEST NOTES (Combined with Test Notes)
+;-------------------------------------------------------------------------
+; Notes on Hardcoding and other changes needing to be made outside of the setup
+;section including hard coded objects and properties
+;
+; TTTTT Items marked with TTTTT must be manually verified in the trace. You can
+;search with the TTTTT string to find manually verified tests.
+; BBBBB Items marked with BBBBB require manual changes to be made in the body
+;of the script. You can search with the BBBBB to find these locations.
+
+SCHED_EVAL_TIME = 3		;Schedule Evaluation Fail Time (doesn't work)
+
+;CALENDAR_1  = Calendar, 0	; Calendar object to be tested
+
+CALENDAR_1  = Calendar, 1	; Calendar object to be tested
+
+-- TEST #1  Single Date Rollover Test
+
+-- TEST #2  Date Range Test
+
+-- TEST #3  WeekNDay Test
+
+--#############################################################################
+--#############################################################################
+
+SECTION Schedule Object Tests
+
+-- Configuration Requirements: {Copy and paste the configuration requirements
+-- from the
+
+-- b) IUT is on the same network as TD.
+
+
+;-----------------------------------------------------------------------------
+TEST #1  Single Date Rollover Test
+;-----------------------------------------------------------------------------
+-- Purpose: This subtest verifies the ability to represent the Calendar status
+-- when the Date_List is in the form of an individual date.  Either execution
+-- of the TimeSynchronization service must be supported or another means must
+-- be supplied to reset the IUT's clock during the test.
+
+-- Test Concept: This subtest verifies the ability to represent the Calendar
+-- status when the Date_List is in the form of an individual date. Either
+-- execution of the TimeSynchronization service must be supported or another
+-- means must be supplied to reset the IUT's clock during the test.
+
+-- DEPENDENCIES  ReadProperty Service Execution Tests, 9.15; TimeSynchronization Service Execution Tests; 9.26
+
+-- REFERENCE (B) 12.8  (T) 7.3.2.8.1
+
+------------------------
+-- Test Configuration --
+------------------------
+
+-- Step #1: Configure the Calendar object's Date_List property
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = WriteProperty
+      Object = 0, CALENDAR_1
+      Property = 1, DateList
+      OpenTag 3
+        DATE = Sunday, Jan/02/2000
+        --AL = X'0C64010207'
+      CloseTag 3
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+      )
+
+------------------------
+-- Test Execution     --
+------------------------
+
+-- Step #2: Set date and time (1 minute + Schedule Evaluation Time) before
+-- midnight of the day in Date_List to set FALSE initial value, then read
+-- it.
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = BROADCAST
+      SA = TD_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-BROADCAST-NPDU      
+      PDU = Unconfirmed-Request
+      Service = TimeSynchronization
+      Date = SAT, Jan/01/2000
+      Time = 11:59:00.10 		-- BBBBB (1 min + SchedEvalTime before)
+      )
+
+
+
+
+
+Test #1.1 (Wait Schedule Evaluation Time, but not past "midnight" before proceeding)
+;    WAIT 3 ;BBBBB SCHED_EVAL_TIME
+
+-- Step #3: Verify Calendar Object's Present_Value == FALSE
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      OpenTag 3
+         BOOLEAN = FALSE
+      CloseTag 3
+      )
+
+Test #1.2 (Wait Schedule Evaluation Time + 2 minutes)
+;    WAIT 3 ;BBBBB SCHED_EVAL_TIME
+;    WAIT 120
+
+-- Step #3: Verify Calendar Object's Present_Value == TRUE
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 4
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      )
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      OpenTag 3
+         BOOLEAN = TRUE
+      CloseTag 3
+      )
+
+
+;-----------------------------------------------------------------------------
+ TEST #2  Date Range Test
+;-----------------------------------------------------------------------------
+
+-- Purpose:  This subtest verifies the ability to represent the Calendar
+-- status when the Date_List is in the form of a BACnetDateRange. Either
+-- execution of the TimeSynchronization service must be supported or another
+-- means must be supplied to reset the IUT's clock during the test.
+
+-- Test Concept: The Calendar object is configured with a Date_List containing
+-- a single BACnetDateRange. The IUT's clock is set to a time and date that is
+-- outside of the date range. The Present_Value is read and verified to be
+-- FALSE. The clock is reset to a value within the date range and the
+-- Present_Value is read again to verify that it has the value TRUE. If the IUT
+-- can be configured with wildcard fields in the date range then it shall be
+-- tested with and without wildcards.
+
+--DEPENDENCIES  ReadProperty Service Execution Tests, 9.15; TimeSynchronization Service Execution Tests; 9.26
+
+--REFERENCE (B) 12.8  (T) 7.3.2.8.2
+
+------------------------
+-- Test Configuration --
+------------------------
+
+-- Step #1: Configure the Calendar object's Date_List property
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 5
+      Service = WriteProperty
+      Object = 0, SCHEDULE_1
+      Property = 1, DateList
+      OpenTag 3
+        -- dateRange [1] BACnetDateRange
+        OpenTag 1
+          -- DATE = Sunday, January/16/2000
+          AL = X'0C64011007'
+          -- DATE = Monday, January/17/2000
+          AL = X'0C64011101'  -- VTS2.29 error, wants "A4" tag; doesn't write correctly
+        CloseTag 1
+      CloseTag 3
+      )
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+      )
+
+------------------------
+-- Test Execution     --
+------------------------
+
+-- Step #2: Set date to (day before DateRange active)
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = BROADCAST
+      SA = TD_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-BROADCAST-NPDU      
+      PDU = Unconfirmed-Request
+      Service = TimeSynchronization
+      Date = SAT, Jan/15/2000
+      Time = 01:02:03.21 
+      )
+
+Test #2.1 (Wait Schedule Evaluation Time before proceeding)
+;?    WAIT SCHED_EVAL_TIME
+
+-- Step #3: Verify Calendar Object's Present_Value == FALSE
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 6
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      )
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      OpenTag 3
+         BOOLEAN = FALSE
+      CloseTag 3
+      )
+
+-- Step #4: Set date to D1
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = BROADCAST
+      SA = TD_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-BROADCAST-NPDU      
+      PDU = Unconfirmed-Request
+      Service = TimeSynchronization
+      Date = SUN, Jan/16/2000
+      Time = 01:02:03.22 
+      )
+
+Test #2.2 (Wait Schedule Evaluation Time before proceeding)
+;?    WAIT SCHED_EVAL_TIME
+
+-- Step #5: Verify Calendar Object's Present_Value == TRUE
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 7
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      )
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      OpenTag 3
+         BOOLEAN = TRUE
+      CloseTag 3
+      )
+
+-- Step #6: Set date to D1'
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = BROADCAST
+      SA = TD_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-BROADCAST-NPDU      
+      PDU = Unconfirmed-Request
+      Service = TimeSynchronization
+      Date = MON, JANUARY/17/2000
+      Time = 01:02:03.23 
+      )
+
+Test #2.3 (Wait Schedule Evaluation Time before proceeding)
+;?    WAIT SCHED_EVAL_TIME
+
+-- Step #7: Verify Calendar Object's Present_Value == TRUE
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 8
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      )
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      OpenTag 3
+         BOOLEAN = TRUE
+      CloseTag 3
+      )
+
+-- Step #8: Set date to D2 (day after DateRange active)
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = BROADCAST
+      SA = TD_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-BROADCAST-NPDU      
+      PDU = Unconfirmed-Request
+      Service = TimeSynchronization
+      Date = TUE, Jan/18/2000
+      Time = 01:02:03.24 
+      )
+
+Test #2.4 (Wait Schedule Evaluation Time before proceeding)
+;?    WAIT SCHED_EVAL_TIME
+
+-- Step #9: Verify Calendar Object's Present_Value == FALSE
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 9
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      )
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      OpenTag 3
+         BOOLEAN = FALSE
+      CloseTag 3
+      )
+
+
+;-----------------------------------------------------------------------------
+TEST #3  WeekNDay Test
+;-----------------------------------------------------------------------------
+-- Purpose:  This subtest verifies the ability to represent the Calendar status
+-- when the Date_List is in the form of a BACnetDateRange. Either execution of
+-- the TimeSynchronization service must be supported or another means must be
+-- supplied to reset the IUT's clock during the test.
+
+-- Test Concept: The Calendar object is configured with a Date_List containing
+-- a single BACnetDateRange. The IUT's clock is set to a time and date that is
+-- outside of the date range. The Present_Value is read and verified to be
+-- FALSE. The clock is reset to a value within the date range and the
+-- Present_Value is read again to verify that it has the value TRUE. If the IUT
+-- can be configured with wildcard fields in the date range then it shall be
+-- tested with and without wildcards.
+
+--DEPENDENCIES  ReadProperty Service Execution Tests, 9.15; TimeSynchronization Service Execution Tests; 9.26
+
+--REFERENCE (B) 12.8  (T) 7.3.2.8.3
+
+------------------------
+-- Test Configuration --
+------------------------
+
+-- Step #1: Configure the Calendar object's Date_List property
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 10
+      Service = WriteProperty
+      Object = 0, CALENDAR_1
+      Property = 1, DateList
+      OpenTag 3
+        -- dateRange [2] BACnetWeekNDay
+        --OpenTag 0
+          -- WeekNDay = November, (last 7 days), Saturday , CHANGED TO 6
+          AL = X'2B0B0606'
+        --CloseTag 0
+      CloseTag 3
+      )
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+      )
+
+------------------------
+-- Test Execution     --
+------------------------
+
+-- Step #2: Set date to match WeekNDay
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = BROADCAST
+      SA = TD_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-BROADCAST-NPDU      
+      PDU = Unconfirmed-Request
+      Service = TimeSynchronization
+      Date = SAT, Nov/24/2001
+      Time = 01:00:00.31 
+      )
+
+Test #3.1 (Wait Schedule Evaluation Time before proceeding)
+;?    WAIT SCHED_EVAL_TIME
+
+-- Step #3: Verify Calendar Object's Present_Value == TRUE
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 11
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      )
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      OpenTag 3
+         BOOLEAN = TRUE
+      CloseTag 3
+      )
+
+-- Step #4: Set date so month only doesn't match WeekNDay
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = BROADCAST
+      SA = TD_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-BROADCAST-NPDU      
+      PDU = Unconfirmed-Request
+      Service = TimeSynchronization
+      Date = SAT, Oct/27/2001
+      Time = 01:00:00.32 
+      )
+
+Test #3.2 (Wait Schedule Evaluation Time before proceeding)
+;?    WAIT SCHED_EVAL_TIME
+
+-- Step #5: Verify Calendar Object's Present_Value == FALSE
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 12
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      )
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      OpenTag 3
+         BOOLEAN = TRUE
+      CloseTag 3
+      )
+
+-- Step #6: Set date so "last 7 days" only doesn't match WeekNDay
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = BROADCAST
+      SA = TD_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-BROADCAST-NPDU      
+      PDU = Unconfirmed-Request
+      Service = TimeSynchronization
+      Date = SAT, Nov/17/2001
+      Time = 01:00:00.33
+      )
+
+Test #3.3 (Wait Schedule Evaluation Time before proceeding)
+;?    WAIT SCHED_EVAL_TIME
+
+-- Step #7: Verify Calendar Object's Present_Value == FALSE
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 13
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      )
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      OpenTag 3
+         BOOLEAN = FALSE
+      CloseTag 3
+      )
+
+-- Step #8: Set date so "day of week" only doesn't match WeekNDay
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = BROADCAST
+      SA = TD_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-BROADCAST-NPDU      
+      PDU = Unconfirmed-Request
+      Service = TimeSynchronization
+      Date = SUN, Nov/25/2001
+      Time = 01:00:00.34
+      )
+
+Test #3.4 (Wait Schedule Evaluation Time before proceeding)
+;?    WAIT SCHED_EVAL_TIME
+
+-- Step #9: Verify Calendar Object's Present_Value == FALSE
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 14
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      )
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, CALENDAR_1
+      Property = 1, Present-Value
+      OpenTag 3
+         BOOLEAN = FALSE
+      CloseTag 3
+      )
+
+;-----------------------------------------------------------------------------
+

@@ -1,0 +1,2296 @@
+  ;-------------------------------------------------------------------------------------
+  ;  WPM MAX Service Execution Tests
+  ;    Draft
+  ;  WPM MAX yymmdd.vts
+  ;
+  ;	Ver 1.0		10/19/01	BradSp  	Initial Version
+  ;	
+  ;  Purpose: This test case verifies that IUT does not arbitrarily restrict the number 
+  ;           of properties that can be written to it using a single WritePropertyMultiple request.
+  
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and "(T)" refers 
+  ;	to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Positive ReadProperty Tests
+
+  ;------------------------------------------------------------------------------------- 
+  ; Notes on Hardcoding and other changes needing to be made outside of the setup section including hard coded objects and properties 
+  ; Items marked and found with *** are hardcoded or the error messages must be manually verified in the trace. 
+  ;
+  ;
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG  All objects and properties are listed here including notes on there use
+  ;
+   IUT_IP = 10.10.10.100:0xBAC0
+   TD_IP = 10.10.10.36:0xBAC0  
+
+  -- BOOLEAN TEST
+  OBJECT1 = Device, 1967		; Object which is the subject of the WPMMAX TEST
+  OBJECT2 = ANALOG-INPUT, 1	; Object which is the subject of the WPMMAX TEST
+
+  -- CHARACTER STRING TEST
+  TESTVALUE1 = ANSI,"A"    ; CHARACTER STRING VALUE TO BE WRITTEN 
+  
+  TESTVALUE2 = 0              ; BOOLEAN VALUE
+  
+  PROP1 = LOCATION              ; CHARACTER PROPERTY USED FOR WRITING
+  PROP2 = OUT-OF-SERVICE              ; BOOLEAN PROPERTY USED FOR WRITING 
+
+  
+
+  ;TESTVALUE1 = ANSI X3.4,"A"    ; CHARACTER STRING VALUE TO BE WRITTEN 
+
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+  ;
+  ;  Routing_Config
+  ;  
+
+  -- DNET_MSTP = 20001, MS/TP     ; Sets the DNET of the remote MSTP network (Comment if no routing)
+
+  ;-----IUT and TD are on the same Ethernet segment
+  ;   DESTINATION = IUT_MAC 
+  ;-----IUT is on an MSTP segment and TD is on an Ethernet segment
+  ;   DA = Broadcast
+  ;   DNET = DNET_MSTP
+  ;   DADR = IUT_MAC
+  ;------------------------------------------------------------------------------------ 
+  SECTION ReadProperty Service Execution Tests
+
+  -- Reference (T) Positive ReadProperty Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD.
+
+
+
+ -- Test Concept: A writable property is written to an object in the IUT as many times as can be 
+ -- conveyed in the largest request accepted by the IUT. The calculation of the maximum request 
+ -- size shall be based on the IUTs MaxAPDU size and maximum segments per request.
+
+-- Test Steps:
+
+ -- 1.	TRANSMIT WritePropertyMultiple-Request,
+ --		'Object Identifier' =	(the IUT's device object),
+ --		'Property Identifier' =	P1,
+ --		'Array Index' = 		A1, 	-- only if required
+ --		'Priority' =		PRIO	-- only if required
+ --		'Property Value' = 	V1,
+ --		…
+ --		'Property Identifier' =	P1,
+ --		'Array Index' = 		A1, 	-- only if required
+ --		'Priority' =		PRIO	-- only if required
+ --		'Property Value' = 	V1
+ -- 2.	RECEIVE Simple-ACK
+ -- 3.     VERIFY(P1 = V1)
+      
+   
+
+ TEST #1a 9.20.1.X6 Writing Maximum Multiple properties 
+
+       DEPENDENCIES None
+
+       REFERENCE (B) ReadPropertyMultiple Service and (T) Reading a Single Property of a Single Object
+
+--The max BVLCI Length is about 1482 
+
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1      
+      Service = WritePropertyMultiple
+      Object = 0, OBJECT2
+      OpenTag 1
+       
+Property = 0, PROP2            ; 1
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 2
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 3
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 4
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 5
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 6
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 7
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 8
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 9
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 10
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 11
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 12
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 13
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 14
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 15
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 16
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 17
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 18
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 19
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 20
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 21
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 22
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 23
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 24
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 25
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 26
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 27
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 28
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 29
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 30
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 31
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 32
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 33
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 34
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 35
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 36
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 37
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 38
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 39
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 40
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 41
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 42
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 43
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 44
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 45
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 46
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 47
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 48
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 49
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 50
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 51
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 52
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 53
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 54
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 55
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 56
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 57
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 58
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 59
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 60
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 61
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 62
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 63
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 64
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 65
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 66
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 67
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 68
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 69
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 70
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 71
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 72
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 73
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 74
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 75
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 76
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 77
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 78
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 79
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 80
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 81
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 82
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 83
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 84
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 85
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 86
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 87
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 88
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 89
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 90
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 91
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 92
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 93
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 94
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 95
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 96
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 97
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 98
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 99
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 100
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 101
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 102
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 103
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 104
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 105
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 106
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 107
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 108
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 109
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 110
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 111
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 112
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 113
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 114
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 115
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 116
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 117
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 118
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 119
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 120
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 121
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 122
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 123
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 124
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 125
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 126
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 127
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 128
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 129
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 130
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 131
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 132
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 133
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 134
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 135
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 136
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 137
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 138
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 139
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 140
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 141
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 142
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 143
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 144
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 145
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 146
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 147
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 148
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 149
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 150
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 151
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 152
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 153
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 154
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 155
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 156
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 157
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 158
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 159
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 160
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 161
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 162
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 1
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 2
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 3
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 4
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 5
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 6
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 7
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 8
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 9
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 10
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 11
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 12
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 13
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 14
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 15
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 16
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 17
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 18
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 19
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 20
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 21
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 22
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 23
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 24
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 25
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 26
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 27
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 28
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 29
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 30
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 31
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 32
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 33
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 34
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 35
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 36
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 37
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 38
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 39
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 40
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 41
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 42
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 43
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 44
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 45
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 46
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 47
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 48
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 49
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 50
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 51
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 52
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 53
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 54
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 55
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 56
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 57
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 58
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 59
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 60
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 61
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 62
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 63
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 64
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 65
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 66
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 67
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 68
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 69
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 70
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 71
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 72
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 73
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 74
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 75
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 76
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 77
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 78
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 79
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 80
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 81
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 82
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 83
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 84
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 85
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 86
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 87
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 88
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 89
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 90
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 91
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 92
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 93
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 94
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 95
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 96
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 97
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 98
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 99
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 100
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 1
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 2
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 3
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 4
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 5
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 6
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 7
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 8
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 9
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 10
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 11
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 12
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 13
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 14
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 15
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 16
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 17
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 18
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 19
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 20
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 21
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 22
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 23
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 24
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 25
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 26
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 27
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 28
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 29
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 30
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+Property = 0, PROP2            ; 293
+OpenTag 2
+BOOLEAN = TESTVALUE2
+CloseTag 2
+
+CloseTag 1                                   
+    )
+
+  -- Step 2 Receive a simple Ack
+
+ EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = SimpleAck
+      Service = WritePropertyMultiple
+    )
+
+-- Step 3 Verify the written value from step 1
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = False
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 2      
+      Service = ReadProperty
+      Object = 0, OBJECT2
+      Property = 1,  PROP2     
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT2
+      Property = 1, PROP2
+     OpenTag 3
+         BOOLEAN = TESTVALUE2 
+     CloseTag 3                                   
+    )       
+    
+
+
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+TEST #1B 9.20.1.X6 Writing Maximum Multiple properties 
+
+       DEPENDENCIES None
+
+       REFERENCE (B) ReadPropertyMultiple Service and (T) Reading a Single Property of a Single Object
+
+ --The max BVLCI Length is about 1480
+
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1      
+      Service = WritePropertyMultiple
+      Object = 0, OBJECT1
+      OpenTag 1
+       
+Property = 0, PROP1            ; 1
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 2
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 3
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 4
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 5
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 6
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 7
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 8
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 9
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 10
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 11
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 12
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 13
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 14
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 15
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 16
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 17
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 18
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 19
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 20
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 21
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 22
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 23
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 24
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 25
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 26
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 27
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 28
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 29
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 30
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 31
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 32
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 33
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 34
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 35
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 36
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 37
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 38
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 39
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 40
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 41
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 42
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 43
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 44
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 45
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 46
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 47
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 48
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 49
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 50
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 51
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 52
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 53
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 54
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 55
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 56
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 57
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 58
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 59
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 60
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 61
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 62
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 63
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 64
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 65
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 66
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 67
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 68
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 69
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 70
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 71
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 72
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 73
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 74
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 75
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 76
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 77
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 78
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 79
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 80
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 81
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 82
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 83
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 84
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 85
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 86
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 87
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 88
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 89
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 90
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 91
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 92
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 93
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 94
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 95
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 96
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 97
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 98
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 99
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 100
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 101
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 102
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 103
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 104
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 105
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 106
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 107
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 108
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 109
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 110
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 111
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 112
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 113
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 114
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 115
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 116
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 117
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 118
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 119
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 120
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 121
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 122
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 123
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 124
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 125
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 126
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 127
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 128
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 129
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 130
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 131
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 132
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 133
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 134
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 135
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 136
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 137
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 138
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 139
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 140
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 141
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 142
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 143
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 144
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 145
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 146
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 147
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 148
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 149
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 150
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 151
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 152
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 153
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 154
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 155
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 156
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 157
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 158
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 159
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 160
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 161
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 162
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 163
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 164
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 165
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 166
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 167
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 168
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 169
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 170
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 171
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 172
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 173
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 174
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 175
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 176
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 177
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 178
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 179
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 180
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 181
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 182
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 183
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 184
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 185
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 186
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 187
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 188
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 189
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 190
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 191
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 192
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 193
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 194
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 195
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 196
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 197
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 198
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 199
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 200
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 201
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 211
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 212
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 213
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 214
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 215
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 216
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 217
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+Property = 0, PROP1            ; 218
+OpenTag 2
+CHARSTRING = TESTVALUE1
+CloseTag 2
+
+CloseTag 1                                   
+    )
+
+ -- Step 2 Receive a simple Ack
+
+ EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = SimpleAck
+      Service = WritePropertyMultiple
+    )
+   OR(
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = error
+      Error-Choice = WritePropertyMultiple
+      OpenTag 0
+       Enum = 2               ;Property
+       Enum = 40              ;Write-Access-Denied
+      CloseTag 0
+      OpenTag 1
+       Object = 0,OBJECT1  
+       Property = 1,Location
+      CloseTag 1
+    )
+
+-- Step 3 Verify the written value from step 1
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 2      
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1,  PROP1     
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, PROP1
+     OpenTag 3
+--         CHARSTRING = TESTVALUE1            ;if Property Write Successful
+           AL = {Location}
+     CloseTag 3                                   
+    )       

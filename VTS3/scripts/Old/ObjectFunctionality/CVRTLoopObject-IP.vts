@@ -1,0 +1,183 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Loop Object Test
+  ;	Controlled_Variable_Reference Tracking
+  ;
+  ;  LoopCVRTmmddyy.vts
+  ;
+  ;  Ver 1.0	05/13/01	P. Bowen	
+  ;
+  ;  Purpose: This test case verifies that Controlled_Variable_Value tracks the 
+  ;	property referenced by Controlled_Variable_Reference.
+  ;
+  ;  Dependencies: ReadProperty Service Execution Tests
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Loop Object Controlled_Variable_Reference Tracking Test
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+
+  TD_IP = 10.10.10.2
+
+
+  LOOP_OBJECT = Loop, 1		; Loop object being tested
+  REF_OBJECT = Analog-Value, 1	; Object referenced by the loop object's...
+				; ...Controlled_Variable_Reference property
+  REF_PROPERTY = Present-Value
+  C_VAL = 19.5			; Value of loop object's Controlled_Variable_Value property
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+
+  IUT_IP = 10.10.10.100	; Address of IUT
+
+  ;-------------------------------------------------------------------------------------
+
+  SECTION Loop Object Controlled_Variable_Reference Tracking Test
+
+  -- Note: this test takes place over steps #1a - #1c so that the test can be 
+  -- paused to verify the Present-Value property of the referenced object.
+
+  -- Configuration Requirements: 
+  --	a) Configuration Requirements: The IUT shall be configured so that the 
+  --	   controlled variable value of the Loop object being tested remains 
+  --	   constant for the duration of the test. If this is not possible then
+  --	   this test shall be omitted.
+  --	b) IUT is on the same network as TD
+  --
+  -- Test Steps:
+  --
+  -- 1.	TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Controlled_Variable_Reference
+  -- 2.	RECEIVE BACnet-ComplexACK-PDU,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Controlled_Variable_Reference,
+  --		'Property Value' =	(any valid object property reference)
+  -- 3.	TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Controlled_Variable_Value
+  -- 4.	RECEIVE BACnet-ComplexACK-PDU,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Controlled_Variable_Value,
+  --		'Property Value' =	(any valid value)
+  -- 5.	VERIFY (the controlled variable reference object), 
+  --	       (the referenced property) = (the Controlled_Variable_Value from step 4)
+
+  -- REFERENCE (B) Loop Object Type and (T) Loop Object Test
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Read the Object's Controlled-Variable-Reference Property
+
+  DEPENDENCIES None
+
+  -- Steps #1 & #2: Read the loop object's Controlled-Variable-Reference property
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Controlled-Variable-Reference
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+      	PDU = ComplexAck
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	SA = IUT_IP
+      	DER = FALSE
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Controlled-Variable-Reference
+      	OpenTag 3		
+         	AL = {Controlled-Variable-Reference}
+      	CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1b Read the Object's Controlled-Variable-Value Property
+
+  DEPENDENCIES None
+
+  -- Steps #3 & #4: Read the loop object's Controlled-Variable-Value property
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Controlled-Variable-Value
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	SA = IUT_IP
+      	PDU = ComplexAck
+      	DER = FALSE
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Controlled-Variable-Value
+      	OpenTag 3		
+         	AL = {Controlled-Variable-Value}
+      	CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1c Verify the Object's Controlled-Variable-Value Property
+
+  DEPENDENCIES None
+
+  -- Step #5: Verify the controlled variable reference object's referenced 
+  -- property = the Controlled_Variable_Value (from step 4)
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, REF_OBJECT
+      	Property = 1, REF_PROPERTY
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	SA = IUT_IP
+      	PDU = ComplexAck
+      	DER = FALSE
+      	Service = ReadProperty
+      	Object = 0, REF_OBJECT
+      	Property = 1, REF_PROPERTY
+      	OpenTag 3
+         	REAL = C_VAL			; compare: referenced property should = C_VAL
+      	CloseTag 3
+    )

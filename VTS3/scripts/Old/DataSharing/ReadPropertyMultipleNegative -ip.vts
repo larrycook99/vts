@@ -1,0 +1,395 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Negative ReadPropertyMultiple Service Execution Tests
+  ;	Draft
+  ;  nRPMmmddyy.vts
+  ;
+  ;  Ver 1.0	04/01/01	P. Bowen	Initial version
+  ;  Ver 1.1    09/12/01        Bradsp          Marked with easy change symbols and Routing sections
+  ;  VER 1.2    10/28/01        BRADSP          Added test cases
+  ;  Purpose: This file defines the tests necessary to to verify correct execution 
+  ;	      of ReadPropertyMultiple service requests under circumstances where the 
+  ;	      service is NOT expected to be successfully completed. 
+  ;
+  ;  Dependencies: ReadProperty and ReadPropertyMultiple Service Execution Tests
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and "(T)" refers to
+  ;  the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Negative ReadPropertyMultiple Service Execution Tests
+
+  IUT_IP = 10.10.10.100:0xBAC0
+  
+  OBJECT1 = Device, 1967	; DEVICE OBJECT
+  OBJECT2 = analog-VALUE, 1	; Object which is the subject of the Read Prop tests
+  OBJECT3 = analog-VALUE, 2	; Object which is the subject of the Read Prop tests
+  OBJECT4 = File, 1       ; Object which is the subject of the Read Prop tests
+
+  INDEX0 = 0		; Index used in any test to read array length
+  INDEX1 = 1		; Array index for test #1g "Read a Single Element of an Array"
+  INDEX2 = 2
+  INDEX3 = 3
+  INDEX4 = 4		; Array index for test #1j "Read Property - Read Null Values"
+
+  UNSUPPROP = 14
+  NO_SUCH_PROPERTY = 500
+  ;------------------------------------------------------------------------------------- 
+   SECTION Negative ReadPropertyMultiple Service Execution Tests
+
+  -- Configuration Requirements: 
+  --	a) Two objects shall be selected by the tester from the IUT's database. 
+  --	   The various tests consist of reading combinations of properties from 
+  --	   one or both of these objects. In the test descriptions the Object_Identifier
+  --	   for these objects are designated Object1 and Object2. Properties selected by
+  --	   the tester are designated P1, P2, P3, etc. as needed.
+  --	b) The IUT's EPICS must be modified to add an unsupported property
+  --	c) IUT is on the same network as the TD.
+
+  ;-------------------------------------------------------------------------------------
+    ;-------------------------------------------------------------------------------------
+  TEST #1 Reading Multiple Properties with a Single Embedded Access Error ; VERIFY MANUAL RESULTS 
+
+  -- Purpose: This test case verifies the ability to correctly execute a 
+  -- ReadPropertyMultiple service request for which the 'List of Read Access 
+  -- Specifications' contains a specification for an unsupported property.
+
+  -- Test Steps:
+  --  1. TRANSMIT ReadPropertyMultiple-Request,
+  --	'Object Identifier' = Object1,
+  --	'Property Identifier' =	P1,
+  --	'Property Identifier' =	P2,
+  --	'Property Identifier' =	(any property, P3, not supported in this object),
+  --	'Property Identifier' =	P4,
+  -- 2.	RECEIVE ReadPropertyMultiple-ACK,
+  --	'Object Identifier' = Object1,
+  --	'Property Identifier' =	P1,
+  --	'Property Value' = (the value of P1 specified in the EPICS),
+  --	'Property Identifier' =	P2,
+  --	'Property Value' = (the value of P2 specified in the EPICS),
+  --	'Property Identifier' =	P3,
+  --	'Error Class' =	PROPERTY,
+  --	'Error Code' = UNKNOWN_PROPERTY,
+  --	'Property Identifier' =	P4,
+  --	'Property Value' = (the value of P4 specified in the EPICS)
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadPropertyMultiple Service and (T) Reading Multiple Properties with a Single Embedded Access Error
+
+  -- Step #1: Send ReadPropertyMultiple request for multiple properties from a
+  -- single supported object, with a single property not supported by the IUT
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1			; Supported object
+      OpenTag 1
+         Property = 0, Location 		; IUT supported property
+         Property = 0, Description		; IUT supported property
+         Property = 0, UNSUPPROP                  ; Unsupported property should be here
+         Property = 0, max-master		; Illegal keyword error with this statement
+      CloseTag 1
+    )
+
+  -- Step #2: Receive ReadPropertyMultiple ACK
+
+    EXPECT (
+      NETWORK = "Untitled"
+      sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1			; Supported object
+      OpenTag 1
+         Property = 2, Location		; IUT supported property
+         OpenTag 4
+           AL = {Location}
+          CloseTag 4
+        Property = 2, Description		; IUT supported property
+         OpenTag 4
+           AL = {Description}
+         CloseTag 4
+         Property = 2, UNSUPPROP	; IUT unsupported property
+         OpenTag 5
+            ENUMERATED = 2		        ; Error class: Property
+ 	    ENUMERATED = 32                    	; Get "Unknown Packet Keyword"... 
+         CloseTag 5				;  error with this error code
+ 	 Property = 2, max-master		; ; IUT unsupported property
+         OpenTag 5				;  if this property is read...
+            ENUMERATED = 2		        ; Error class: Property
+ 	    ENUMERATED = 32                    	; Get "Unknown Packet Keyword"... 
+ 	 CloseTag 5
+      CloseTag 1
+   )
+
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+  TEST #2 Reading Multiple Properties with Multiple Embedded Access Errors ; VERIFY MANUAL RESULTS
+
+  -- Purpose: This test case verifies the ability to correctly execute a 
+  --  ReadPropertyMultiple service request for which the 'List of Read Access 
+  --  Specifications' contains specifications for multiple unsupported properties.
+
+  -- Test Steps:
+  --  1. TRANSMIT ReadPropertyMultiple-Request,
+  --	'Object Identifier' = Object1,
+  --	'Property Identifier' =	P1,
+  --	'Property Identifier' = P2,
+  --	'Property Identifier' =	(any property, P3, not supported in this object),
+  --	'Property Identifier' =	(any property, P4, not supported in this object),
+  --	'Object Identifier' = (any object, Object2, not supported in the IUT)
+  --	'Property Identifier' =	P5,
+  --	'Property Identifier' =	P6
+  --  2. RECEIVE ReadPropertyMultiple-ACK,
+  --	'Object Identifier' = Object1,
+  --	'Property Identifier' =	P1,
+  --	'Property Value' = (the value of P1 specified in the EPICS),
+  --	'Property Identifier' =	P2,
+  --	'Property Value' = (the value of P2 specified in the EPICS),
+  -- 	'Property Identifier' =	P3,
+  --	'Error Class' =	PROPERTY,
+  --	'Error Code' = UNKNOWN_PROPERTY,
+  --	'Property Identifier' =	P4,
+  --	'Error Class' =	PROPERTY,
+  --	'Error Code' = UNKNOWN_PROPERTY,
+  --	'Object Identifier' = Object2,
+  --	'Property Identifier' =	P5,
+  --	'Error Class' =	OBJECT,
+  --	'Error Code' = UNKNOWN_OBJECT,
+  --	'Property Identifier' =	P6,
+  --	'Error Class' =	OBJECT,
+  --	'Error Code' = UNKNOWN_OBJECT
+ 
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadPropertyMultiple Service and (T) Reading Multiple Properties with a Single Embedded Access Error
+
+  -- Step #1: Send ReadPropertyMultiple request for multiple properties from
+  -- two different objects, both supported and not supported by by the IUT
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1			; Supported object
+      OpenTag 1
+         Property = 0, LOCATION		        ; IUT supported property
+         Property = 0, Vendor-Name		; IUT supported property
+         Property = 0, UNSUPPROP             	; Unsupported property
+	 Property = 0, NO_SUCH_PROPERTY       	; Get illegal keyword error with this statement
+      CloseTag 1
+      Object = 0, OBJECT4			; Unsupported Object shoul be here
+      OpenTag 1
+         Property = 0, Object-Name
+         Property = 0, Object-Type
+      CloseTag 1
+
+    )
+
+  -- Step #2: Receive ReadPropertyMultiple ACK
+
+    EXPECT (
+      NETWORK = "Untitled"
+      sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1			; Supported object
+      OpenTag 1
+          Property = 2, Location		; Supported property
+         OpenTag 4
+            AL = {Location}
+         CloseTag 4
+         Property = 2, Vendor-Name		; Supported property
+         OpenTag 4
+            AL = {Vendor-Name}
+         CloseTag 4
+         Property = 2, UNSUPPROP	; Unsupported property
+         OpenTag 5
+            ENUMERATED = 2		; Error class: Property
+ 	    ENUMERATED = 32	; Get "Unknown Packet Keyword"... 
+         CloseTag 5				;  error with this error code
+ 	 Property = 2, NO_SUCH_PROPERTY	; Unsupported property	
+         OpenTag 5
+            ENUMERATED = 2		; Error class: Property
+ 	    ENUMERATED = 32	; Get "Unknown Property"... 
+         CloseTag 5				;  error with this error code
+      CloseTag 1
+ 
+      Object = 0, OBJECT4			; Unsupported object
+      OpenTag 1
+         Property = 2, Object-Name
+         OpenTag 5
+            ENUM = 1 		; Error class: Object
+ 	    ENUM = 31  	        ; Error Code: Unknown Object
+         CloseTag 5				;  error with this error code
+         Property = 2, Object-Type
+         OpenTag 5
+            ENUM = 1 		; Error class: Object
+ 	    ENUM = 31  	        ; Error Code: Unknown Object
+         CloseTag 5				
+       CloseTag 1
+    )
+
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+  TEST #3 9.17.2.1	Reading a Single, Unsupported Property from a Single Object 
+
+  -- Purpose: This test case verifies the ability to correctly execute a ReadPropertyMultiple service request for which the 'List of Read Access Specifications' 
+  -- contains specifications for a single unsupported property.
+
+
+  --  Test Steps:
+
+  --  1.	TRANSMIT ReadPropertyMultiple-Request,
+  --		'Object Identifier' =	Object1 | Object2,
+  -- 		'Property Identifier' =	(any property, P1, that is not supported in the selected object)
+  --   2.	RECEIVE BACnet-Error-PDU,
+  --		'Error Class' =		PROPERTY,
+  --		'Error Code' =		UNKNOWN_PROPERTY,
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadPropertyMultiple Service and (T) Reading Multiple Properties with a Single Embedded Access Error
+
+  -- Step #1: TRANSMIT ReadPropertyMultiple-Request
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1			; Supported object
+      OpenTag 1
+         Property = 0, Location 		; IUT supported property
+         Property = 0, UNSUPPROP                  ; Unsupported property should be here
+      CloseTag 1
+
+    )
+
+  -- Step #2: Receive ReadPropertyMultiple ACK
+
+   EXPECT (
+      NETWORK = "Untitled"
+      sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1			;supported object here
+      OpenTag 1
+         Property = 2, Location               ;Supported Properties
+         OpenTag 4
+           AL = {Location}
+         CloseTag 4				
+         Property = 2, UNSUPPROP              ;UNSUPPROP Properties here
+         OpenTag 5
+           Enum = 2                            ;Error Class:Property
+           Enum = 32                           ;Error Code: Unknown Property                 
+         CloseTag 5			
+       CloseTag 1
+   )
+
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+  TEST #4 9.17.2.2 	Reading Multiple Properties with Access Errors for Every Property
+
+
+  -- Purpose: This test case verifies the ability to correctly execute a ReadPropertyMultiple service request for which the 'List of Read Access Specifications' 
+  --          contains specifications for only unsupported properties.
+  --
+  -- Test Concept: The selections for objects and properties for this test shall consist of either objects that are not supported, properties that are not supported 
+  -- for the selected objects, or a combination of the two such that there are no object, property combinations that represent a supported property.
+
+
+  -- Test Steps:
+
+  -- 1.	TRANSMIT ReadPropertyMultiple-Request,
+  --		'Object Identifier' =	Object1,
+  --		'Property Identifier' =	P1,
+  --		'Property Identifier' = 	P2,
+  --		'Property Identifier' = 	P3,
+  --		'Object Identifier' = 	Object2,
+  --		'Property Identifier' = 	P4,
+  --		'Property Identifier' = 	P5,
+  --		'Property Identifier' = 	P6
+  -- 2.	RECEIVE BACnet-Error-PDU,
+  --		'Error Class' =	OBJECT | PROPERTY,
+  --		'Error Code' = 	(any valid error code for the returned error class)
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadPropertyMultiple Service and (T) Reading Multiple Properties with a Single Embedded Access Error
+
+  -- Step #1: TRANSMIT ReadPropertyMultiple-Request
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1			; Supported object
+      OpenTag 1
+         Property = 0, UNSUPPROP 		; IUT supported property
+         Property = 0, UNSUPPROP                  ; Unsupported property should be here
+         Property = 0, UNSUPPROP 
+      CloseTag 1
+
+
+      Object = 0, OBJECT2			; Supported object
+      OpenTag 1
+         Property = 0, UNSUPPROP 		; IUT supported property
+         Property = 0, UNSUPPROP                  ; Unsupported property should be here
+         Property = 0, UNSUPPROP 
+      CloseTag 1
+
+    )
+
+  -- Step #2: Receive ReadPropertyMultiple ACK
+
+    EXPECT (
+      NETWORK = "Untitled"
+      sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ERROR
+      Error-Choice = ReadPropertyMultiple
+      Enum = 5
+      Enum = 0
+   )
+
+
+;-------------------------------------------------------------------------------------

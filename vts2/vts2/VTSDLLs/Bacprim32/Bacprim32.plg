@@ -1,0 +1,63 @@
+--------------------Configuration: Vtsapi32 - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Vtsapi32\Vtsapi32.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MT /W3 /GX /Od /I "..\includent" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fp"Release/Vtsapi32.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Release/Vtsapi32.res" /d "NDEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Release/Vtsapi32.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Release/Vtsapi32.pdb" /machine:I386 /def:".\Vtsapi32.def" /out:"Release/Vtsapi32.dll" /implib:"Release/Vtsapi32.lib" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating command line "rc.exe /l 0x409 /fo"Release/Vtsapi32.res" /d "NDEBUG" "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Vtsapi32\Vtsapi32.rc"" 
+Creating temp file "C:\TEMP\RSP36.tmp" with contents </nologo /Zp1 /MT /W3 /GX /Od /I "..\includent" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fp"Release/Vtsapi32.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Vtsapi32\Vtsapi32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP36.tmp" 
+Creating temp file "C:\TEMP\RSP37.tmp" with contents <kernel32.lib user32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Release/Vtsapi32.pdb" /machine:I386 /def:".\Vtsapi32.def" /out:"Release/Vtsapi32.dll" /implib:"Release/Vtsapi32.lib" 
+".\Release\Vtsapi32.obj"
+".\Release\Vtsapi32.res">
+Creating command line "link.exe @C:\TEMP\RSP37.tmp" 
+Compiling resources...
+Compiling...
+Vtsapi32.c
+Linking...
+   Creating library Release/Vtsapi32.lib and object Release/Vtsapi32.exp
+--------------------Configuration: Bacprim32 - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Bacprim32.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MT /W3 /GX /Od /I "..\includent" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /FAcs /Fa"Release/" /FR"Release/" /Fp"Release/Bacprim32.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Release/Bacprim32.res" /d "NDEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Release/Bacprim32.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib vtsapi32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Release/Bacprim32.pdb" /machine:I386 /def:".\Bacprim32.def" /out:"Release/Bacprim32.dll" /implib:"Release/Bacprim32.lib" /libpath:"..\vtsapi32\release" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating command line "rc.exe /l 0x409 /fo"Release/Bacprim32.res" /d "NDEBUG" "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Bacprim32.rc"" 
+Creating temp file "C:\TEMP\RSP39.tmp" with contents </nologo /Zp1 /MT /W3 /GX /Od /I "..\includent" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /FAcs /Fa"Release/" /FR"Release/" /Fp"Release/Bacprim32.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Bacprim32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP39.tmp" 
+Creating temp file "C:\TEMP\RSP3A.tmp" with contents <kernel32.lib user32.lib gdi32.lib vtsapi32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Release/Bacprim32.pdb" /machine:I386 /def:".\Bacprim32.def" /out:"Release/Bacprim32.dll" /implib:"Release/Bacprim32.lib" /libpath:"..\vtsapi32\release" 
+".\Release\Bacprim32.obj"
+".\Release\Bacprim32.res"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Vtsapi32\Release\Vtsapi32.lib">
+Creating command line "link.exe @C:\TEMP\RSP3A.tmp" 
+Compiling resources...
+Compiling...
+Bacprim32.c
+D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Bacprim32.c(325) : warning C4028: formal parameter 4 different from declaration
+D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Bacprim32.c(640) : warning C4028: formal parameter 6 different from declaration
+Linking...
+   Creating library Release/Bacprim32.lib and object Release/Bacprim32.exp
+Creating command line "bscmake.exe /nologo /o"Release/Bacprim32.bsc"  ".\Release\Bacprim32.sbr"" 
+Creating browse info file...
+
+
+
+Bacprim32.dll - 0 error(s), 2 warning(s)

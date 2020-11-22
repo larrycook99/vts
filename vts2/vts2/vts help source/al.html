@@ -1,0 +1,1025 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>VTS BACnet Application Layer Services</title>
+</head>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="application layer">
+	<param name="Keyword" value="confirmed service requests">
+	<param name="Keyword" value="unconfirmed service requests">
+	<param name="Keyword" value="menu">
+	<param name="Keyword" value="AL menu">
+	<param name="Keyword" value="Alarm and Event Services">
+	<param name="Keyword" value="File Access Services">
+	<param name="Keyword" value="Object Access Services">
+	<param name="Keyword" value="Remote Device Management Services">
+	<param name="Keyword" value="Virtual Terminal Services">
+	<param name="Keyword" value="Security Services">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>BACnet Application Services</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="3" align="right">
+	<a href="target.html"><img src="prev.gif" border="0" width="20" height="20" alt="previous"></a><a href="nl.html"><img src="next.gif" border="0" width="20" height="20" alt="next"></a><a href="home.html"><img src="home.gif" border="0" width="20" height="20" alt="home"></a>
+	</td>
+  </tr>
+</table>
+<p>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#FFFFFF">
+    <td align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  In its primary capacity as a BACnet client, VTS can be used to test the response 
+	  from a BACnet device or group of devices to any of the BACnet application layer 
+	  confirmed or unconfirmed service requests. You accomplish this task using the VTS 
+	  AL menu. The correspondence between the BACnet services and the VTS menu is shown 
+	  in the tables below. The tables also serve as hyperlinks to help for the 
+	  specified service requests. 
+	  </font>
+	</td>
+  </tr>
+</table>
+</p>
+<p>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left" bgcolor="#CCCCCC">
+	  <font face="arial, helvetica" color="#000000">
+	  <b>BACnet Confirmed Service</b>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left" bgcolor="#CCCCCC">
+	  <font face="arial, helvetica" color="#000000">
+	  <b>VTS AL Menu Selection</b>
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td colspan="3" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <i>Alarm and Event Services<i>
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_ackalarm.html">AcknowledgeAlarm</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Acknowledge Alarm
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_covnotification.html">ConfirmedCOVNotification</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  COV Notification/Subscription
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_eventnotification.html">ConfirmedEventNotification</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Event Notification
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_getalarmsum.html">GetAlarmSummary</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Get Alarm Summary
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_getenrollmentsummary.html">GetEnrollmentSummary</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Get Enrollment Summary
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_subscribecov.html">SubscribeCOV</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  COV Notification/Subscription
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="5" height="16" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td colspan="3" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <i>File Access Services<i>
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_readfile.html">AtomicReadFile</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Atomic Read/Write File
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_writefile.html">AtomicWriteFile</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Atomic Read/Write File
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="5" height="16" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td colspan="3" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <i>Object Access Services<i>
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_addlistelement.html">AddListElement</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Add/Remove List Element
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_remlistelement.html">RemoveListElement</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Add/Remove List Element
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_createobj.html">CreateObject</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Create/Delete Object
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_deleteobj.html">DeleteObject</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Create/Delete Object
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_readprop.html">ReadProperty</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Read/Write Property
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_readpropconditional.html">ReadPropertyConditional</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Read Property Conditional
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_readpropmultiple.html">ReadPropertyMultiple</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Read/Write Property
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_writeprop.html">WriteProperty</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Read/Write Property
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_writepropmultiple.html">WritePropertyMultiple</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Read/Write Property
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="5" height="16" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td colspan="3" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <i>Remote Device Management Services<i>
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_devicecommcontrol.html">DeviceCommunicationControl</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Device Communication Control
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_privatetransfer.html">ConfirmedPrivateTransfer</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Private Transfer
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_textmessage.html">ConfirmedTextMessage</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Text Message
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_reinitializedevice.html">ReinitializeDevice</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Reinitialize Device
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="5" height="16" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td colspan="3" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <i>Virtual Terminal Services<i>
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_vt.html">VT-Open</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Virtual Terminal
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_vt.html">VT-Close</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Virtual Terminal
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_vt.html">VT-Data</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Virtual Terminal
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="5" height="16" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td colspan="3" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <i>Security Services<i>
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Authenticate
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Not Supported by VTS
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  RequestKey
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Not Supported by VTS
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="5" height="16" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left" bgcolor="#CCCCCC">
+	  <font face="arial, helvetica" color="#000000">
+	  <b>BACnet Unconfirmed Service</b>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left" bgcolor="#CCCCCC">
+	  <font face="arial, helvetica" color="#000000">
+	  <b>VTS AL Menu Selection</b>
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_iam.html">I-Am</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Who-Is, I-Am, Who-Has, I-Have
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_ihave.html">I-Have</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Who-Is, I-Am, Who-Has, I-Have
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_covnotification.html">UnconfirmedCOVNotification</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  COV Notification/Subscription
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_eventnotification.html">UnconfirmedEventNotification</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Event Notification
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_privatetransfer.html">UnconfirmedPrivateTransfer</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Private Transfer
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_textmessage.html">UnconfirmedTextMessage</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Text Message
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_timesync.html">TimeSynchronization</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Time Syncronization
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_whohas.html">Who-Has</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Who-Is, I-Am, Who-Has, I-Have
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_whois.html">Who-Is</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Who-Is, I-Am, Who-Has, I-Have
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="5" height="16" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left" bgcolor="#CCCCCC">
+	  <font face="arial, helvetica" color="#000000">
+	  <b>Other BACnet PDUs</b>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left" bgcolor="#CCCCCC">
+	  <font face="arial, helvetica" color="#000000">
+	  <b>VTS AL Menu Selection</b>
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_sack_error.html">SimpleACK-PDU</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Simple Ack, Error PDU
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="11" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  <a href="al_sack_error.html">Error-PDU</a>
+	  </font>
+	</td>
+    <td width="20" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+    <td width="200" align="left">
+	  <font face="arial, helvetica" color="#000000">
+	  Simple Ack, Error PDU
+	  </font>
+	</td>
+    <td width="140" align="left">
+	  <img src="pixel.gif" border="0">
+	</td>
+  </tr>
+</table>
+<p>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	 <p>
+ 	 <a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	 <a href="nl.html">Go to the <b>Next</b> VTS Help Topic.</a><br>
+	 <a href="target.html">Go to the <b>Previous</b> VTS Help Topic.</a><br>
+	 </p>
+	 </font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

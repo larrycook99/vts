@@ -1,0 +1,16 @@
+LIBRARY   PTP
+EXPORTS
+	MainWndProc   			@1
+	About         			@2
+	ptpInit 				@3
+	ptpDeinit				@4
+	ptpConnect				@5
+	ptpDisconnect			@6
+	ptpReceive				@7
+	ptpTransmit				@8
+	ptpCatName				@9
+
+		
+
+
+

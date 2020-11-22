@@ -1,0 +1,98 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Positive AddListElement Service Execution Tests
+  ;
+  ;  AddListElement.vts Addlistmmddyy.vts
+  ;
+  ;  Ver 1.0    03/02/01    P. Bowen
+  ;
+  ;  Purpose: This test group will verify correct execution of AddListElement
+  ;       service requests under circumstances where the service is expected
+  ;       to be successfully completed.
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum..
+  ;-----------------
+
+  SETUP Positive AddListElement Service Execution Tests
+  INCLUDE "..\config.vts"
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+  OBJECT2 = Device, 8001
+  OBJECT3 = Device, 8002
+
+  ;-------------------------------------------------------------------------------------
+
+  SECTION Positive AddListElement Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1 Add List Element: Verify (read) the Time-Synchronization-Recipients property for the Device object
+  DEPENDENCIES none
+  REFERENCE (B) Object Access Services - AddListELement Service
+
+
+    SEND (
+        DA = IUT_ADDR
+        PDU = Confirmed-Request
+        Service = ReadProperty
+        Object = 0, IUT_DEVICE_OBJECT
+        Property = 1, Time-Synchronization-Recipients
+    )
+
+    EXPECT (
+        SA = IUT_ADDR
+        PDU = ComplexAck
+        Service = ReadProperty
+        Object = 0, IUT_DEVICE_OBJECT
+        Property = 1, Time-Synchronization-Recipients
+        OpenTag 3
+        AL = {Time-Synchronization-Recipients}  ; test will pass only if list is initially empty
+        CloseTag 3
+    )
+
+  TEST #1a Add List Element: write new list of devices to the Time-Synchronization-Recipients
+  -- Step #2: Write a new list of devices to the Time-Synchronization-Recipients
+  -- property value and receive a simple acknowledgement
+
+    SEND (
+        DA = IUT_ADDR
+        PDU = Confirmed-Request
+        Service = AddListElement
+        Object = 0, IUT_DEVICE_OBJECT
+        Property = 1, Time-Synchronization-Recipients
+        OpenTag 3
+           ObjectIdentifier = 0, OBJECT2
+           ObjectIdentifier = 0, OBJECT3
+        CloseTag 3
+    )
+
+    EXPECT (
+        SA = IUT_ADDR
+        PDU = SimpleAck
+        Service = AddListElement
+      )
+
+  TEST #1b Add List Element: Verify the values written to the IUT
+    SEND (
+        DA = IUT_ADDR
+        PDU = Confirmed-Request
+        Service = ReadProperty
+        Object = 0, IUT_DEVICE_OBJECT
+        Property = 1, Time-Synchronization-Recipients
+    )
+
+    EXPECT (
+      SA = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, IUT_DEVICE_OBJECT
+      Property = 1, Time-Synchronization-Recipients
+      OpenTag 3
+         ObjectIdentifier = 0, OBJECT2
+         ObjectIdentifier = 0, OBJECT3
+      CloseTag 3
+    )

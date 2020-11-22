@@ -1,0 +1,930 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Positive WriteProperty Service Execution Tests
+  ;
+  ;  PosWriteProperty.vts
+  ;
+  ;  Ver 0.1   01/14/01    P. Bowen
+  ;
+  ;  The purpose of this test group is to verify correct execution of 
+  ;  WriteProperty service requests under circumstances where the 
+  ;  service is expected to be successfully completed.
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Positive WriteProperty Tests
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+
+  NET_1 =  1, ETHERNET, 0	-- The network which directly connects the TD and IUT
+  
+  MY_MAC = 0050BA8B2605		-- MAC address of the TD
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  
+  IUT_MAC = 0040AE001343	-- address of Delta Controls DCU050
+
+  DEVICE_ID = 8000		-- Device object instance for IUT
+
+  OBJECT_1 = Analog-Input, 5	-- Analog input object instance
+  OBJECT_2 = Analog-Output, 1	-- Analog output object instance
+
+  TESTVAL_1 = 123.45
+  TESTVAL_2 = 987.65
+
+  ERROR_CLASS = 2		-- Error class for write property failure
+  ERROR_CODE = 40		-- Error code = write access denied
+  NORMAL_STATUS_FLAGS = F,F,F,T
+
+  ;-------------------------------------------------------------------------------------
+
+  SECTION Positive WriteProperty Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD
+
+  -- Reference (T) 9.19 WriteProperty Service Execution Tests
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a 
+  -- Writing Object Identifiers
+
+  DEPENDENCIES None
+
+  REFERENCE (B) 15.9 WriteProperty Service and (T) 9.19.1.1 Writing Object Identifiers
+
+  -- Test Steps:
+  --	1. VERIFY (Object1), Object_Identifier = (the value defined for this property in the EPICS)
+  --	2. TRANSMIT WriteProperty-Request,
+  --		'Object Identifier' = Object1,
+  --		'Property Identifier' = Object_Identifier,
+  --		'Property Value' = (any unique Object_Identifier, Object2, of the same object type as Object1
+  --		 subject to any restrictions on the permitted instance numbers)
+  --	3. RECEIVE Simple-ACK-PDU
+  --	4. VERIFY (Object2), Object_Identifier = (the value used in step 2)
+  --	5. VERIFY (the IUT's Device object), Object_List = (any object list that contains Object2 but not Object1)
+   
+  -- Step #1: Verify (read) the object identifier property for this device
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID
+      Property = 1, Object-Identifier
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID 
+      Property = 1, Object-Identifier
+      OpenTag 3
+        AL = {Object-Identifier}
+      CloseTag 3
+    )
+   
+  -- Steps #2 and #3: Write a new object identifier for the device object and receive a simple 
+  -- acknowledgement OR an error if the property is not writable
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, DEVICE, DEVICE_ID 
+      Property = 1, Object-identifier
+      AL = X'C4'				-- application tag 12, 4 byte length
+      AL = X'04001F41'				-- 0x1F40 = 8000 decimal, so try to write device = 8001
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      )
+
+    OR (					-- shouldn't be able to write this property so expect an error
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = Error
+      ERROR-CHOICE = WriteProperty
+      ENUMERATED = ERROR_CLASS			-- class = Property
+      ENUMERATED = ERROR_CODE			-- code = WRITE_ACCESS_DENIED
+    )
+  
+  -- Steps #4 and #5: Verify the value written to the IUT
+
+      SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID
+      Property = 1, Object-identifier
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID 
+      Property = 1, Object-identifier
+      OpenTag 3
+        AL = {Object-identifier}
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  Test #1b
+  -- Writing Enumerated Values
+
+  DEPENDENCIES None
+
+  REFERENCE (B) 15.9 WriteProperty Service and (T) 9.19.1.2 Writing Enumerated Values
+
+  -- Test Steps:
+  --	1. VERIFY (Object1), P1 = (the value defined for this property in the EPICS)
+  --	2. TRANSMIT WriteProperty-Request,
+  --		'Object Identifier' = Object1,.'Property Identifier' = P1,
+  --		'Property Value' = (any Enumerated value defined for this property subject to the restrictions 
+  --		specified in the EPICS as defined in 4.4.2, except the value verified in step 1)
+  --	3. RECEIVE Simple-ACK-PDU
+  --	4. VERIFY (Object1), P1 = (the value used in step 2)
+
+  -- Step #1: Verify (read) the value of units for Analog Input object #5
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT_1
+      Property = 1, Units			-- required property, type ENUM (BACnetEngineeringUnits)
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT_1
+      Property = 1, Units
+      OpenTag 3
+        AL = {Units}
+      CloseTag 3                                   
+    )
+
+  -- Steps #2 and #3: Write new units property value and receive a simple 
+  -- acknowledgement OR an error if the property is not writable
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT_1
+      Property = 1, Units
+      OpenTag 3
+        ENUM = Volts
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+    OR (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = Error
+      ERROR-CHOICE = WriteProperty
+      ENUMERATED = ERROR_CLASS			-- class = Property
+      ENUMERATED = ERROR_CODE			-- code = WRITE_ACCESS_DENIED
+    )
+
+  -- Step #4: Verify the value written to the IUT
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT_1
+      Property = 1, Units
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT_1
+      Property = 1, Units
+      OpenTag 3
+        AL = {Units}
+      CloseTag 3                                   
+    )
+
+  ;-------------------------------------------------------------------------------------
+  Test #1c
+  -- Writing CharacterString Values
+
+  DEPENDENCIES None
+
+  REFERENCE (B) 15.9 WriteProperty Service and (T) 9.19.1.3 Writing CharacterString Values
+
+  -- Test Steps:
+  --	1. VERIFY (Object1), P1 = (the value defined for this property in the EPICS)
+  --	2. TRANSMIT WriteProperty-Request,
+  --		'Object Identifier' = Object1,
+  --		'Property Identifier' = P1,
+  --		'Property Value' = (any CharacterString value defined for this property subject to the restrictions
+  --		specified in the EPICS as defined in 4.4.2, except the value verified in step 1)
+  --	3. RECEIVE Simple-ACK-PDU
+  --	4. VERIFY (Object1), P1 = (the value used in step 2)
+  
+  -- Step #1: Verify (read) the object name for the device object
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID
+      Property = 1, Object-Name			
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID
+      Property = 1, Object-Name
+      OpenTag 3
+        AL = {Object-Name}
+      CloseTag 3                                   
+    )
+
+  -- Steps #2 and #3: Write new device object name and receive a simple 
+  -- acknowledgement OR an error if the property is not writable
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC		
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, DEVICE, DEVICE_ID		
+      Property = 1,  Object-Name
+      OpenTag 3					
+       CHARACTERSTRING = "Test Write Obj Name"
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+    OR (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = Error
+      ERROR-CHOICE = WriteProperty
+      ENUMERATED = ERROR_CLASS			-- class = Property
+      ENUMERATED = ERROR_CODE			-- code = WRITE_ACCESS_DENIED
+    )
+
+  -- Step #4: Verify the value written to the IUT
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID
+      Property = 1, Object-Name
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID
+      Property = 1, Object-Name
+      OpenTag 3
+        AL = {Object-Name}
+      CloseTag 3                                   
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1d 
+  -- Writing Unsigned Values
+
+  DEPENDENCIES None
+
+  REFERENCE (B) 15.9 WriteProperty Service and (T) 9.19.1.4 Writing Unsigned Values
+
+  -- Test Steps:
+  --	1. VERIFY (Object1), P1 = (the value defined for this property in the EPICS)
+  --	2. TRANSMIT WriteProperty-Request,
+  --		'Object Identifier' = Object1,
+  --		'Property Identifier' = P1,
+  --		'Property Value' = (any Unsigned value defined for this property subject to the restrictions 
+  --		specified in the EPICS as defined in 4.4.2, except the value verified in step 1)
+  --	3. RECEIVE Simple-ACK-PDU
+  --	4. VERIFY (Object1), P1 = (the value used in step 2)
+
+  -- Step #1: Verify (read) the value defined for this property in the EPICS
+ 
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID
+      Property = 1, Number-of-APDU-Retries
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID
+      Property = 1, Number-of-APDU-Retries
+      OpenTag 3
+        AL = {Number-of-APDU-Retries}
+      CloseTag 3                                   
+    )
+
+  -- Steps #2 and #3: Write new number of 'APDU retries' property value and receive a simple 
+  -- acknowledgement OR an error if the property is not writable for this object
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC		
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, DEVICE, DEVICE_ID		
+      Property = 1, Number-of-APDU-Retries			
+      OpenTag 3					
+        UNSIGNED = 1234
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+    OR (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = Error
+      ERROR-CHOICE = WriteProperty
+      ENUMERATED = ERROR_CLASS			-- class = Property
+      ENUMERATED = ERROR_CODE			-- code = WRITE_ACCESS_DENIED
+    )
+
+  -- Step #4: Verify the value written to the IUT
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID
+      Property = 1, Number-of-APDU-Retries
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, DEVICE, DEVICE_ID
+      Property = 1, Number-of-APDU-Retries
+      OpenTag 3
+        AL = {Number-of-APDU-Retries}
+      CloseTag 3                                   
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1e
+  -- Writing Real Values
+
+  DEPENDENCIES None
+
+  REFERENCE (B) 15.9 WriteProperty Service and (T) 9.19.1.5 Writing Real Values
+
+  -- Test Steps:
+  --	1. VERIFY (Object1), P1 = (the value defined for this property in the EPICS)
+  --	2. TRANSMIT WriteProperty-Request,
+  --		'Object Identifier' = Object1,
+  --		'Property Identifier' = P1,
+  --		'Property Value' = (any Real value defined for this property subject to the restrictions specified
+  --		in the EPICS as defined in 4.4.2, except the value verified in step 1)
+  --	3. RECEIVE Simple-ACK-PDU
+  --	4. VERIFY (Object1), P1 = (the value used in step 2)
+
+  -- Step #1: Verify (read) the present value for the Analog Input object
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT_1
+      Property = 1, Present-Value
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT_1
+      Property = 1, Present-Value
+      OpenTag 3
+        AL = {Present-Value}
+      CloseTag 3                                   
+    )
+
+  -- Steps #2 and #3: Write new 'present value' property value and receive a simple 
+  -- acknowledgement OR an error if the property is not writable
+
+    SEND (
+      NETWORK = NET_1
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT_1
+      Property = 1, Present-Value
+      OpenTag 3
+      REAL = TESTVAL_1
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+    OR (
+      NETWORK = NET_1				-- shouldn't get an access denied error, but check anyway
+      DER = FALSE
+      PDU = Error
+      ERROR-CHOICE = WriteProperty
+      ENUMERATED = ERROR_CLASS			-- class = Property
+      ENUMERATED = ERROR_CODE			-- code = WRITE_ACCESS_DENIED
+    )
+
+  -- Step #4: Verify the value written to the IUT
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT_1
+      Property = 1, Present-Value
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT_1
+      Property = 1, Present-Value
+      OpenTag 3
+        AL = {Present-Value}
+      CloseTag 3                                   
+    )
+
+ ;-------------------------------------------------------------------------------------
+  TEST #1f
+  -- Writing Entire Arrays
+
+  DEPENDENCIES None
+
+  REFERENCE (B) 15.9 WriteProperty Service and (T) 9.19.1.6 Writing Entire Arrays
+
+  -- Test Steps:
+  --	1. VERIFY (Object1), P1 = (the value defined for this property in the EPICS)
+  --	2. TRANSMIT WriteProperty-Request,
+  --		'Object Identifier' = Object1,
+  --		'Property Identifier' = P1,
+  --		'Property Value' = (any array of the same size and datatype as the value defined for this 
+  --		property in the EPICS subject to the restrictions specified in the EPICS as defined in 4.4.2, 
+  --		except the value verified in step 1)
+  --	3. RECEIVE Simple-ACK-PDU
+  --	4. VERIFY (Object1), P1 = (the value used in step 2)
+
+  -- Step #1: Verify (read) the priority array for the Analog Output object
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Priority-Array
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Priority-Array
+      OpenTag 3
+        AL = {Priority-Array}
+      CloseTag 3                                   
+    )
+
+  -- Steps #2 and #3: Write new 'priority array' property value and receive a simple 
+  -- acknowledgement OR an error if the property is not writable
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT_2
+      Property = 1, Priority-Array		-- array length = 16
+      UNSIGNED 2, 0				-- Array Index 0, priority = 1
+      OpenTag 3
+        INTEGER = 1
+      CloseTag 3
+      UNSIGNED 2, 1				-- Array Index 1, Priority = 2, etc
+      OpenTag 3
+        INTEGER = 2
+      CloseTag 3
+      UNSIGNED 2, 2
+      OpenTag 3				    
+        INTEGER = 3
+      CloseTag 3
+      UNSIGNED 2, 3
+      OpenTag 3				   
+        INTEGER = 4
+      CloseTag 3
+      UNSIGNED 2, 4			    
+      OpenTag 3
+        INTEGER = 5
+      CloseTag 3
+      UNSIGNED 2, 5			    
+      OpenTag 3
+        INTEGER = 6
+      CloseTag 3
+      UNSIGNED 2, 6			    
+      OpenTag 3
+        INTEGER = 7
+      CloseTag 3
+      UNSIGNED 2, 7			    
+      OpenTag 3
+        INTEGER = 8
+      CloseTag 3
+      UNSIGNED 2, 8			    
+      OpenTag 3
+        INTEGER = 9
+      CloseTag 3
+      UNSIGNED 2, 9			    
+      OpenTag 3
+        INTEGER = 10
+      CloseTag 3
+      UNSIGNED 2, 10			    
+      OpenTag 3
+        INTEGER = 11
+      CloseTag 3
+      UNSIGNED 2, 11			    
+      OpenTag 3
+        INTEGER = 12
+      CloseTag 3
+      UNSIGNED 2, 12			    
+      OpenTag 3
+        INTEGER = 13
+      CloseTag 3
+      UNSIGNED 2, 13			    
+      OpenTag 3
+        INTEGER = 14
+      CloseTag 3
+      UNSIGNED 2, 14			    
+      OpenTag 3
+        INTEGER = 15
+      CloseTag 3
+      UNSIGNED 2, 15			    
+      OpenTag 3
+        INTEGER = 16
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+    OR (
+      NETWORK = NET_1				
+      DER = FALSE
+      PDU = Error
+      ERROR-CHOICE = WriteProperty
+      ENUMERATED = ERROR_CLASS			-- class = Property
+      ENUMERATED = ERROR_CODE			-- code = WRITE_ACCESS_DENIED
+    )
+
+  -- Step #4: Verify the value written to the IUT
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Priority-Array
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Priority-Array
+      OpenTag 3
+        AL = {Priority-Array}
+      CloseTag 3                                   
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1g
+  -- Writing a Single Element of an Array
+
+  DEPENDENCIES None
+
+  REFERENCE (B) 15.9 WriteProperty Service and (T) 9.19.1.7 Writing a Single Element of an Array
+
+  -- Test Steps:
+  --	1. VERIFY (Object1), P1 = (the value defined for this property in the EPICS)
+  --	2. TRANSMIT WriteProperty-Request,
+  --		'Object Identifier' = Object1,
+  --		'Property Identifier' = P1,
+  --		'Property Array Index' = (any value N : 1 £ N £ the size of the array)
+  --		'Property Value' = (any value of the correct datatype for this array except the value 
+  --		verified for this element in step 1).
+  --	3. RECEIVE Simple-ACK-PDU
+  --	4. VERIFY (Object1), P1 = (the value used in step 2), ARRAY INDEX = N
+ 
+  -- Step #1: Verify (read) the priority array for the Analog Output object
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Priority-Array
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Priority-Array
+      OpenTag 3
+        AL = {Priority-Array}
+      CloseTag 3                                   
+    )
+
+  -- Steps #2 and #3: Write new 'priority array' property value and receive a simple 
+  -- acknowledgement OR an error if the property is not writable
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT_2
+      Property = 1, Priority-Array		 
+      UNSIGNED 2, 1				-- Array Index 1, priority = 15
+      OpenTag 3
+        INTEGER = 15
+      CloseTag 3
+    )
+  
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+    OR (
+      NETWORK = NET_1				
+      DER = FALSE
+      PDU = Error
+      ERROR-CHOICE = WriteProperty
+      ENUMERATED = ERROR_CLASS			-- class = Property
+      ENUMERATED = ERROR_CODE			-- code = WRITE_ACCESS_DENIED
+    )
+
+  -- Step #4: Verify the value written to the IUT
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Priority-Array
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Priority-Array
+      OpenTag 3
+        AL = {Priority-Array}
+      CloseTag 3                                   
+    )
+
+  ;------------------------------------------------------------------
+  TEST #1h
+  -- Writing a Commandable Property Without a Priority
+
+  DEPENDENCIES None
+
+  REFERENCE (B) 15.9 WriteProperty Service and (T) 9.19.1.8 Writing a Commandable Property Without a Priority
+
+  -- Test Steps:
+  --	1. VERIFY (Object1), Priority_Array =(the value defined for this property in the EPICS), ARRAY INDEX = 16
+  --	2. TRANSMIT WriteProperty-Request,
+  --		'Object Identifier' = Object1,
+  --		'Property Identifier' = Present_Value,
+  --		'Property Value' = (any value of the correct datatype for this property subject to the 
+  --		restrictions specified in the EPICS as defined in 4.4.2, except the value verified in step 1)
+  --	3. RECEIVE Simple-ACK-PDU
+  --	4. VERIFY (Object1), Priority_Array = (the value used in step 2), ARRAY INDEX = 16
+
+  -- Step #1: Verify (read) the ???? for the ????? object
+
+  -- <<No commandable properties in DCU050>>
+
+  -- Steps #2 and #3: Write new 'priority array' property value and receive a simple 
+  -- acknowledgement OR an error if the property is not writable
+
+  -- <<No commandable properties in DCU050>>
+
+  -- Step #4: Verify the value written to the IUT
+
+  -- <<No commandable properties in DCU050>>
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1i
+  -- Writing Bitstring Values
+
+  DEPENDENCIES None
+
+  REFERENCE (B) 15.9 WriteProperty Service and (T) 9.19.1.9 Writing Bitstring Values
+
+  -- Test Steps:
+  --	1. VERIFY (Object1), P1 = (the value defined for this property in the EPICS)
+  --	2. TRANSMIT WriteProperty-Request,
+  --		'Object Identifier' = Object1,
+  --		'Property Identifier' = P1,
+  --		'Property Value' = (any Bitstring value defined for this property subject to the 
+  --		restrictions specified in the EPICS as defined in 4.4.2, except the value verified in step 1)
+  --	3. RECEIVE Simple-ACK-PDU
+  -- 4. VERIFY (Object1), P1 = (the value used in step 2)
+
+  -- Step #1: Verify (read) the status flags property for the Analog Output object
+    
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Status-Flags
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Status-Flags
+      OpenTag 3
+        AL = {Status-Flags}			
+      CloseTag 3                                   
+    )
+  
+  -- Steps #2 and #3: Write new status flags and receive a simple 
+  -- acknowledgement OR an error if the property is not writable
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT_2
+      Property = 1, Status-Flags
+      OpenTag 3
+   BITSTRING = T,F,T,F
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+    OR (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = Error
+      ERROR-CHOICE = WriteProperty
+      ENUMERATED = ERROR_CLASS			-- class = Property
+      ENUMERATED = ERROR_CODE			-- code = WRITE_ACCESS_DENIED
+    )
+
+  -- Step #4: Verify the value written to the IUT
+
+    SEND (
+      NETWORK = NET_1
+      DESTINATION = IUT_MAC
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Status-Flags
+    )
+
+    EXPECT (
+      NETWORK = NET_1
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT_2
+      Property = 1, Status-Flags
+      OpenTag 3
+        AL = {Status-Flags}			
+      CloseTag 3                                   
+    )
+

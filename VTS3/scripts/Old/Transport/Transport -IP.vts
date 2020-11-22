@@ -1,0 +1,1409 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Transport Service Execution Tests
+  ;    Draft
+  ;  TRANSPORT yymmdd.vts
+  ;  Ver 1         10/19/01        Bradsp          Initial version  
+  ;  
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and "(T)" refers 
+  ;	to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  SETUP Positive ReadProperty Tests
+   IUT_IP = 10.10.10.100:0xBAC0
+   TD_IP  = 10.10.10.36:0XBAC0 
+  
+   OBJECT1 = Device, 1967	; DEVICE OBJECT
+   OBJECT2 = analog-input, 1	; Object which is the subject of the Read Prop tests
+   OBJECT3 = analog-VALUE, 1	; Object which is the subject of the Read Prop tests
+   OBJECT4 = File, 104		; Object which is the subject of the Read Prop tests
+   OBJECT5 = analog-output,1
+   OBJECT6 = schedule,1
+   
+   INDEX0 = 0		; Index used in any test to read array length
+   INDEX1 = 1		; Array index for test #1g "Read a Single Element of an Array"
+   INDEX2 = 2		; Array index for test #1j "Read Property - Read Null Values"
+   INDEX3 = 3
+   INDEX4 = 4
+   
+   EVENT_ID = EVENT-ENROLLMENT, 1  
+   EVENT_STATE_HILIMIT = 3   
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------MISC-------------------------------------------------
+ -- TEST #A READPROPERTY INCONSISTANT TEST 13.4.1 REFERENCES (T)9.15.2.1
+ -- TEST #B - Writting with a Property Value Having the Wrong Datatype
+ -- TEST #C - READING WITH AN INVALID TAG
+ -- TEST #D - MISSING REQUIRED PARAMETER
+ -- TEST #E - TOO MANY PARAMETER
+ -- TEST #F - Processing Application Layer Messages Originating from Remote Networks 10.1 (remove BODY comments before running this test. - DO NOT CHANE THE DA,DNET AND DADR)
+ -- TEST #G - 13.1.X.2  DT doesn’t support segmented response (THIS TEST IS THE LAST TEST IN THIS SCRIPT) tURN SEGMENTATION SEND(DEBUG)
+
+
+
+ -------------------------------------------------UNCONFIRMED-------------------------------------------------
+ -- 1 Who-Is Unconfirmed Services that are not supported MANUALLY VERIFY THAT THE DEVICE DID NOT RESPOND (ALL UNCONFIRMED SERVICE TESTS IN THIS SECTION RUN AS ONE TEST WITHIN THIS SCRIPT.)
+ -- 2 Who-Has Unconfirmed Services that are not supported
+ -- 3 TimeSynchronization Unconfirmed Services that are not supported
+ -- 4 UNCONFIRMEDTEXTMESSAGE Unconfirmed Services that are not supported
+ -- 5 ***DEBUG UNCONFIRMEDEVENTNOTIFICATION Unconfirmed Services that are not supported
+ -- 6 UNCONFIRMEDCOVNOTIFICATION Unconfirmed Services that are not supported
+ -- 7 I-HAVE Unconfirmed Services that are not supported
+ -- 8 I-AM Unconfirmed Services that are not supported
+
+
+---------------------------------------------------CONFIRMED---------------------------------------------------
+ 
+ -- ALARM AND EVENT SERVICES
+ -- 0 ACKNOWLEDGE ALARM confirmed Services that are not supported (OK)
+ -- 1 CONFIRMEDCOVNOTIFICATION confirmed Services that are not supported (OK)
+ -- 2 CONFIRMEDEVENTNOTIFICATION confirmed Services that are not supported 
+ -- 3 GETALARM confirmed Services that are not supported  (OK)
+ -- 4 GETENROLLMENTSUMMARY confirmed Services that are not supported (OK)
+ -- 5 SUBSCRIBECOV confirmed Services that are not supported (OK)
+
+ -- FILE ACCESS SERVICES
+ -- 6 ATOMICREADFILE confirmed Services that are not supported  (OK)
+ -- 7 ATOMICWRITEFILE confirmed Services that are not supported 
+
+ -- OBJECT ACCESS SERVICES
+ -- 8 ADDLISTELEMENT confirmed Services that are not supported  (OK)
+ -- 9 REMOVELISTELEMENT confirmed Services that are not supported  (OK)
+ -- 10 CREATEOBJECT confirmed Services that are not supported  (OK)
+ -- 11 DELETEOBJECT confirmed Services that are not supported  (OK)
+ -- 12 READPROPERTY confirmed Services that are not supported  (OK)
+ -- 13 READPROPERTYCONDITIONAL confirmed Services that are not supported  (OK)
+ -- 14 READPROPERTYMULTIPLE confirmed Services that are not supported  (OK)
+ -- 15 WRITEPROPERTY confirmed Services that are not supported DEBUG (OK)
+ -- 16 WRITEPROPERTYMULTIPLE confirmed Services that are not supported  (OK)
+
+ -- REMOTE DEVICE MANAGEMENT
+ -- 17 DEVICECOMMUNICATIONCONTROL confirmed Services that are not supported DEBUG (OK)
+ -- 18 CONFIRMEDPRIVATETRANSFER confirmed Services that are not supported DEBUG (OK)
+ -- 19 CONFIRMEDTEXTMESSAGE confirmed Services that are not supported DEBUG (OK)
+ -- 20 REINITIALIZEDEVICE confirmed Services that are not supported DEBUG (OK)
+
+ -- VIRTUAL TERMINAL SERVICES
+ -- 21 VTOPEN confirmed Services that are not supported DEBUG (OK)
+ -- 22 VTCLOSE confirmed Services that are not supported DEBUG (OK)
+ -- 23 VTDATA confirmed Services that are not supported DEBUG (OK)
+
+ -- SECURITY SERVICES
+ -- 24 AUTHENTICATE confirmed Services that are not supported DEBUG (OK)
+ -- 25 REQUESTKEY confirmed Services that are not supported DEBUG (OK) 
+;--------------------------------------------------------------------------------------
+ SECTION ReadProperty Service Execution Tests
+;-------------------------------------------------------------------------------------
+TEST #A READPROPERTY INCONSISTANT TEST 13.4.1 REFERENCES (T)9.15.2.1
+  --- This test case verifies that the IUT can execute ReadProperty Service Request
+  --- when the requested property value is not an arry but an array index is
+  --- inculded in the service request.
+
+
+DEPENDENCIES none
+ 
+REFERENCE 13.4.2  SUBREF (B)15.5,15.5.1.1.1; (T)9.15.2.1
+
+SEND (
+  NETWORK     = "Untitled"
+  DA = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER    = True
+  PDU    = Confirmed_Request
+  SegMsg = 0
+  SegResp = 0
+  MaxResp =1476
+  InvokeID = 1
+  SERVICE     = ReadProperty
+  OBJECT = 0, OBJECT2           
+  PROPERTY    = 1, present-value           ; (Device-model_Name or other property that is not an array)
+  Unsigned    = 2, 9			; Array[1] reads array one
+  )
+
+EXPECT  (
+  NETWORK     = "Untitled"
+  Sa = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU 
+  DER         = FALSE
+  PDU = REJECT
+  Reject-Reason = 2       ;inconsistant-parameters
+    ) 
+
+OR(
+  NETWORK     = "Untitled"
+  DER         = FALSE
+  Sa = IUT_IP
+  PDU         = ERROR
+  ERROR-CHoice = ReadProperty
+  ENUMERATED = 2                      ;  5 = error class services  pg 363 in the bacnet standard
+  ENUMERATED = 42	              ;  42 = invaid array index 
+    ) 
+
+
+;--------------------------------------------------------------------------------------
+TEST #B - Writting with a Property Value Having the Wrong Datatype
+
+   --- This test case verifies that the IUT correctly responds to an attempt to write
+   --- a property value that has an invalid datatype.
+
+DEPENDENCIES None
+ 
+REFERENCE (B) 13.4.2   SUBREF WriteProperty Service and (T)9.19.2.3
+
+SEND (
+  NETWORK     = "Untitled"
+  DA = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER    = True
+  PDU    = Confirmed_Request
+  SegMsg = 0
+  SegResp = 0
+  MaxResp =1476
+  InvokeID = 2
+  SERVICE     = WriteProperty
+  OBJECT = 0, OBJECT2           
+  PROPERTY    = 1, present-value           
+  OPENTAG 3
+       BOOLEAN            = 1              ; USE INCORRECT DATATYPE
+  CLOSETAG 3
+  )
+
+EXPECT  (
+  NETWORK     = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER         = FALSE
+  PDU         = ERROR
+  ERROR-CHoice = WriteProperty
+  ENUMERATED = 2                       ; Property
+  ENUMERATED = 9	               ;  9 = invalid_datatype_type
+    ) 
+
+OR(
+  NETWORK     = "Untitled"
+  Sa = IUT_IP
+  DER         = FALSE
+  PDU         = reject
+  Reject-Reason =  3       ; INVALID_PARAMETER_DATATYPE
+  ) 
+;--------------------------------------------------------------------------------------
+TEST #C - READING WITH AN INVALID TAG
+
+ -- PURPOSE THIS TEST CASE VERIFIES THAT THE IUT CORRECTLY RESPONDS TO A MESSAGE CONTAINING AN INVALID TAG
+
+DEPENDENCIES None
+ 
+REFERENCE (B) 13.4.3   
+
+SEND (
+  NETWORK     = "Untitled"
+  DA = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER    = True
+  PDU    = Confirmed_Request
+  SegMsg = 0
+  SegResp = 0
+  MaxResp =1476
+  InvokeID = 3
+  SERVICE     = ReadProperty
+  OBJECT = 0, OBJECT2           
+  PROPERTY    = 7, present-value           
+  )
+
+EXPECT(
+  NETWORK  = "Untitled"
+  Sa = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER  = FALSE
+  PDU  = reject
+  Reject-Reason =  5    ;missing-required-parameter
+  ) 
+;--------------------------------------------------------------------------------------
+TEST #D - MISSING REQUIRED PARAMETER
+
+ -- PURPOSE THIS TEST CASE VERIFIES THAT THE IUT CORRECTLY RESPONDS TO A MESSAGE MISSING REQUIRED PARAMS
+
+DEPENDENCIES None
+ 
+REFERENCE (B) 13.4.4   
+
+SEND (
+  NETWORK     = "Untitled"
+  DA = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER    = True
+  PDU    = Confirmed_Request
+  SegMsg = 0
+  SegResp = 0
+  MaxResp =1476
+  InvokeID = 4
+  SERVICE     = ReadProperty
+  OBJECT = 0, OBJECT2           
+  )
+
+EXPECT(
+  NETWORK  = "Untitled"
+  Sa = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER  = FALSE
+  PDU  = reject
+  Reject-Reason =  5
+  ) 
+;--------------------------------------------------------------------------------------
+TEST #E - TOO MANY  Parms
+
+ -- PURPOSE THIS TEST CASE VERIFIES THAT THE IUT CORRECTLY RESPONDS TO A MESSAGE MISSING REQUIRED PARAMS
+
+DEPENDENCIES None
+ 
+REFERENCE (B) 13.4.4   
+
+
+SEND (
+  NETWORK     = "Untitled"
+  DA = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER    = True
+  PDU    = Confirmed_Request
+  SegMsg = 0
+  SegResp = 0
+  MaxResp =1476
+  InvokeID = 5
+  SERVICE     = ReadProperty
+  OBJECT = 0, OBJECT1
+  PROPERTY    = 1, model-name 
+  PROPERTY    = 1, model-name            
+  )
+
+EXPECT(
+  NETWORK  = "Untitled"
+  Sa = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER  = FALSE
+  PDU  = reject
+  Reject-Reason =  7           ;too-many-arguments
+  ) 
+;--------------------------------------------------------------------------------------
+TEST #E1 - TOO MANY &Wrong Application Tag
+
+ -- PURPOSE THIS TEST CASE VERIFIES THAT THE IUT CORRECTLY RESPONDS TO A MESSAGE MISSING REQUIRED PARAMS
+
+DEPENDENCIES None
+ 
+REFERENCE (B) 13.4.4   
+
+
+SEND (
+  NETWORK     = "Untitled"
+  DA = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER    = True
+  PDU    = Confirmed_Request
+  SegMsg = 0
+  SegResp = 0
+  MaxResp =1476
+  InvokeID = 6
+  SERVICE     = ReadProperty
+  OBJECT = 0, OBJECT1
+  PROPERTY    = 1, model-name 
+  PROPERTY    = 9, model-name            
+  )
+
+EXPECT(
+  NETWORK  = "Untitled"
+  Sa = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER  = FALSE
+  PDU  = reject
+  Reject-Reason =  7
+  ) 
+;--------------------------------------------------------------------------------------
+TEST #E2 - Read Modle-Name Property Correctly
+
+ -- PURPOSE THIS TEST CASE VERIFIES THAT THE IUT CORRECTLY RESPONDS TO A MESSAGE MISSING REQUIRED PARAMS
+
+DEPENDENCIES None
+ 
+REFERENCE (B) 13.4.4   
+
+SEND (
+  NETWORK     = "Untitled"
+  DA = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER    = True
+  PDU    = Confirmed_Request
+  SegMsg = 0
+  SegResp = 0
+  MaxResp =1476
+  InvokeID = 7
+  SERVICE     = ReadProperty
+  OBJECT = 0, OBJECT1
+  PROPERTY    = 1, model-name 
+  )
+
+EXPECT(
+  NETWORK  = "Untitled"
+  Sa = IUT_IP
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  DER  = FALSE
+  PDU  = ComplexAck
+  Service = ReadProperty
+  OBJECT  = 0,OBJECT1 
+  PROPERTY    = 1, model-name 
+  OpenTag 3
+    AL= {Model-Name}
+  CloseTag 3
+  ) 
+
+-------------------------------------------------------------------------------------------------------------
+-----------------------------------------------CONFIRMED-----------------------------------------------------
+
+
+-- Purpose: This test case verifies that the IUT will reject any confirmed services that it does not support.
+
+  -- TEST #2 - 9.X.1  Unsupported Confirmed Services Test
+
+ --    1.	REPEAT X = (all confirmed services that the IUT does not execute) DO {
+ --		TRANSMIT X
+ --		RECEIVE BACnet-Reject-PDU,
+ --			'Reject Reason' =			UNRECOGNIZED_SERVICE	
+
+-- ALARM AND EVENT SERVICES --
+;--------------------------------------------------------------------------------------
+ TEST #0 ACKNOWLEDGE ALARM confirmed Services that are not supported 
+
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      Service = AcknowledgeAlarm
+      InvokeID = 0
+      UNSIGNED = 0, 2                    ; ack process id
+      OBJECTIDENTIFIER = 1, OBJECT1  ; even obj id
+      ENUMERATED = 2, 3                  ; eventstate ack
+      OpenTag 3
+       TIME = 0,18:10:17.00            
+      CloseTag 3
+      CHARACTERSTRING =4,ANSI, "AAA"
+      OpenTag 5 
+       TIME = 0,18:10:17.00  ; OR 1 UNSIGNED
+      CloseTag 5 
+       )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Reject                ; 6 = Reject-PDU
+  REJECT-REASON = 9
+  )
+;--------------------------------------------------------------------------------------
+ TEST #1 CONFIRMEDCOVNOTIFICATION confirmed Services that are not supported 
+
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      Service = ConfirmedCOVNotification
+      InvokeID = 1
+      UNSIGNED = 0, 1
+      OBJECTIDENTIFIER = 1, OBJECT1
+      OBJECTIDENTIFIER = 2, OBJECT1
+      UNSIGNED = 3, 3
+      OPENTAG 4
+       ENUMERATED = 0, 58
+       OpenTag 2
+        CHARACTERSTRING = ANSI, "AAA"
+       CloseTag 2
+      CLOSETAG 4
+       )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Error                
+  Error-Choice = ConfirmedCOVNotification
+  Enum = 5
+  Enum = 0
+  )
+;--------------------------------------------------------------------------------------
+TEST #2 CONFIRMEDEVENTNOTIFICATION confirmed Services that are not supported DEBUG
+
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      Service = ConfirmedEventNotification
+      InvokeID = 2
+      UNSIGNED = 0, 1
+      OBJECTIDENTIFIER = 1, OBJECT1
+      OBJECTIDENTIFIER = 2, OBJECT2
+      OPENTAG 3
+       TIME = 0,18:10:17.00
+      CLOSETAG 3
+      UNSIGNED = 4, 1
+      UNSIGNED =5,1
+      ENUMERATED =6,1
+      ENUMERATED = 8, 0
+      BOOLEAN = 9, 1
+      ENUMERATED = 10, 1
+      ENUMERATED = 11, 2   ; TO STATE
+      OPENTAG 12
+        OPENTAG 1
+	  OPENTAG 0
+            BOOLEAN 0, 1
+	  CLOSETAG 0
+	
+            BITSTRING 1, T,T,T,T
+	  
+	  CLOSETAG 1
+      CLOSETAG 12
+     )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Error                
+  Error-Choice = ConfirmedEventNotification
+  Enum = 5
+  Enum = 0
+  )
+  
+ ;--------------------------------------------------------------------------------------
+ TEST #3 GETALARMSUMMARY confirmed Services that are not supported 
+
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      Service = GETALARMSUMMARY
+      InvokeID = 3
+      )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = SimpleAck
+  )
+;--------------------------------------------------------------------------------------
+TEST #4 GETENROLLMENTSUMMARY confirmed Services that are not supported
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      Service = GETENROLLMENTSUMMARY
+      InvokeID = 4
+      ENUMERATED = 0, 1
+      -- OPENTAG 1
+      --  OPENTAG 0
+      --    OBJECTIDENTIFIER = 0, OBJECT1
+      --	  UNSIGNED = 1, 1
+      --	CLOSETAG 0
+      --  CLOSETAG 1
+      )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Reject
+  Reject-Reason = Unrecognized-Service
+  )
+;--------------------------------------------------------------------------------------
+TEST #5 SUBSCRIBECOV confirmed Services that are not supported 
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 5
+      Service = SUBSCRIBECOV
+      UNSIGNED = 0, 1
+      OBJECTIDENTIFIER = 1, OBJECT1
+      BOOLEAN = 2, 1
+      UNSIGNED = 3, 1
+      )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = error
+  error-choice = SubscribeCOV
+  Enum = 1       ;Error Class:Object
+  Enum = 0       ;Error Code: other
+  )
+;--------------------------------------------------------------------------------------
+ TEST #6 ATOMICREADFILE confirmed Services that are not supported 
+
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 6
+      Service = ATOMICREADFILE
+      OBJECT =OBJECT1
+      OPENTAG 1
+        
+        ;INTEGER = -177, 100
+        INTEGER = 100
+        UNSIGNED = 555
+      CLOSETAG 1
+      )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Reject
+  Reject-Reason = Unrecognized-Service
+  )
+;--------------------------------------------------------------------------------------
+TEST #7 ATOMICWRITEFILE confirmed Services that are not supported 
+
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 7
+      Service = ATOMICWRITEFILE
+      OBJECT = OBJECT1
+      OpenTag 0
+        INTEGER   =  177     
+        OCTETSTRING = X'ff'
+      CloseTag 0 
+         )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Reject
+  Reject-Reason = Unrecognized-Service
+  )
+;--------------------------------------------------------------------------------------
+TEST #8 ADDLISTELEMENT confirmed Services that are not supported 
+
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 8
+      Service = ADDLISTELEMENT
+      OBJECT = 0, OBJECT6
+      ENUMERATED = 1, 54
+      Unsigned = 2,1
+      OPENTAG 3
+       OBJECT = 0,OBJECT3
+       OpenTag 1
+        Enumerated =0,85
+       CloseTag 1
+      CLOSETAG 3
+      )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Error
+  Error-Choice = ADDLISTELEMENT
+OpenTag 0
+   Enum = 20 
+   Enum = 0
+ CloseTag 0
+ Unsigned=1,0
+   )
+;--------------------------------------------------------------------------------------
+TEST #9 REMOVELISTELEMENT confirmed Services that are not supported 
+
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 9
+      Service = REMOVELISTELEMENT
+      OBJECT = 0, OBJECT6
+      ENUMERATED = 1, 54
+      Unsigned = 2,1
+      OPENTAG 3
+       OBJECT = 0,OBJECT3
+       OpenTag 1
+        Enumerated =0,85
+       CloseTag 1
+      CLOSETAG 3
+      )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Error
+  Error-Choice = REMOVELISTELEMENT
+  OpenTag 0
+   Enum = 20 
+   Enum = 0
+ CloseTag 0
+ Unsigned=1,0
+   )
+;--------------------------------------------------------------------------------------
+TEST #10 CREATEOBJECT confirmed Services that are not supported
+
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 10
+      Service = CREATEOBJECT
+      OpenTag 0
+      Object = 1, ANALOG-INPUT, 54             ; MANUAL BY OBJECT IDENTIFIER
+      CloseTag 0
+      )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+ PDU = Reject
+ Reject-Reason = Unrecognized-Service
+   )
+;--------------------------------------------------------------------------------------
+TEST #11 DELETEOBJECT confirmed Services that are not supported
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 11
+      Service = DELETEOBJECT
+      Object = ANALOG-INPUT, 54             ; MANUAL BY OBJECT IDENTIFIER
+      )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+ PDU = Reject
+ Reject-Reason = Unrecognized-Service
+   )
+
+;--------------------------------------------------------------------------------------
+TEST #12 READPROPERTY confirmed Services that are not supported
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 12
+      Service = ReadProperty
+      Object = 0, ANALOG-INPUT ,100
+      Property = 1, Object-Identifier	; Type BACnetObjectIdentifier      
+    )
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Error
+  Error-Choice =ReadProperty
+  Enum = 1
+  Enum = 31
+   )
+;--------------------------------------------------------------------------------------
+ TEST #13 READPROPERTYCONDITIONAL confirmed Services that are not supported  
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 13
+      Service = ReadPropertyCONDITIONAL
+      OPENTAG 0
+       ENUMERATED = 0,0   ;logic operator:and/or/all
+       OPENTAG 1
+         ENUMERATED = 0, 58     ; PROP--Location
+         ENUMERATED = 2, 0      ; RELATION SPECIFIER--'='
+         OpenTag 3 
+          CHARACTERSTRING =ANSI,"AAA"
+         CloseTag 3
+       CLOSETAG 1
+      CLOSETAG 0
+     )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Reject
+  Reject-Reason = Unrecognized-Service
+   )
+;--------------------------------------------------------------------------------------
+ TEST #14 READPROPERTYMULTIPLE confirmed Services that are not supported  (OK)
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 14
+      Service = READPROPERTYMULTIPLE
+      Object = 0, ANALOG-INPUT, 100
+      OPENTAG 1
+        ENUMERATED = 0, 58
+      CLOSETAG 1
+       Object = 0, ANALOG-INPUT, 100
+      OPENTAG 1
+       ENUMERATED = 0, 58
+      CLOSETAG 1
+     )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Error
+  Error-Choice =READPROPERTYMULTIPLE
+  Enum = 5         ;object
+  Enum = 0        ;Uknown Object
+   )
+
+;--------------------------------------------------------------------------------------
+  TEST #15 WRITEPROPERTY confirmed Services that are not supported  
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 15
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, Object-Identifier
+    OpenTag 3
+      ObjectIdentifier = ANALOG-INPUT, 71	
+    CloseTag 3		
+     )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Error
+  Error-Choice =WriteProperty
+  Enum = 2     ;Property
+  Enum = 40   ;write-access-denied
+   )
+;--------------------------------------------------------------------------------------
+ TEST #16 WRITEPROPERTYMULTIPLE confirmed Services that are not supported  (OK)
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 16
+      Service = WritePropertyMultiple
+      Object = 0, ANALOG-INPUT, 44
+      OpenTag 1
+        Property = 0, Relinquish-Default
+        OpenTag 2
+           REAL = 22		; 
+        CloseTag 2
+      CloseTag 1                                   
+     )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = Error
+  Error-Choice =WritePropertyMultiple
+ OpenTag 0
+   Enum = 1
+   Enum = 31
+ CloseTag 0
+ OpenTag 1
+ Object = 0,analog-input,44
+ Property = 1,104
+ CloseTag 1
+   )
+------------------------------------------------------------------------
+---------------------------REMOTE DEVICE MANAGEMENT-----------------------
+;--------------------------------------------------------------------------------------
+ TEST #17 DEVICECOMMUNICATIONCONTROL confirmed Services that are not supported 
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 17
+      Service = DeviceCommunicationControl
+      UNSIGNED = 0,0
+      ENUMERATED = 1, 0                        ; ENABLE(0)/DIASABLE(1) (Device is Enabled)
+      CHARACTERSTRING = 2,ANSI, "PASSWORD"                   ; PASSWORD (Device should ignore if it does not support passwords)			 
+     )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = FALSE
+  PDU = SimpleAck
+)
+ ;--------------------------------------------------------------------------------------
+ TEST #18 CONFIRMEDPRIVATETRANSFER confirmed Services that are not supported  (OK)
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 18
+      Service = CONFIRMEDPRIVATETRANSFER
+      UNSIGNED = 0, 0                        ;VendorID,Unsigned
+      UNSIGNED = 1, 0                        ;ServiceNumber,Unsigned
+                                             ;resultBlock,ABSTRACT-Syntax&Type --Optional
+     )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = False
+  PDU = Reject
+  Reject-Reason = UnRecognized-Service
+   )
+;--------------------------------------------------------------------------------------
+ TEST #19 CONFIRMEDTEXTMESSAGE confirmed Services that are not supported  (OK)
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 19
+      Service = CONFIRMEDTEXTMESSAGE
+      ObjectIdentifier = 0, ANALOG-INPUT, 71	; 
+      ENUMERATED = 2, 0                                  ;message Priority:Normal/Urgent--0/1
+      CHARACTERSTRING = 3,ANSI, "AAA"
+     )
+
+ EXPECT (
+  NETWORK = "Untitled"
+  BVLCI = ORIGINAL-UNICAST-NPDU
+  Sa = IUT_IP
+  DER = False
+  PDU = Reject
+  Reject-Reason = UnRecognized-Service
+   )
+   
+;--------------------------------------------------------------------------------------
+ TEST #20 REINITIALIZEDEVICE confirmed Services that are not supported 
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 20
+          Service = ReinitializeDevice
+      ENUM = 0, 0			; Request a coldstart, no password
+     )
+
+   EXPECT (
+   NETWORK = "Untitled"
+   BVLCI = ORIGINAL-UNICAST-NPDU
+   Sa = IUT_IP
+   DER = False
+   PDU = Reject
+   Reject-Reason = UnRecognized-Service
+   )
+------------------------------------------------------------------------
+---------------------------VIRTUAL TERMINAL SERVICES--------------------
+;--------------------------------------------------------------------------------------
+  TEST #21 VTOPEN confirmed Services that are not supported  (OK)
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 21
+      Service = VTOPEN
+      ENUMERATED 1            ;VTClass--BACnetVTClass
+      UNSIGNED8 = 2           ;localVTSessionIdentifier,Unsigned8
+
+     )
+
+   EXPECT (
+   NETWORK = "Untitled"
+   BVLCI = ORIGINAL-UNICAST-NPDU
+   Sa = IUT_IP
+   DER = False
+   PDU = Reject
+   Reject-Reason = UnRecognized-Service
+   )
+;--------------------------------------------------------------------------------------
+  TEST #22 VTCLOSE confirmed Services that are not supported  (OK)
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 22
+      Service = VTCLOSE
+      UNSIGNED8 = 2    ;listOfRemoteVTSessionIdentifier, SEQUENCE OF Usigned8
+
+     )
+
+   EXPECT (
+   NETWORK = "Untitled"
+   BVLCI = ORIGINAL-UNICAST-NPDU
+   Sa = IUT_IP
+   DER = False
+   PDU = Reject
+   Reject-Reason = UnRecognized-Service
+   )
+;--------------------------------------------------------------------------------------
+TEST #23 VTDATA confirmed Services that are not supported  (OK)   
+  SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 23
+      Service = VTDATA
+      UNSIGNED8 = 2                       ;vtSessionIdentifier,Unsigned8;
+      OCTETSTRING =X'230230AF32'         ;vtNewData,OCTET STRING;
+      UNSIGNED = 0                        ;vtDataFlag,Unsigned(0..1)
+
+     )
+
+   EXPECT (
+   NETWORK = "Untitled"
+   BVLCI = ORIGINAL-UNICAST-NPDU
+   Sa = IUT_IP
+   DER = False
+   PDU = Reject
+   Reject-Reason = UnRecognized-Service
+   )
+;--------------------------------------------------------------------------------------
+TEST #24 AUTHENTICATE confirmed Services that are not supported  (OK)
+  SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 24
+      Service = AUTHENTICATE
+      UNSIGNED =0, 12345678           ;pseudoRandomNumber,Unsigned32
+      UNSIGNED =1, 12                ;expectInvokeID,Unsigned8 --OPTIONAL
+      CHARACTERSTRING = 2, ANSI,"XLP"         ;operatorName,CharacterSting --OPTIONAL
+      CHARACTERSTRING = 3, ANSI,"TEST"         ;operatorPassword,CharacterString(SIZE(1..20))--OPTIONAL
+      BOOLEAN = 4,1                     ;startEnciphereSession,BOOLEAN --OPTIONAL
+     )
+
+   EXPECT (
+   NETWORK = "Untitled"
+   BVLCI = ORIGINAL-UNICAST-NPDU
+   Sa = IUT_IP
+   DER = False
+   PDU = Reject
+   Reject-Reason = UnRecognized-Service
+   )
+;--------------------------------------------------------------------------------------
+TEST #25 REQUESTKEY confirmed Services that are not supported (OK)
+  SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 25
+      Service = RequestKey                  ;25  
+      OBJECTIDENTIFIER =OBJECT1                   ; RequestingDeviceIdentifier
+      UNSIGNED = 12                    ; RequestingDeviceADDRESS1
+      OCTETSTRING = X'230230AF32'        ; ADDRESS1
+      OBJECTIDENTIFIER =OBJECT2                   ; RemoteDeviceIdentifier
+      UNSIGNED = 12                    ; RemoteDeviceADDRESS2
+      OCTETSTRING = X'230230AF32'        ; ADDRESS2
+     )
+
+   EXPECT (
+   NETWORK = "Untitled"
+   BVLCI = ORIGINAL-UNICAST-NPDU
+   Sa = IUT_IP
+   DER = False
+   PDU = Reject
+   Reject-Reason = UnRecognized-Service
+   )
+;--------------------------------------------------------------------------------------
+TEST #G - 13.1.X.2  DT doesn't support segmented response
+
+-- Test Concept: The TD uses ReadPropertyMultiple to ask for more data than can fit in a single
+-- segment.  The TD also specifies that the smallest (50 octet) segment size be used for the 
+--response.   The data which is requested is the Object_Identifier property of the Device 
+--object of the IUT.  The number of copies of the data that is requested is one more than the 
+--maximum number which would fit in a segment, calculated as in 9.17.1.X2 Reading Maximum 
+--Multiple properties:
+-- MaxPropsPerResp = ( MaxAPDU – NonSegRespHdrSize – ObjIdSize – TagsSize ) 
+--		/ ( PropIdSize + TagsSize + ObjIdSize )
+-- N = MaxPropsPerResp+1 = 5
+-- Configuration Requirements:  The IUT supports execution of the ReadPropertyMultiple service, and supports transmission of segmented responses.
+
+Dependencies None
+Reference 5.4.5.3
+-- Purpose: This test case verifies that the IUT returns the correct abort message when the requester does not support segmented responses 
+-- and a response would be larger than 1 segment.  
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 50
+      InvokeID = 26 
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1
+OpenTag 1
+Property = 0, Object-Identifier	;1
+Property = 0, Object-Identifier	;2
+Property = 0, Object-Identifier	;3
+Property = 0, Object-Identifier	;4
+Property = 0, Object-Identifier	;5
+Property = 0, Object-Identifier	;6
+Property = 0, Object-Identifier	;7
+Property = 0, Object-Identifier	;8
+Property = 0, Object-Identifier	;9
+Property = 0, Object-Identifier	;10
+Property = 0, Object-Identifier	;11
+Property = 0, Object-Identifier	;12
+Property = 0, Object-Identifier	;13
+Property = 0, Object-Identifier	;14
+Property = 0, Object-Identifier	;15
+Property = 0, Object-Identifier	;16
+Property = 0, Object-Identifier	;17
+Property = 0, Object-Identifier	;18
+Property = 0, Object-Identifier	;19
+Property = 0, Object-Identifier	;20
+Property = 0, Object-Identifier	;21
+Property = 0, Object-Identifier	;22
+Property = 0, Object-Identifier	;23
+Property = 0, Object-Identifier	;24
+Property = 0, Object-Identifier	;25
+Property = 0, Object-Identifier	;26
+Property = 0, Object-Identifier	;27
+Property = 0, Object-Identifier	;28
+Property = 0, Object-Identifier	;29
+Property = 0, Object-Identifier	;30
+Property = 0, Object-Identifier	;31
+Property = 0, Object-Identifier	;32
+Property = 0, Object-Identifier	;33
+Property = 0, Object-Identifier	;34
+Property = 0, Object-Identifier	;35
+Property = 0, Object-Identifier	;36
+Property = 0, Object-Identifier	;37
+Property = 0, Object-Identifier	;38
+Property = 0, Object-Identifier	;39
+Property = 0, Object-Identifier	;40
+Property = 0, Object-Identifier	;41
+Property = 0, Object-Identifier	;42
+Property = 0, Object-Identifier	;43
+Property = 0, Object-Identifier	;44
+Property = 0, Object-Identifier	;45
+Property = 0, Object-Identifier	;46
+Property = 0, Object-Identifier	;47
+Property = 0, Object-Identifier	;48
+Property = 0, Object-Identifier	;49
+Property = 0, Object-Identifier	;50
+Property = 0, Object-Identifier	;51
+Property = 0, Object-Identifier	;52
+Property = 0, Object-Identifier	;53
+Property = 0, Object-Identifier	;54
+Property = 0, Object-Identifier	;55
+Property = 0, Object-Identifier	;56
+Property = 0, Object-Identifier	;57
+Property = 0, Object-Identifier	;58
+Property = 0, Object-Identifier	;59
+Property = 0, Object-Identifier	;60
+Property = 0, Object-Identifier	;61
+Property = 0, Object-Identifier	;62
+Property = 0, Object-Identifier	;63
+Property = 0, Object-Identifier	;64
+Property = 0, Object-Identifier	;65
+Property = 0, Object-Identifier	;66
+Property = 0, Object-Identifier	;67
+Property = 0, Object-Identifier	;68
+Property = 0, Object-Identifier	;69
+Property = 0, Object-Identifier	;70
+Property = 0, Object-Identifier	;71
+Property = 0, Object-Identifier	;72
+Property = 0, Object-Identifier	;73
+Property = 0, Object-Identifier	;74
+Property = 0, Object-Identifier	;75
+Property = 0, Object-Identifier	;76
+Property = 0, Object-Identifier	;77
+Property = 0, Object-Identifier	;78
+Property = 0, Object-Identifier	;79
+Property = 0, Object-Identifier	;80
+Property = 0, Object-Identifier	;81
+Property = 0, Object-Identifier	;82
+Property = 0, Object-Identifier	;83
+Property = 0, Object-Identifier	;84
+Property = 0, Object-Identifier	;85
+Property = 0, Object-Identifier	;86
+Property = 0, Object-Identifier	;87
+Property = 0, Object-Identifier	;88
+Property = 0, Object-Identifier	;89
+Property = 0, Object-Identifier	;90
+Property = 0, Object-Identifier	;91
+Property = 0, Object-Identifier	;92
+Property = 0, Object-Identifier	;93
+Property = 0, Object-Identifier	;94
+Property = 0, Object-Identifier	;95
+Property = 0, Object-Identifier	;96
+Property = 0, Object-Identifier	;97
+Property = 0, Object-Identifier	;98
+Property = 0, Object-Identifier	;99
+Property = 0, Object-Identifier	;100
+Property = 0, Object-Identifier	;101
+Property = 0, Object-Identifier	;102
+Property = 0, Object-Identifier	;103
+Property = 0, Object-Identifier	;104
+Property = 0, Object-Identifier	;105
+Property = 0, Object-Identifier	;106
+Property = 0, Object-Identifier	;107
+Property = 0, Object-Identifier	;108
+Property = 0, Object-Identifier	;109
+Property = 0, Object-Identifier	;110
+Property = 0, Object-Identifier	;111
+Property = 0, Object-Identifier	;112
+Property = 0, Object-Identifier	;113
+Property = 0, Object-Identifier	;114
+Property = 0, Object-Identifier	;115
+Property = 0, Object-Identifier	;116
+Property = 0, Object-Identifier	;117
+Property = 0, Object-Identifier	;118
+Property = 0, Object-Identifier	;119
+Property = 0, Object-Identifier	;120
+Property = 0, Object-Identifier	;121
+Property = 0, Object-Identifier	;122
+Property = 0, Object-Identifier	;123
+Property = 0, Object-Identifier	;124
+Property = 0, Object-Identifier	;125
+Property = 0, Object-Identifier	;126
+Property = 0, Object-Identifier	;127
+Property = 0, Object-Identifier	;128
+Property = 0, Object-Identifier	;129
+Property = 0, Object-Identifier	;130
+Property = 0, Object-Identifier	;131
+Property = 0, Object-Identifier	;132
+Property = 0, Object-Identifier	;133
+Property = 0, Object-Identifier	;134
+Property = 0, Object-Identifier	;135
+Property = 0, Object-Identifier	;136
+Property = 0, Object-Identifier	;137
+Property = 0, Object-Identifier	;138
+Property = 0, Object-Identifier	;139
+Property = 0, Object-Identifier	;140
+Property = 0, Object-Identifier	;141
+Property = 0, Object-Identifier	;142
+Property = 0, Object-Identifier	;143
+Property = 0, Object-Identifier	;144
+Property = 0, Object-Identifier	;145
+Property = 0, Object-Identifier	;146
+Property = 0, Object-Identifier	;147
+Property = 0, Object-Identifier	;148
+Property = 0, Object-Identifier	;149
+Property = 0, Object-Identifier	;150
+Property = 0, Object-Identifier	;151
+Property = 0, Object-Identifier	;152
+Property = 0, Object-Identifier	;153
+Property = 0, Object-Identifier	;154
+Property = 0, Object-Identifier	;155
+Property = 0, Object-Identifier	;156
+Property = 0, Object-Identifier	;157
+Property = 0, Object-Identifier	;158
+Property = 0, Object-Identifier	;159
+Property = 0, Object-Identifier	;160
+Property = 0, Object-Identifier	;161
+Property = 0, Object-Identifier	;162
+Property = 0, Object-Identifier	;163
+Property = 0, Object-Identifier	;164
+Property = 0, Object-Identifier	;165
+Property = 0, Object-Identifier	;166
+Property = 0, Object-Identifier	;167
+Property = 0, Object-Identifier	;168
+Property = 0, Object-Identifier	;169
+Property = 0, Object-Identifier	;170
+Property = 0, Object-Identifier	;171
+Property = 0, Object-Identifier	;172
+Property = 0, Object-Identifier	;173
+Property = 0, Object-Identifier	;174
+Property = 0, Object-Identifier	;175
+Property = 0, Object-Identifier	;176
+Property = 0, Object-Identifier	;177
+Property = 0, Object-Identifier	;178
+Property = 0, Object-Identifier	;179
+Property = 0, Object-Identifier	;180
+Property = 0, Object-Identifier	;181
+Property = 0, Object-Identifier	;182
+Property = 0, Object-Identifier	;183
+Property = 0, Object-Identifier	;184
+Property = 0, Object-Identifier	;185
+Property = 0, Object-Identifier	;186
+Property = 0, Object-Identifier	;187
+Property = 0, Object-Identifier	;188
+Property = 0, Object-Identifier	;189
+Property = 0, Object-Identifier	;190
+Property = 0, Object-Identifier	;191
+Property = 0, Object-Identifier	;192
+Property = 0, Object-Identifier	;193
+Property = 0, Object-Identifier	;194
+Property = 0, Object-Identifier	;195
+Property = 0, Object-Identifier	;196
+Property = 0, Object-Identifier	;197
+Property = 0, Object-Identifier	;198
+Property = 0, Object-Identifier	;199
+Property = 0, Object-Identifier	;200
+Closetag 1
+      )
+
+
+
+      
+    EXPECT (
+      NETWORK = "Untitled"
+      DER = FALSE
+      SA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      service = ReadPropertyMultiple
+      PDU = abort                   ; 7 = ABORT-PDU
+      Abort-Reason = 4            ; SEGMENTATION NOT SUPPORTED
+    )

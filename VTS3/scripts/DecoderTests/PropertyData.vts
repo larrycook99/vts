@@ -1,0 +1,322 @@
+;-------------------------------------------------------------------------------
+;  Writes of various BACnet property datatypes to verify the decoder
+;--------------------------------------------------------------------------------
+
+;--------------------------------------------------------------------------------
+;
+SETUP
+INCLUDE "..\config.vts"
+
+;--------------------------------------------------------------------------------
+SECTION WriteMultiples to show various property datatypes
+Test 1 write various properties of Point objects
+
+Send (
+      DA = IUT_ADDR
+      PDU = Confirmed-Request
+      Service = WritePropertyMultiple
+      Object = 0, ANALOG-VALUE, 1
+      OpenTag 1
+        Property = 0, Object-Name
+        OpenTag 2
+           CharacterString = "My Pointy Name"
+        CloseTag 2
+        Property = 0, Object-Type
+        OpenTag 2
+           Enumerated = 2
+        CloseTag 2
+        Property = 0, Object-Identifier
+        OpenTag 2
+           ObjectIdentifier = ANALOG-VALUE, 1
+        CloseTag 2
+        Property = 0, Present-Value
+        OpenTag 2
+           Real = 1.234
+        CloseTag 2
+        Property = 0, Status-Flags
+        OpenTag 2
+           Bitstring = [{T,T,T,T}]
+        CloseTag 2
+        Property = 0, Acked-transitions
+        OpenTag 2
+           Bitstring = [{T,F,T}]
+        CloseTag 2
+        Property = 0, High-limit
+        OpenTag 2
+           Real = 100.0
+        CloseTag 2
+        Property = 0, Low-limit
+        OpenTag 2
+           Real = 10.0
+        CloseTag 2
+        Property = 0, Deadband
+        OpenTag 2
+           Real = 1.0
+        CloseTag 2
+      CloseTag 1
+      
+      Object = 0, BINARY-VALUE, 1
+      OpenTag 1
+        Property = 0, Object-Name
+        OpenTag 2
+           CharacterString = "My Pointy Name"
+        CloseTag 2
+        Property = 0, Present-Value
+        OpenTag 2
+           Enumerated = 1
+        CloseTag 2
+        Property = 0, Status-Flags
+        OpenTag 2
+           Bitstring = [{T,F,T,F}]
+        CloseTag 2
+        Property = 0, Active-text
+        OpenTag 2
+           CharacterString = "Running"
+        CloseTag 2
+        Property = 0, Inactive-text
+        OpenTag 2
+           CharacterString = "sleeping"
+        CloseTag 2
+      CloseTag 1
+      
+      Object = 0, MULTISTATE-VALUE, 1
+      OpenTag 1
+        Property = 0, Object-Name
+        OpenTag 2
+           CharacterString = "My Pointy Name"
+        CloseTag 2
+        Property = 0, Present-Value
+        OpenTag 2
+           Unsigned = 1
+        CloseTag 2
+        Property = 0, Status-Flags
+        OpenTag 2
+           Bitstring = [{T,F,T,F}]
+        CloseTag 2
+      CloseTag 1
+       )
+       
+;--------------------------------------------------------------------------------
+Test 2 write various properties of Device object
+
+Send (
+      DA = IUT_ADDR
+      PDU = Confirmed-Request
+      Service = WritePropertyMultiple
+      Object = 0, IUT_DEVICE_OBJECT
+      OpenTag 1
+        Property = 0, Object-Name
+        OpenTag 2
+           CharacterString = "My Devious Name"
+        CloseTag 2
+        Property = 0, Object-Type
+        OpenTag 2
+           Enumerated = 8
+        CloseTag 2
+        Property = 0, Object-Identifier
+        OpenTag 2
+           ObjectIdentifier = IUT_DEVICE_OBJECT
+        CloseTag 2
+
+        Property = 0, Object-List
+        Unsigned = 1,0
+        OpenTag 2
+           Unsigned = 4
+        CloseTag 2
+
+        Property = 0, Object-List
+        Unsigned = 1, 1
+        OpenTag 2
+           ObjectIdentifier = IUT_DEVICE_OBJECT
+        CloseTag 2
+
+        Property = 0, Object-List
+        OpenTag 2
+           ObjectIdentifier = IUT_DEVICE_OBJECT
+           ObjectIdentifier = ANALOG-VALUE, 1
+           ObjectIdentifier = ANALOG-VALUE, 2
+           ObjectIdentifier = ANALOG-VALUE, 3
+        CloseTag 2
+
+        Property = 0, Object-List
+        OpenTag 2
+        CloseTag 2
+
+        Property = 0, Status-Flags
+        OpenTag 2
+           Bitstring = [{T,T,T,T}]
+        CloseTag 2
+
+        Property = 0, PROTOCOL_OBJECT_TYPES_SUPPORTED
+        OpenTag 2
+           Bitstring = [{T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T}]
+        CloseTag 2
+
+        Property = 0, PROTOCOL_SERVICES_SUPPORTED
+        OpenTag 2
+           Bitstring = [{T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T}]
+        CloseTag 2
+
+        Property = 0, ACTIVE_VT_SESSIONS
+        OpenTag 2
+           Unsigned 1
+           Unsigned 2
+           Unsigned 16
+           OctetString X'12345678'
+        CloseTag 2
+
+        Property = 0, APDU_SEGMENT_TIMEOUT
+        OpenTag 2
+           Unsigned 3000
+        CloseTag 2
+
+        Property = 0, APDU_TIMEOUT
+        OpenTag 2
+           Unsigned 3000
+        CloseTag 2
+
+        Property = 0, APPLICATION_SOFTWARE_VERSION
+        OpenTag 2
+           CharacterString "version 0.00001"
+        CloseTag 2
+
+        Property = 0, DAYLIGHT_SAVINGS_STATUS
+        OpenTag 2
+           Boolean FALSE
+        CloseTag 2
+
+        Property = 0, SLAVE_ADDRESS_BINDING
+        OpenTag 2
+           Unsigned 16
+           OctetString X'12'
+        CloseTag 2
+
+        Property = 0, MANUAL_SLAVE_ADDRESS_BINDING
+        OpenTag 2
+           Unsigned 16
+           OctetString X'12'
+           Unsigned 16
+           OctetString X'34'
+        CloseTag 2
+
+        Property = 0, DEVICE_ADDRESS_BINDING
+        OpenTag 2
+           Unsigned 16
+           OctetString X'12'
+        CloseTag 2
+
+      CloseTag 1
+       )
+
+;--------------------------------------------------------------------------------
+SECTION WriteProperties to show various property datatypes
+Test 1 write various properties of Point objects
+Send (
+      DA = IUT_ADDR
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, ANALOG-VALUE, 1
+      Property = 1, Object-Name
+      OpenTag 3
+         CharacterString = "My Pointy Name"
+      CloseTag 3
+    )
+
+Test 2 write various properties of Point objects
+Send (
+      DA = IUT_ADDR
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, ANALOG-VALUE, 1
+      Property = 1, Present-Value
+      OpenTag 3
+         Real = 1.234
+      CloseTag 3
+    )
+
+;--------------------------------------------------------------------------------
+SECTION ReadPropertyAcks to show various property datatypes
+Test 1 write various properties of Point objects
+Send (
+      DA = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, ANALOG-VALUE, 1
+      Property = 1, Object-Name
+      OpenTag 3
+         CharacterString = "My Pointy Name"
+      CloseTag 3
+    )
+
+Test 2 write various properties of Point objects
+Send (
+      DA = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, ANALOG-VALUE, 1
+      Property = 1, Present-Value
+      OpenTag 3
+         Real = 1.234
+      CloseTag 3
+    )
+
+Send (
+      DA = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, IUT_DEVICE_OBJECT
+      Property = 1, PROTOCOL_SERVICES_SUPPORTED
+      OpenTag 3
+         Bitstring = [{T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T}]
+      CloseTag 3
+)
+
+Send (
+      DA = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, IUT_DEVICE_OBJECT
+        Property = 1, Status-Flags
+        OpenTag 3
+           Bitstring = [{T,T,T,T}]
+        CloseTag 3
+)
+Send (
+      DA = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, IUT_DEVICE_OBJECT
+        Property = 1, Object-List
+        OpenTag 3
+           ObjectIdentifier = IUT_DEVICE_OBJECT
+           ObjectIdentifier = ANALOG-VALUE, 1
+           ObjectIdentifier = ANALOG-VALUE, 2
+           ObjectIdentifier = ANALOG-VALUE, 3
+        CloseTag 3
+)
+
+Send (
+      DA = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, IUT_DEVICE_OBJECT
+        Property = 1, MANUAL_SLAVE_ADDRESS_BINDING
+        OpenTag 3
+           Unsigned 16
+           OctetString X'12'
+           Unsigned 16
+           OctetString X'34'
+        CloseTag 3
+)
+
+Send (
+      DA = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, IUT_DEVICE_OBJECT
+        Property = 1, DEVICE_ADDRESS_BINDING
+        OpenTag 3
+           Unsigned 16
+           OctetString X'12'
+        CloseTag 3
+)

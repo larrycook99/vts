@@ -1,0 +1,23 @@
+--------------------Configuration: packet32 - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for NT\packet32.dsp", at root.
+Active configuration is Win32 (x86) Static Library (based on Win32 (x86) Static Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /G3 /Zp1 /MT /W3 /GX /O2 /I "..\includent" /I "." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/packet32.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"Browser Database Maker" with flags "/nologo /o"Release/packet32.bsc" "
+			"Library Manager" with flags "/nologo /out:"Release\packet32.lib" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP3C9.tmp" with contents </nologo /G3 /Zp1 /MT /W3 /GX /O2 /I "..\includent" /I "." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/packet32.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for NT\Packet32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP3C9.tmp" 
+Creating command line "link.exe -lib /nologo /out:"Release\packet32.lib"  ".\Release\Packet32.obj"" 
+Compiling...
+Packet32.c
+Creating library...
+
+
+
+packet32.lib - 0 error(s), 0 warning(s)

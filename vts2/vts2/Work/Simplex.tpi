@@ -1,0 +1,469 @@
+PICS 0
+BACnet Protocol Implementation Conformance Statement
+-- February 23, 1998 by Steven T. Bushby
+--
+-- This is a PICS file to test a Simplex "Portal" gateway.
+
+
+Vendor Name: "Automated Logic"
+Product Name: "LG1CM2"
+Product Model Number: "Portal-SFM"
+Product Description: ""
+
+BACnet Conformance Class Supported:3    -- replace the 6 with your class
+
+BACnet Functional Groups Supported:     -- delete any FGs not supported
+{
+ Clock
+ Device Communications
+ Reinitialize
+}
+
+-- Delete any services not supported at all.
+-- Remove Initiate and Execute as appropriate.
+
+BACnet Standard Application Services Supported:
+{
+ AddListElement                          Execute
+ RemoveListElement                       Execute
+ ReadProperty                   Initiate Execute
+ ReadPropertyMultiple                    Execute
+ WriteProperty                  Initiate Execute
+ WritePropertyMultiple                   Execute
+ DeviceCommunicationControl              Execute
+ ConfirmedPrivateTransfer       Initiate Execute
+ UnconfirmedPrivateTransfer     Initiate Execute
+ TimeSynchronization                     Execute
+ Who-Has                                 Execute
+ I-Have                         Initiate  
+ Who-Is                                  Execute
+ I-Am                           Initiate 
+ ReinitializeDevice                      Execute
+}
+
+-- Delete and object-types not supported at all.
+-- Remove Creatable or Deleteable as appropriate.
+
+Standard Object-Types Supported:
+{
+-- Analog Input                   
+-- Analog Output                  
+-- Analog Value                   
+ Binary Input                   
+ Binary Output                  
+-- Binary Value                   
+ Device
+}
+
+-- Remove all DL options not supported.
+
+Data Link Layer Option:
+{
+ ARCNET, twisted pair bus
+-- Point-To-Point. Modem, Baud rate(s): 9600
+}
+
+-- Replace the Maximum APDU size with the appropriate value.
+-- Remove segmentation supported line or change window size as appropriate.
+-- Remove Router if the device is not a router.
+
+-- Remove any character sets not supported
+
+Character Sets Supported:
+{
+ ANSI X3.4
+-- Other Character Sets not supported
+-- IBM/Microsoft DBCS
+-- JIS C 6226
+-- ISO 10646 (ICS-4)
+-- ISO 10646 (UCS2)
+}
+
+Special Functionality:
+{
+ Maximum APDU size in octets: 480
+ Router
+}
+
+-- Remove any object-types that are not in the database.
+-- Copy the object-type templates as needed to obtain one per object
+-- in the database. Replace the property to indicate the actual values
+-- of the properties in the database. If the value cannot be determined
+-- because it depends on a sensor input then use "?" for the value.
+-- All property values that are writeable should be followed by a W.
+
+List of Objects in test device:
+{
+  {
+    object-identifier: (binary-input,4)
+    object-name: "129-4-0 UT" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+
+  {
+    object-identifier: (binary-input,5)
+    object-name: "1-1-0 FIRE" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,6)
+    object-name: "1-1-1 TRBLE" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,8)
+    object-name: "1-2-0 FIRE" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,9)
+    object-name: "1-2-0 TRBLE" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,11)
+    object-name: "1-3-0 CNTRL" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,13)
+    object-name: "1-4-0 CNTRL" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,14)
+    object-name: "1-4-0 TRBLE" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,15)
+    object-name: "3-1-1 FIRE" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,16)
+    object-name: "3-1-1 TRBLE" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,18)
+    object-name: "3-2-1 FIRE"       
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,19)
+    object-name: "3-2-1 TRBLE" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,21)
+    object-name: "129-0-0 FIRE" 
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,22)
+    object-name: "129-1-0 P2"
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,23)
+    object-name: "129-2-0 SV"
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,24)
+    object-name: "129-3-0 TRBLE"
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,25)
+    object-name: "128-198-0 UT"
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,26)
+    object-name: "ZONE1 FIRE"
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+  {
+    object-identifier: (binary-input,27)
+    object-name: "ZONE2 FIRE"
+    object-type: BINARY-INPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE
+    polarity: NORMAL 
+  },
+
+{
+    object-identifier: (binary-output,1)
+    object-name: "GLOBAL ACK" 
+    object-type:  BINARY-OUTPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE 
+    polarity: NORMAL
+    priority-array: {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, INACTIVE}
+    relinquish-default: INACTIVE
+},
+
+{
+    object-identifier: (binary-output,2)
+    object-name: "SILENCE"
+    object-type:  BINARY-OUTPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE 
+    polarity: NORMAL
+    priority-array: {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, INACTIVE}
+    relinquish-default: INACTIVE
+},
+
+{
+    object-identifier: (binary-output,3)
+    object-name: "RESET"
+    object-type:  BINARY-OUTPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE 
+    polarity: NORMAL
+    priority-array: {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, INACTIVE}
+    relinquish-default: INACTIVE
+},
+
+{
+    object-identifier: (binary-output,7)
+    object-name: "1-1-0 DIS"
+    object-type:  BINARY-OUTPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE 
+    polarity: NORMAL
+    priority-array: {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, INACTIVE}
+    relinquish-default: INACTIVE
+},
+
+{
+    object-identifier: (binary-output,10)
+    object-name: "1-2-0 DIS"
+    object-type:  BINARY-OUTPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE 
+    polarity: NORMAL
+    priority-array: {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, INACTIVE}
+    relinquish-default: INACTIVE
+},
+
+{
+    object-identifier: (binary-output,12)
+    object-name: "1-3-0 ACKC"
+    object-type:  BINARY-OUTPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE 
+    polarity: NORMAL
+    priority-array: {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, INACTIVE}
+    relinquish-default: INACTIVE
+},
+
+{
+    object-identifier: (binary-output,17)
+    object-name: "3-1-1 DIS"
+    object-type:  BINARY-OUTPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE 
+    polarity: NORMAL
+    priority-array: {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, INACTIVE}
+    relinquish-default: INACTIVE
+},
+
+{
+    object-identifier: (binary-output,20)
+    object-name: "3-2-1 DIS"
+    object-type:  BINARY-OUTPUT 
+    present-value: INACTIVE 
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    out-of-service: FALSE 
+    polarity: NORMAL
+    priority-array: {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, INACTIVE}
+    relinquish-default: INACTIVE
+},
+
+  {
+    object-identifier: (device, 240002)
+    object-name: "LG1CM2"
+    object-type: device
+    system-status: OPERATIONAL
+    vendor-name: "AutomatedLogic"
+    vendor-identifier: 24
+    model-name: "Portal-SFM"
+    firmware-revision: "6.00:142"
+    application-software-version: "SFM 2.0"
+    protocol-version: 1
+    protocol-conformance-class: 3
+    protocol-services-supported:
+    (
+       F, F, F, F, F, F,        -- Alarm and event
+       F, F,                    -- File
+       T, T, F, F, T, F,        -- Create, Delete, Read
+       T, T, T,                 -- ReadMultiple, Write, WriteMultiple
+       T, T, F, T,              -- PrivateXfer, Re-init
+       F, F, F,                 -- VT Open, Data, Close
+       F, F,                    -- security
+       T, T,F, F, T,            -- I-Am, I-Have, uPrivateXfer
+       F, T, T, T               -- TimeSync, Who-Has, Who-Is
+    )
+
+    protocol-object-types-supported:
+    (
+       F, F, F, T, T, F,        -- AI, AO, AV,BI, BO, BV
+       F, F, T, F, F, F             -- calendar, command, device, event enrollment, file, group
+       F, F, F, F, F, F             -- loop, MSI, MSO, notification class, program, schedule
+    )
+
+     object-list:
+    {
+      (binary-output, 20),
+      (binary-input, 4),
+      (binary-input, 5),
+      (binary-input, 6),
+      (binary-input, 8),
+      (binary-input, 9),
+      (binary-input, 11),
+      (binary-input, 13),
+      (binary-input, 14),
+      (binary-input, 15),
+      (binary-input, 16),
+      (binary-input, 18),
+      (binary-input, 19),
+      (binary-input, 21),
+      (binary-input, 22),
+      (binary-input, 23),
+      (binary-input, 24),
+      (binary-input, 25),
+      (binary-input, 26),
+      (binary-input, 27),
+      (binary-output, 1),
+      (binary-output, 2),
+      (binary-output, 3),
+      (binary-output, 7),
+      (binary-output, 10),
+      (binary-output, 12),
+      (binary-output, 17),
+      (device, 240002)
+    }
+    max-APDU-length-accepted: 480
+    segmentation-supported: no-segmentation
+    local-time: ?
+    local-date: ?
+    utc-offset: -300
+    daylight-savings-status: FALSE
+    apdu-timeout: 3000
+    number-of-APDU-retries: 0
+    device-address-binding: ()   --empty list example
+  }
+
+
+}
+End of BACnet Protocol Implementation Conformance Statement

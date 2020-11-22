@@ -1,0 +1,36 @@
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Global Broadcast
+>
+10 00 				--i-Am
+C4 02 00 00 02 			--...iAmDeviceIdentifier=(device,2)
+22 05 BE 			--...maxAPDULengthAccepted=1470
+91 01 				--...segmentationSupported=1 (segmented-transmit)
+21 04 				--...vendorID=4 (PolarSoft)
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Global Broadcast
+>
+10 00 				--i-Am
+C4 02 00 00 02 			--...iAmDeviceIdentifier=(device,2)
+22 05 BE 			--...maxAPDULengthAccepted=1470
+91 01 				--...segmentationSupported=1 (segmented-transmit)
+21 04 				--...vendorID=4 (PolarSoft)
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Global Broadcast
+>
+10 00 				--i-Am
+C4 02 00 00 02 			--...iAmDeviceIdentifier=(device,2)
+22 05 BE 			--...maxAPDULengthAccepted=1470
+91 01 				--...segmentationSupported=1 (segmented-transmit)
+21 04 				--...vendorID=4 (PolarSoft)
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Global Broadcast
+>
+10 00 				--i-Am
+C4 02 00 00 02 			--...iAmDeviceIdentifier=(device,2)
+22 05 BE 			--...maxAPDULengthAccepted=1470
+91 01 				--...segmentationSupported=1 (segmented-transmit)
+21 04 				--...vendorID=4 (PolarSoft)

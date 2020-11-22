@@ -1,0 +1,490 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<OBJECT type="text/site properties">
+	<param name="Window Styles" value="0x800025">
+</OBJECT>
+<UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Introduction">
+		<param name="Local" value="home.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Overview">
+		<param name="Local" value="overview.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="General Information">
+			<param name="Local" value="overview.html#general">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Operating Modes">
+			<param name="Local" value="overview.html#vtsmodes">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="VTS Desktop">
+			<param name="Local" value="overview.html#vtsdesktop">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="VTS Status Window">
+				<param name="Local" value="overview.html#vtsstatus">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="NALSERV32 Status Window">
+				<param name="Local" value="overview.html#nalservstatus">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="PTP Status Window">
+				<param name="Local" value="overview.html#ptpstatus">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="MSTP Status Window">
+				<param name="Local" value="overview.html#mstpstatus">
+				</OBJECT>
+		</UL>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Viewing and Saving Results">
+		<param name="Local" value="view.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="VTS Packet Trace">
+			<param name="Local" value="view.html#vts">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Saving Packet Traces">
+			<param name="Local" value="view.html#vtssave">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="NALSERV32 Packet Trace">
+			<param name="Local" value="view.html#nalserv">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="PTP Packet Trace">
+			<param name="Local" value="view.html#ptp">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="MSTP Packet Trace">
+			<param name="Local" value="view.html#mstp">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Selecting a Target BACnet Device">
+		<param name="Local" value="target.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Target Device Window">
+			<param name="Local" value="target.html#target">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Local Target Devices">
+			<param name="Local" value="target.html#localtarget">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Remote Target Device Unknown Router">
+			<param name="Local" value="target.html#remotetargetnorouter">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Remote Target Device Known Router">
+			<param name="Local" value="target.html#remotetargetrouter">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Global Target Device">
+			<param name="Local" value="target.html#globaltarget">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Source Routing">
+			<param name="Local" value="target.html#sourcerouting">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="PTP Target Devices">
+			<param name="Local" value="target.html#ptp">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="MS/TP Target Devices">
+			<param name="Local" value="target.html#mstp">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="BACnet Application-Layer Requests">
+		<param name="Local" value="al.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="BACnet Confirmed Services">
+			<param name="Local" value="al.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Alarm and Event Services">
+				<param name="Local" value="al.html">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="acknowledgeAlarm">
+					<param name="Local" value="al_ackalarm.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="confirmedCOVNotification">
+					<param name="Local" value="al_covnotification.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="confirmedEventNotification">
+					<param name="Local" value="al_eventnotification.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="getAlarmSummary">
+					<param name="Local" value="al_getalarmsum.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="getEnrollmentSummary">
+					<param name="Local" value="al_getenrollmentsummary.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="subscribeCOV">
+					<param name="Local" value="al_subscribecov.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="File Access Services">
+				<param name="Local" value="al.html">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="atomicReadFile">
+					<param name="Local" value="al_readfile.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="atomicWriteFile">
+					<param name="Local" value="al_writefile.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Object Access Services">
+				<param name="Local" value="al.html">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="addListElement">
+					<param name="Local" value="al_addlistelement.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="removeListElement">
+					<param name="Local" value="al_remlistelement.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="createObject">
+					<param name="Local" value="al_createobj.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="deleteObject">
+					<param name="Local" value="al_deleteobj.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="readProperty">
+					<param name="Local" value="al_readprop.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="readPropertyConditional">
+					<param name="Local" value="al_readpropconditional.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="readPropertyMultiple">
+					<param name="Local" value="al_readpropmultiple.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="writeProperty">
+					<param name="Local" value="al_writeprop.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="writePropertyMultiple">
+					<param name="Local" value="al_writepropmultiple.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Remote Device Management Services">
+				<param name="Local" value="al.html">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="deviceCommunicationControl">
+					<param name="Local" value="al_devicecommcontrol.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="confirmedPrivateTransfer">
+					<param name="Local" value="al_privatetransfer.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="confirmedTextMessage">
+					<param name="Local" value="al_textmessage.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="reinitializeDevice">
+					<param name="Local" value="al_reinitializedevice.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Virtual Terminal Services">
+				<param name="Local" value="al.html">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="vtOpen">
+					<param name="Local" value="al_vt.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="vtClose">
+					<param name="Local" value="al_vt.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="vtData">
+					<param name="Local" value="al_vt.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Security Services">
+				<param name="Local" value="al.html">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="authenticate (not supported)">
+					<param name="Local" value="al.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="requestKey (not supported)">
+					<param name="Local" value="al.html">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="BACnet Unconfirmed Services">
+			<param name="Local" value="al.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="i-Am">
+				<param name="Local" value="al_iam.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="i-Have">
+				<param name="Local" value="al_ihave.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="unconfirmedCOVNotification">
+				<param name="Local" value="al_covnotification.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="unconfirmedEventNotification">
+				<param name="Local" value="al_eventnotification.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="unconfirmedPrivateTransfer">
+				<param name="Local" value="al_privatetransfer.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="unconfirmedTextMessage">
+				<param name="Local" value="al_textmessage.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="timeSynchronization">
+				<param name="Local" value="al_timesync.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="who-Has">
+				<param name="Local" value="al_whohas.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="who-Is">
+				<param name="Local" value="al_whois.html">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Other BACnet PDUs">
+			<param name="Local" value="al.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="SimpleACK-PDU">
+				<param name="Local" value="al_sack_error.html#sack">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Error-PDU">
+				<param name="Local" value="al_sack_error.html#error">
+				</OBJECT>
+		</UL>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="BACnet Network-Layer Requests">
+		<param name="Local" value="nl.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Raw NPDU">
+			<param name="Local" value="nl_rawnpdu.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Who-Is-Router-To-Network">
+			<param name="Local" value="nl_whoisrouter.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="I-Am-Router-To-Network">
+			<param name="Local" value="nl_iamrouter.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="I-Could-Be-Router-To-Network">
+			<param name="Local" value="nl_icouldberouter.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Reject-Message-To-Network">
+			<param name="Local" value="nl_rejectmessage.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Router-Busy-To-Network">
+			<param name="Local" value="nl_routerbusy.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Router-Available-To-Network">
+			<param name="Local" value="nl_routeravailable.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Initialize-Routing-Table">
+			<param name="Local" value="nl_initrouting.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Initialize-Routing-Table-Ack">
+			<param name="Local" value="nl_initroutingack.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Establish-Connection-To-Network">
+			<param name="Local" value="nl_establishconn.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Disconnect-Connection-To-Network">
+			<param name="Local" value="nl_disconnectconn.html">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Automatic Testing">
+		<param name="Local" value="testing.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Using NALSERV32">
+		<param name="Local" value="nalserv32.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="NALSERV32 Functions">
+			<param name="Local" value="nalserv32.html#overview">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Setting up NALSERV32">
+			<param name="Local" value="nalserv32.html#setup">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="NALSERV32 Configuration Dialog">
+			<param name="Local" value="nalserv32.html#config">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="NALSERV32.INI">
+			<param name="Local" value="nalserv32.html#nalserv32ini">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Using NALSERV32">
+			<param name="Local" value="nalserv32.html#using">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Using BACnet MS/TP">
+		<param name="Local" value="mstp.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="VTS Support for MS/TP">
+			<param name="Local" value="mstp.html#overview">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Setting up MSTP">
+			<param name="Local" value="mstp.html#setup">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="MSTP.INI">
+			<param name="Local" value="mstp.html#mstpini">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="NALSERV32.INI">
+			<param name="Local" value="mstp.html#nalserv32ini">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Using MSTP">
+			<param name="Local" value="mstp.html#using">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Using BACnet PTP">
+		<param name="Local" value="ptp.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="VTS Support for PTP">
+			<param name="Local" value="Ptp.html#overview">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Setting up PTP">
+			<param name="Local" value="ptp.html#setup">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="PTP.INI">
+			<param name="Local" value="ptp.html#ptpini">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="NALSERV32.INI">
+			<param name="Local" value="ptp.html#nalserv32ini">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Using PTP">
+			<param name="Local" value="ptp.html#using">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="VTS Configuration">
+		<param name="Local" value="configure.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="VTS.INI">
+			<param name="Local" value="configure.html#vtsini">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="VTSAlias.INI">
+			<param name="Local" value="configure.html#vtsalias">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="VTSRoute.INI">
+			<param name="Local" value="configure.html#vtsalias">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="VTSBind.INI">
+			<param name="Local" value="configure.html#vtsbind">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="NALSERV32.INI">
+			<param name="Local" value="nalserv32.html#nalserv32ini">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="MSTP.INI">
+			<param name="Local" value="mstp.html#mstpini">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="PTP.INI">
+			<param name="Local" value="ptp.html#ptpini">
+			</OBJECT>
+	</UL>
+</UL>
+</BODY></HTML>

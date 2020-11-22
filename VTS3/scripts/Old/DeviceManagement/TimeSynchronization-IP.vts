@@ -1,0 +1,565 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Positive Time Synchronization Service Execution Tests  
+  ;  "DRAFT COPY--- DO NOT DISTRIBUTE"
+  ;  PosTimeSynch.vts	tsmmddyy01.vts
+  ;
+  ;  Ver 1.0	02/06/01	P. Bowen
+  ;  Ver 1.1	03/04/01	P. Bowen	Added SA address to time synch Xmit
+  ;  Ver 1.2    09/17/01        Bradsp          Marked with easy change symbols and Routing sections  
+  ;
+  ;  The purpose of this test group is to verify correct execution of 
+  ;  Synchronization service requests under circumstances where the 
+  ;  service is expected to be successfully completed.
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Positive Time Synchronization Tests
+
+  ;------------------------------------------------------------------------------------- 
+  ; Notes on Hardcoding and other changes needing to be made outside of the setup section including hard coded objects and properties 
+  ; Items marked and found with *** are hardcoded or the error messages must be manually verified in the trace. 
+  ;
+  ;
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG  All objects and properties are listed here including notes on there use
+  ;
+
+	TD_IP = 10.10.10.2
+
+	OBJECT1 = Device, 245146
+
+;  TESTDATE = MON, JANUARY 01, 2001
+;  TESTTIME = 01:02:03.00 AM
+
+  -- TEST #1a (Step #1 & 2 hc, Step #3 & 4 hc, Step #5 & 6 hc, Step #7 & 8 hc, Step #10 & 11 hc, Step #12 & 13 hc)
+              -- MANUAL SEND AND RECEIVE   
+              -- BODY CHANGE  
+
+  -- TEST #1b (Step #1 & 2 hc, Step #3 & 4 hc, Step #5 & 6 hc, Step #7 & 8 hc, Step #10 & 11 hc, Step #12 & 13 hc)
+              -- MANUAL SEND AND RECEIVE   
+              -- BODY CHANGE  
+ 
+  
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  
+	IUT_IP = 208.6.162.35
+				                            
+  ;-------------------------------------------------------------------------------------
+  
+  ;-------------------------------------------------------------------------------------
+  ;
+  ;  Routing_Config
+  ;  
+
+  -- DNET_MSTP = 20001, MS/TP     ; Sets the DNET of the remote MSTP network (Comment if no routing) ***
+
+  ;-----IUT and TD are on the same Ethernet segment
+  ;   DESTINATION = IUT_MAC 
+  ;-----IUT is on an MSTP segment and TD is on an Ethernet segment
+  ;   DA = Broadcast
+  ;   DNET = DNET_MSTP
+  ;   DADR = IUT_MAC
+  ;------------------------------------------------------------------------------------- 
+
+  SECTION Positive Time Synchronization Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD
+
+  -- Reference (T) Time Synchronization Service Execution Tests
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Time Synchronization Service - Local Broadcast
+
+  DEPENDENCIES None
+
+  REFERENCE (B) Time Synchronization Service and (T) Local Broadcast
+
+  -- Test Steps:
+  --	1. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Date
+  --	2. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Date,
+  --		'Property Value' = (any valid date referred to as InitialDate below)
+  --	3. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Time
+  --	4. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Time,
+  --		'Property Value' = (any valid time referred to as InitialTime below)
+  --	5. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	UTC_Offset
+  --	6. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	UTC_Offset,
+  --		'Property Value' = (any valid offset referred to as InitialUTC_Offset below)
+  --	7. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Daylight_Savings_Status
+  --	8. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Daylight_Savings_Status,
+  --		'Property Value' = (any valid status referred to as InitialDaylight_Savings_Status below)
+  --	9. TRANSMIT 
+  --		DA = LOCAL BROADCAST,
+  --		SA = TD, 
+  --		BACnet-Unconfirmed-Request-PDU,
+  --  		'Service Choice' = TimeSynchronization-Request,
+  --		date = (any date other than InitialDate),
+  --		time = (any time that does not correspond to InitialTime)
+  --	10. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Date
+  --	11. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Date,
+  --		'Property Value' = (the date specified in step 9)
+  --	12. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Time
+  --	13. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Time,
+  --		'Property Value' = (the time specified in step 9)
+
+  -- Note: If the time returned by the IUT indicates that a small amount of 
+  -- time has passed (< 1 second) since the Time Synchronization request 
+  -- was received the result shall be considered to be a pass
+
+  -- Step #1 & 2: Verify (read) device's local date
+
+    SEND (
+	Network = "Untitled"
+	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+	DER = TRUE
+	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+	Service = ReadProperty
+	Object = 0, OBJECT1
+	Property = 1, Local-Date
+   )
+
+    EXPECT (
+	Network = "Untitled"
+	DA = TD_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+	DER = FALSE
+	PDU = ComplexAck
+	Service = ReadProperty
+	Object = 0, OBJECT1
+	Property = 1, Local-Date
+	OpenTag 3
+         	AL != X'0000000000'
+	CloseTag 3
+    )
+
+  -- Step #3 & 4: Verify (read) device's local time
+
+    SEND (
+	Network = "Untitled"
+	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+	DER = TRUE
+	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+	Service = ReadProperty
+	Object = 0, OBJECT1
+	Property = 1, Local-Time
+    )
+
+    EXPECT (
+	Network = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+	DER = FALSE
+	PDU = ComplexAck
+	Service = ReadProperty
+	Object = 0, OBJECT1
+	Property = 1, Local-Time
+	OpenTag 3
+        	AL != X'0000000000'
+	CloseTag 3
+    )
+
+  -- Step #5 & 6: Verify (read) device's UTC offset
+
+    SEND (
+	Network = "Untitled"
+	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+	DER = TRUE
+	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+	Service = ReadProperty
+	Object = 0, OBJECT1
+	Property = 1, UTC-Offset
+    )
+
+    EXPECT (
+      	Network = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, UTC-Offset
+      	OpenTag 3
+        	AL != X'000000'
+      	CloseTag 3
+    )
+ 
+  -- Step #7 & 8: Verify (read) device's daylight savings status
+
+    SEND (
+      	Network = "Untitled"
+      	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Daylight-Savings-Status
+    )
+
+    EXPECT (
+      	Network = "Untitled"
+	DA = TD_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Daylight-Savings-Status
+      	OpenTag 3
+        	AL != X'00'
+      	CloseTag 3
+    )
+
+  -- Step #9: Transmit via local broadcast new time & date
+
+    SEND (
+      	Network = "Untitled"
+      	DA = BROADCAST
+      	SA = TD_IP
+	bvlci =ORIGINAL-BROADCAST-NPDU
+      	DER = FALSE
+      	PDU = Unconfirmed-Request
+      	Service = TimeSynchronization
+      	Date = MONDAY, 1/1/2002
+      	Time = 01:02:03.00
+--    Date = TESTDATE			; V2.26 won't accept (load) this statement
+--    Time = TESTTIME			; V2.26 won't accept (load) this statement
+
+    )
+
+  -- Step #10 & 11: Verify (read) device's new local date
+
+    SEND (
+      	Network = "Untitled"
+      	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Date
+   )
+
+    EXPECT (
+      	Network = "Untitled"
+      	DA = TD_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Date
+      	OpenTag 3
+        	AL != X'0000000000'
+      	CloseTag 3
+    )
+   
+  -- Step #12 & 13: Verify (read) device's new local time
+
+      SEND (
+      	Network = "Untitled"
+      	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Time
+    )
+
+    EXPECT (
+      	Network = "Untitled"
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Time
+      	OpenTag 3
+        	AL != X'0000000000'
+      	CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1b Time Synchronization Service  - Directed to the IUT
+ 
+  -- This test case verifies that the IUT resets its local time and date in response
+  -- to a TimeSynchronization service request directed to the IUT's MAC address.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) Time Synchronization Service and (T) Local Broadcast
+
+  -- Test Steps: Same as test #1a except that the service request is directed to
+  -- the IUT's MAC address.
+
+  -- Note: If the time returned by the IUT indicates that a small amount of 
+  -- time has passed (< 1 second) since the Time Synchronization request 
+  -- was received the result shall be considered to be a pass
+
+  -- Step #1 & 2: Verify (read) device's local date
+
+    SEND (
+      	Network = "Untitled"
+	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Date
+   )
+
+    EXPECT (
+      	Network = "Untitled"
+      	DA = TD_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Date
+      	OpenTag 3
+        	AL != X'0000000000'
+      	CloseTag 3
+    )
+
+  -- Step #3 & 4: Verify (read) device's local time
+
+    SEND (
+      	Network = "Untitled"
+      	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Time
+    )
+
+    EXPECT (
+      	Network = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Time
+      	OpenTag 3
+        	AL != X'0000000000'
+      	CloseTag 3
+    )
+
+  -- Step #5 & 6: Verify (read) device's UTC offset
+
+    SEND (
+      	Network = "Untitled"
+      	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, UTC-Offset
+    )
+
+    EXPECT (
+      	Network = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, UTC-Offset
+      	OpenTag 3
+        	AL != X'000000'
+      	CloseTag 3
+    )
+ 
+  -- Step #7 & 8: Verify (read) device's daylight savings status
+
+    SEND (
+      	Network = "Untitled"
+      	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Daylight-Savings-Status
+    )
+
+    EXPECT (
+      	Network = "Untitled"
+      	DA = TD_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Daylight-Savings-Status
+      	OpenTag 3
+        	AL != X'00'
+      	CloseTag 3
+    )
+
+  -- Step #9: Transmit new time & date direct to IUT
+
+    SEND (
+      	Network = "Untitled"
+      	DA = IUT_IP
+      	SA = TD_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = FALSE
+      	PDU = Unconfirmed-Request
+      	Service = TimeSynchronization
+      	Date = MONDAY, 21-1-2001
+      	Time = 01:02:03.00
+--    Date = TESTDATE			; V2.26 won't accept (load) this statement
+--    Time = TESTTIME			; V2.26 won't accept (load) this statement
+
+    )
+
+  -- Step #10 & 11: Verify (read) device's new local date
+
+    SEND (
+      	Network = "Untitled"
+      	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Date
+   )
+
+    EXPECT (
+      	Network = "Untitled"
+      	DA = TD_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Date
+      	OpenTag 3
+         	AL != X'0000000000'
+      	CloseTag 3
+    )
+   
+  -- Step #12 & 13: Verify (read) device's new local time
+
+    SEND (
+      	Network = "Untitled"
+      	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Time
+    )
+
+    EXPECT (
+      	Network = "Untitled"
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Local-Time
+      	OpenTag 3
+        	AL != X'0000000000'
+      	CloseTag 3
+    )

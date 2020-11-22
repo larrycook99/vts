@@ -1,0 +1,345 @@
+--------------------Configuration: NALdum - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\NALdum\NALdum.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /MT /W3 /GX /O2 /I "..\includent" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/NALdum.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Release/Naldum.res" /d "NDEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Release/NALdum.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release/NALdum.pdb" /machine:I386 /def:".\Naldum.def" /out:"Release/NALdum.dll" /implib:"Release/NALdum.lib" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+
+
+
+NALdum.dll - 0 error(s), 0 warning(s)
+--------------------Configuration: NALdum - Win32 Debug--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\NALdum\NALdum.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MTd /W3 /Gm /GX /Zi /Od /I "..\includent" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FAcs /Fa"Debug/" /Fp"Debug/NALdum.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Debug/Naldum.res" /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/NALdum.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/NALdum.pdb" /debug /machine:I386 /def:".\Naldum.def" /out:"Debug/NALdum.dll" /implib:"Debug/NALdum.lib" /pdbtype:sept "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+
+
+
+NALdum.dll - 0 error(s), 0 warning(s)
+--------------------Configuration: dudapi32 - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\dudapi32\dudapi32.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MD /W3 /GX /Od /I "..\includent" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "_WINDLL" /D "_AFXDLL" /FR"Release/" /Fo"Release/" /Fd"Release/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Release/dudapi32.res" /d "NDEBUG" /d "_AFXDLL" "
+			"Browser Database Maker" with flags "/nologo /o"Release/dudapi32.bsc" "
+			"COFF Linker for 80x86" with flags "bacprim32.lib vtsapi32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release/dudapi32.pdb" /machine:I386 /def:".\dudapi32.def" /out:"Release/dudapi32.dll" /implib:"Release/dudapi32.lib" /libpath:"..\libs" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+
+
+
+dudapi32.dll - 0 error(s), 0 warning(s)
+--------------------Configuration: Vtsapi32 - Win32 Debug--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Vtsapi32\Vtsapi32.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MTd /W3 /Gm /GX /Zi /Od /I "..\includent" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /FAcs /Fa"Debug/" /FR"Debug/" /Fp"Debug/Vtsapi32.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Debug/Vtsapi32.res" /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/Vtsapi32.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/Vtsapi32.pdb" /debug /machine:I386 /def:".\Vtsapi32.def" /out:"Debug/Vtsapi32.dll" /implib:"Debug/Vtsapi32.lib" /pdbtype:sept "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP280.tmp" with contents </nologo /Zp1 /MTd /W3 /Gm /GX /Zi /Od /I "..\includent" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /FAcs /Fa"Debug/" /FR"Debug/" /Fp"Debug/Vtsapi32.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Vtsapi32\Vtsapi32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP280.tmp" 
+Creating temp file "C:\TEMP\RSP281.tmp" with contents <kernel32.lib user32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/Vtsapi32.pdb" /debug /machine:I386 /def:".\Vtsapi32.def" /out:"Debug/Vtsapi32.dll" /implib:"Debug/Vtsapi32.lib" /pdbtype:sept 
+".\Debug\Vtsapi32.obj"
+".\Debug\Vtsapi32.res">
+Creating command line "link.exe @C:\TEMP\RSP281.tmp" 
+Compiling...
+Vtsapi32.c
+Linking...
+--------------------Configuration: Bacprim32 - Win32 Debug--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Bacprim32.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MTd /W3 /Gm /GX /Zi /Od /I "..\includent" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /FAcs /Fa"Debug/" /FR"Debug/" /Fp"Debug/Bacprim32.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Debug/Bacprim32.res" /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/Bacprim32.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib vtsapi32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/Bacprim32.pdb" /debug /machine:I386 /def:".\Bacprim32.def" /out:"Debug/Bacprim32.dll" /implib:"Debug/Bacprim32.lib" /pdbtype:sept /libpath:"..\vtsapi32\debug" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP282.tmp" with contents </nologo /Zp1 /MTd /W3 /Gm /GX /Zi /Od /I "..\includent" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /FAcs /Fa"Debug/" /FR"Debug/" /Fp"Debug/Bacprim32.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Bacprim32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP282.tmp" 
+Creating temp file "C:\TEMP\RSP283.tmp" with contents <kernel32.lib user32.lib gdi32.lib vtsapi32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/Bacprim32.pdb" /debug /machine:I386 /def:".\Bacprim32.def" /out:"Debug/Bacprim32.dll" /implib:"Debug/Bacprim32.lib" /pdbtype:sept /libpath:"..\vtsapi32\debug" 
+".\Debug\Bacprim32.obj"
+".\Debug\Bacprim32.res"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Vtsapi32\Debug\Vtsapi32.lib">
+Creating command line "link.exe @C:\TEMP\RSP283.tmp" 
+Compiling...
+Bacprim32.c
+D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Bacprim32.c(325) : warning C4028: formal parameter 4 different from declaration
+D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Bacprim32.c(640) : warning C4028: formal parameter 6 different from declaration
+Linking...
+.\Bacprim32.def : warning LNK4017: CODE statement not supported for the target platform; ignored
+.\Bacprim32.def : warning LNK4017: DATA statement not supported for the target platform; ignored
+   Creating library Debug/Bacprim32.lib and object Debug/Bacprim32.exp
+Creating command line "bscmake.exe /nologo /o"Debug/Bacprim32.bsc"  ".\Debug\Bacprim32.sbr"" 
+Creating browse info file...
+--------------------Configuration: dudapi32 - Win32 Debug--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\dudapi32\dudapi32.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MDd /W3 /Gm /GX /Zi /Od /I "..\includent" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "_WINDLL" /D "_AFXDLL" /FAcs /Fa"Debug/" /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Debug/dudapi32.res" /d "_DEBUG" /d "_AFXDLL" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/dudapi32.bsc" "
+			"COFF Linker for 80x86" with flags "bacprim32.lib vtsapi32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/dudapi32.pdb" /debug /machine:I386 /def:".\dudapi32.def" /out:"Debug/dudapi32.dll" /implib:"Debug/dudapi32.lib" /pdbtype:sept /libpath:"..\libs" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP285.tmp" with contents </nologo /Zp1 /MDd /W3 /Gm /GX /Zi /Od /I "..\includent" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "_WINDLL" /D "_AFXDLL" /FAcs /Fa"Debug/" /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\dudapi32\dudapi32.cpp"
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\dudapi32\DUDCLASS.CPP"
+>
+Creating command line "cl.exe @C:\TEMP\RSP285.tmp" 
+Creating temp file "C:\TEMP\RSP286.tmp" with contents <bacprim32.lib vtsapi32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/dudapi32.pdb" /debug /machine:I386 /def:".\dudapi32.def" /out:"Debug/dudapi32.dll" /implib:"Debug/dudapi32.lib" /pdbtype:sept /libpath:"..\libs" 
+".\Debug\dudapi32.obj"
+".\Debug\DUDCLASS.OBJ"
+".\Debug\DUDTOOL.OBJ"
+".\Debug\StdAfx.obj"
+".\Debug\dudapi32.res"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Debug\Bacprim32.lib">
+Creating command line "link.exe @C:\TEMP\RSP286.tmp" 
+Compiling...
+dudapi32.cpp
+..\includent\vtsapi.h(19) : warning C4200: nonstandard extension used : zero-sized array in struct/union
+..\includent\props.h(59) : warning C4200: nonstandard extension used : zero-sized array in struct/union
+DUDCLASS.CPP
+Generating Code...
+Linking...
+   Creating library Debug/dudapi32.lib and object Debug/dudapi32.exp
+
+
+
+dudapi32.dll - 0 error(s), 6 warning(s)
+--------------------Configuration: sjack32 - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\sjack\sjack32.dsp", at root.
+Active configuration is Win32 (x86) Static Library (based on Win32 (x86) Static Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/sjack32.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"Browser Database Maker" with flags "/nologo /o"Release/sjack32.bsc" "
+			"Library Manager" with flags "/nologo /out:"Release\sjack32.lib" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP288.tmp" with contents </nologo /Zp1 /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/sjack32.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\sjack\sjack32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP288.tmp" 
+Creating command line "link.exe -lib /nologo /out:"Release\sjack32.lib"  ".\Release\sjack32.obj"" 
+Compiling...
+sjack32.c
+Creating library...
+--------------------Configuration: mstp - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\mstp\mstp.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MT /W3 /GX /O2 /I "..\Includent" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/mstp.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Release/mstp.res" /d "NDEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Release/mstp.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib shell32.lib winmm.lib sjack32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release/mstp.pdb" /machine:I386 /def:".\mstp.def" /out:"Release/mstp.dll" /implib:"Release/mstp.lib" /libpath:"Release" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating command line "rc.exe /l 0x409 /fo"Release/mstp.res" /d "NDEBUG" "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\mstp\mstp.rc"" 
+Creating temp file "C:\TEMP\RSP289.tmp" with contents </nologo /Zp1 /MT /W3 /GX /O2 /I "..\Includent" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/mstp.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\mstp\mstp.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP289.tmp" 
+Creating temp file "C:\TEMP\RSP28A.tmp" with contents <kernel32.lib user32.lib gdi32.lib shell32.lib winmm.lib sjack32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release/mstp.pdb" /machine:I386 /def:".\mstp.def" /out:"Release/mstp.dll" /implib:"Release/mstp.lib" /libpath:"Release" 
+".\Release\mstp.obj"
+".\Release\mstp.res"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\sjack\Release\sjack32.lib">
+Creating command line "link.exe @C:\TEMP\RSP28A.tmp" 
+Compiling resources...
+Compiling...
+mstp.c
+Linking...
+.\mstp.def : warning LNK4017: CODE statement not supported for the target platform; ignored
+.\mstp.def : warning LNK4017: DATA statement not supported for the target platform; ignored
+   Creating library Release/mstp.lib and object Release/mstp.exp
+--------------------Configuration: packet32 - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for 95\packet32.dsp", at root.
+Active configuration is Win32 (x86) Static Library (based on Win32 (x86) Static Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /G3 /Zp1 /MT /W3 /GX /Od /I "..\inc" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FAcs /Fa"Release/" /Fp"Release/packet32.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"Browser Database Maker" with flags "/nologo /o"Release/packet32.bsc" "
+			"Library Manager" with flags "/nologo /out:"Release\packet32.lib" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP28C.tmp" with contents </nologo /G3 /Zp1 /MT /W3 /GX /Od /I "..\inc" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FAcs /Fa"Release/" /Fp"Release/packet32.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for 95\Packet32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP28C.tmp" 
+Creating command line "link.exe -lib /nologo /out:"Release\packet32.lib"  ".\Release\Packet32.obj"" 
+Compiling...
+Packet32.c
+D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for 95\Packet32.c(67) : fatal error C1083: Cannot open include file: 'ntddndis.h': No such file or directory
+Error executing cl.exe.
+
+
+
+nalserv32.dll - 1 error(s), 2 warning(s)
+--------------------Configuration: sjack32 - Win32 Debug--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\sjack\sjack32.dsp", at root.
+Active configuration is Win32 (x86) Static Library (based on Win32 (x86) Static Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MTd /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/sjack32.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"Browser Database Maker" with flags "/nologo /o"Debug/sjack32.bsc" "
+			"Library Manager" with flags "/nologo /out:"Debug\sjack32.lib" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP28D.tmp" with contents </nologo /Zp1 /MTd /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/sjack32.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\sjack\sjack32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP28D.tmp" 
+Creating command line "link.exe -lib /nologo /out:"Debug\sjack32.lib"  ".\Debug\sjack32.obj"" 
+Compiling...
+sjack32.c
+Creating library...
+--------------------Configuration: mstp - Win32 Debug--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\mstp\mstp.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MTd /W3 /Gm /GX /Zi /Od /I "..\Includent" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FAcs /Fa"Debug/" /Fp"Debug/mstp.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Debug/mstp.res" /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/mstp.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib shell32.lib winmm.lib sjack32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/mstp.pdb" /debug /machine:I386 /def:".\mstp.def" /out:"Debug/mstp.dll" /implib:"Debug/mstp.lib" /pdbtype:sept /libpath:"Debug" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating command line "rc.exe /l 0x409 /fo"Debug/mstp.res" /d "_DEBUG" "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\mstp\mstp.rc"" 
+Creating temp file "C:\TEMP\RSP28E.tmp" with contents </nologo /Zp1 /MTd /W3 /Gm /GX /Zi /Od /I "..\Includent" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FAcs /Fa"Debug/" /Fp"Debug/mstp.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\mstp\mstp.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP28E.tmp" 
+Creating temp file "C:\TEMP\RSP28F.tmp" with contents <kernel32.lib user32.lib gdi32.lib shell32.lib winmm.lib sjack32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/mstp.pdb" /debug /machine:I386 /def:".\mstp.def" /out:"Debug/mstp.dll" /implib:"Debug/mstp.lib" /pdbtype:sept /libpath:"Debug" 
+".\Debug\mstp.obj"
+".\Debug\mstp.res"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\sjack\Debug\sjack32.lib">
+Creating command line "link.exe @C:\TEMP\RSP28F.tmp" 
+Compiling resources...
+Compiling...
+mstp.c
+Linking...
+.\mstp.def : warning LNK4017: CODE statement not supported for the target platform; ignored
+.\mstp.def : warning LNK4017: DATA statement not supported for the target platform; ignored
+   Creating library Debug/mstp.lib and object Debug/mstp.exp
+--------------------Configuration: packet32 - Win32 Debug--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for 95\packet32.dsp", at root.
+Active configuration is Win32 (x86) Static Library (based on Win32 (x86) Static Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /G3 /Zp1 /MTd /W3 /GX /Z7 /Od /I "..\inc" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/packet32.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"Browser Database Maker" with flags "/nologo /o"Debug/packet32.bsc" "
+			"Library Manager" with flags "/nologo /out:"Debug\packet32.lib" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP291.tmp" with contents </nologo /G3 /Zp1 /MTd /W3 /GX /Z7 /Od /I "..\inc" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/packet32.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for 95\Packet32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP291.tmp" 
+Creating command line "link.exe -lib /nologo /out:"Debug\packet32.lib"  ".\Debug\Packet32.obj"" 
+Compiling...
+Packet32.c
+D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for 95\Packet32.c(67) : fatal error C1083: Cannot open include file: 'ntddndis.h': No such file or directory
+Error executing cl.exe.
+
+
+
+nalserv32.dll - 1 error(s), 2 warning(s)
+--------------------Configuration: bacregnt - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\BACREGNT\bacregnt.dsp", at root.
+Active configuration is Win32 (x86) Application (based on Win32 (x86) Application)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/bacregnt.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Release/bacregnt.res" /d "NDEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Release/bacregnt.bsc" "
+			"COFF Linker for 80x86" with flags "user32.lib gdi32.lib advapi32.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/bacregnt.pdb" /machine:I386 /out:"Release/bacregnt.exe" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating command line "rc.exe /l 0x409 /fo"Release/bacregnt.res" /d "NDEBUG" "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\BACREGNT\bacregnt.rc"" 
+Creating temp file "C:\TEMP\RSP292.tmp" with contents </nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/bacregnt.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\BACREGNT\bacregnt.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP292.tmp" 
+Creating command line "link.exe user32.lib gdi32.lib advapi32.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/bacregnt.pdb" /machine:I386 /out:"Release/bacregnt.exe"  ".\Release\bacregnt.obj" ".\Release\bacregnt.res"" 
+Compiling resources...
+Compiling...
+bacregnt.c
+Linking...
+
+
+
+bacregnt.exe - 0 error(s), 0 warning(s)
+--------------------Configuration: bacregnt - Win32 Debug--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\BACREGNT\bacregnt.dsp", at root.
+Active configuration is Win32 (x86) Application (based on Win32 (x86) Application)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /MLd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/bacregnt.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Debug/bacregnt.res" /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/bacregnt.bsc" "
+			"COFF Linker for 80x86" with flags "user32.lib gdi32.lib advapi32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/bacregnt.pdb" /debug /machine:I386 /out:"Debug/bacregnt.exe" /pdbtype:sept "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating command line "rc.exe /l 0x409 /fo"Debug/bacregnt.res" /d "_DEBUG" "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\BACREGNT\bacregnt.rc"" 
+Creating temp file "C:\TEMP\RSP293.tmp" with contents </nologo /MLd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/bacregnt.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\BACREGNT\bacregnt.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP293.tmp" 
+Creating command line "link.exe user32.lib gdi32.lib advapi32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/bacregnt.pdb" /debug /machine:I386 /out:"Debug/bacregnt.exe" /pdbtype:sept  ".\Debug\bacregnt.obj" ".\Debug\bacregnt.res"" 
+Compiling resources...
+Compiling...
+bacregnt.c
+Linking...
+
+
+
+bacregnt.exe - 0 error(s), 0 warning(s)

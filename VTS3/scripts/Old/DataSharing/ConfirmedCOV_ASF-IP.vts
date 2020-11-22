@@ -1,0 +1,284 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Confirmed Change of Value (COV) Notification Service Initiation Tests
+  ;	COV Notification from an Analog Input, Analog Output, and Analog Value
+  ;	Object Status Flags Property
+  ;
+  ;  ConfirmedCOV_ASF.vts	CoCOVddmmyy-02.vts
+  ;
+  ;  Ver 1.0	03/22/01	P. Bowen	Initial version
+  ;  Ver 1.1	05/27/01	P. Bowen	Made LIFETIME = 0 secs
+  ;
+  ;  Purpose: This test case verifies that the IUT can initiate 
+  ;	ConfirmedCOVNotification service requests conveying a change of the 
+  ;	Status_Flags property of Analog Input, Analog Output, and Analog Value 
+  ;	objects.
+  ;  
+  ;  Note: the following tests should be executed before running this test:
+  ;	ReadProperty Service Execution Tests
+  ;	WriteProperty Service Execution Tests
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Confirmed COV Notification Test - Analog Object Status Flags Property
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+  TD_IP = 10.10.10.36
+
+  OBJECT1 = Analog-Value, 1	; Object which is the subject of the status flag tests
+  
+  PID = 11			; Subscriber Process Identifier
+  LIFETIME = 0			; Subscription lifetime in secs (0 = indefinite)
+  WRITE_PRIORITY = 1		; Priority for writing changes
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  
+  --IUT_IP = 10.10.10.100
+  IUT_IP = 208.6.162.35
+
+  INVOKEID_1 = 3		; InvokeID for first confirmed COV notification
+  INVOKEID_2 = 4		; InvokeID for second confirmed COV notification
+	                            
+  ;-------------------------------------------------------------------------------------
+ 
+   SECTION Confirmed COV Notification Test - Analog Object Status Flags Property
+
+  -- This test takes place across test steps #1a - #1e so the TD can be manually 
+  -- paused between tests. This is necessary since the COV Notifications must be 
+  -- verified manually.
+
+  -- Configuration Requirements: At the beginning of the test, the Out-Of-Service 
+  -- property shall have a value of FALSE.
+
+  -- Test Concept: A subscription for COV notifications is established. The Status_Flags 
+  -- property of the monitored object is then changed and a notification shall be 
+  -- received. The value of the Status-Flags property can be changed by using the 
+  -- WriteProperty service or by another means. For some implementations writing to 
+  -- the Out_Of_Service property will accomplish this task. For implementations where
+  -- it is not possible to write to Status_Flags or Out_Of_Service, the vendor shall
+  -- provide an alternative trigger mechanism to accomplish this task. All of these
+  -- methods are equally acceptable.
+
+  -- Test Steps:	
+  --	REPEAT X = (one supported object of each type from the set Analog Input, 
+  --		Analog Output, and Analog Value) DO {
+  --	1. TRANSMIT SubscribeCOV-Request,
+  --		'Subscriber Process Identifier' = (any value > 0 chosen by the TD),
+  --		'Monitored Object Identifier' =	X,
+  --		'Issue Confirmed Notifications' = TRUE,
+  --		'Lifetime' = 0
+  --	2. RECEIVE BACnet-SimpleACK-PDU
+  --	3. RECEIVE ConfirmedCOVNotification-Request,
+  --		'Subscriber Process Identifier' = (the same value used in step 1),
+  --		'Initiating Device Identifier' = IUT,
+  --		'Monitored Object Identifier' =	X,
+  --		'Time Remaining' = 0,
+  --		'List of Values' = (the initial Present_Value and initial Status_Flags)
+  --	4. TRANSMIT BACnet-SimpleACK-PDU
+  --	5. WRITE X, Out_Of_Service = TRUE | WRITE X, Status_Flags = (a value that 
+  --		differs from "initial Status_Flags") | MAKE (Status_Flags = any 
+  --		value that differs from "initial Status_Flags")
+  --	6. IF (WriteProperty is used in step ) THEN
+  --		RECEIVE BACnet-SimpleACK-PDU
+  --	7. BEFORE  NotificationFailTime
+  --		RECEIVE ConfirmedCOVNotification-Request,
+  --			'Subscriber Process Identifier' = (the same value used in step 1),
+  --			'Initiating Device Identifier' = IUT,
+  --			'Monitored Object Identifier' =	X,
+  --			'Time Remaining' = 0,
+  --			'List of Values' = (the initial Present_Value and new Status_Flags)
+  --	8. TRANSMIT BACnet-SimpleACK-PDU
+  --	9. TRANSMIT SubscribeCOV-Request,
+  --		'Subscriber Process Identifier' = (the same value used in step 1),
+  --		'Monitored Object Identifier' =	X
+  --	10.RECEIVE BACnet-SimpleACK-PDU
+  --	11. IF (Out_Of_Service was changed in step 5) THEN
+  --		WRITE X, Out_Of_Service = FALSE
+  --		RECEIVE BACnet-SimpleACK-PDU
+  --	}
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Subscribe to COV and Receive Confirmed COV Notification
+
+  DEPENDENCIES None
+
+  REFERENCE (B) Confirmed COV Notification Service and (T) Confirmed COV Notification Test - AI/AO/AV SF Property
+
+  -- Steps #1 & 2: Subscribe to COV and Receive Simple ACK
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = SubscribeCOV
+      Unsigned = 0, PID			; Process-Identifier = PID
+      Object = 1, OBJECT1		; Object-Identifier = OBJECT1
+      Boolean = 2, TRUE			; Request confirmed notifications
+      Unsigned = 3, LIFETIME		; Subscribe for LIFETIME seconds
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = SubscribeCOV
+    )
+
+  --Step #3: Receive Confirmed COV Notification Request
+
+  --  AND (				; Can't control the timing of the IUT's
+  --    NETWORK = NET_1			; COV Notification Request so TD can't
+  --    DER = FALSE			; use this EXPECT statement
+  --    PDU = Confirmed-Request
+  --    Service = ConfirmedCOVNotification
+  --  )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1b Acknowledge COV Notification Request based on SubscribeCOV Request
+
+  DEPENDENCIES None
+
+  -- Step #4: Transmit Simple ACK
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      PDU = SimpleAck
+      InvokeID = INVOKEID_1
+      Service = ConfirmedCOVNotification
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1c Make Out-of-Service = TRUE and Receive COV Notification Request
+
+  DEPENDENCIES None
+
+  -- Steps #5 & 6: Make Out-of-Service = TRUE and Receive Simple ACK
+
+   SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = WriteProperty
+      Object = 0, OBJECT1
+      Property = 1, Out-of-Service
+      OpenTag 3
+        BOOLEAN = TRUE			; Make Out-of-Service = TRUE
+      CloseTag 3
+      Unsigned = 4, WRITE_PRIORITY	; Set Out-of-Service write priority
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+  -- Step #7: Before NotificationFailTime Receive COV Notification Request
+
+  --  AND (				; Can't control the timing of the IUT's
+  --    NETWORK = NET_1			; COV Notification Request so TD can't
+  --    DER = FALSE			; use this EXPECT statement
+  --    PDU = Confirmed-Request
+  --    Service = ConfirmedCOVNotification
+  --  )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1d Acknowledge COV Notification Request
+
+  DEPENDENCIES None
+
+  -- Step #8: Transmit Simple ACK
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      PDU = SimpleAck
+      InvokeID = INVOKEID_2
+      Service = ConfirmedCOVNotification
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1e Send Unsubscribe COV Request and Make Out-of-Service = FALSE
+
+  DEPENDENCIES None
+
+  -- Steps #9 & 10: Send Unsubscribe COV Request message to IUT and Receive Simple ACK
+  
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = SubscribeCOV		; Cancel COV Subscription request
+      Unsigned = 0, PID			; Process-Identifier = PID
+      Object = 1, OBJECT1		; Object-Identifier = OBJECT1
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = SubscribeCOV
+    )
+
+  -- Step #11: Make Out-of-Service = FALSE and Receive Simple ACK
+
+   SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = WriteProperty
+      Object = 0, OBJECT1
+      Property = 1, Out-of-Service
+      OpenTag 3
+         BOOLEAN = FALSE		; Make Out-of-Service = FALSE
+      CloseTag 3
+      Unsigned = 4, WRITE_PRIORITY	; Set Out-of-Service write priority
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+    )

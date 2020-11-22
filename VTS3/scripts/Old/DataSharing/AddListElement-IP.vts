@@ -1,0 +1,141 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Positive AddListElement Service Execution Tests
+  ;
+  ;  AddListElement.vts	Addlistmmddyy.vts
+  ;
+  ;  Ver 1.0	03/02/01	P. Bowen
+  ;
+  ;  Purpose: This test group will verify correct execution of AddListElement
+  ;	      service requests under circumstances where the service is expected
+  ;	      to be successfully completed.
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum..
+  ;-----------------
+ 
+  SETUP Positive AddListElement Service Execution Tests
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+	
+  TD_IP = 10.10.10.2
+ 
+  OBJECT1 = Device, 245146
+  OBJECT2 = Device, 8001
+  OBJECT3 = Device, 8002
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  
+  IUT_IP = 208.6.162.35		; Address of the IUT
+
+  ;-------------------------------------------------------------------------------------
+
+  SECTION Positive AddListElement Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1 -- Add List Element
+
+  DEPENDENCIES none
+
+  REFERENCE (B) Object Access Services - AddListELement Service
+
+  -- Step #1: Verify (read) the Time-Synchronization-Recipients property for the Device object
+   
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+	DER = TRUE
+      	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 480
+	InVokeID = 3
+      	PDU = Confirmed-Request
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Time-Synchronization-Recipients
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+      	DER = FALSE
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Time-Synchronization-Recipients
+      	OpenTag 3
+		AL = {Time-Synchronization-Recipients} 	; test will pass only if list is initially empty
+      	CloseTag 3
+    )
+
+  -- Step #2: Write a new list of devices to the Time-Synchronization-Recipients
+  -- property value and receive a simple acknowledgement
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+	DER = TRUE
+      	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	PDU = Confirmed-Request
+      	Service = AddListElement
+      	Object = 0, OBJECT1
+      	Property = 1, Time-Synchronization-Recipients
+      	AL = X'3E0C02001F410C02001F423F'	; write device list ((Device, 8001), (Device, 8002))
+ ;     	OpenTag 3
+ ;		BACnetObjectIdentifier = OBJECT2, OBJECT3 ; this statement doesn't work in VTS V2.27
+ ;     	CloseTag 3
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = SimpleAck
+      	Service = AddListElement
+      )
+
+  -- Step #4: Verify the values written to the IUT 
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+	DER = TRUE
+      	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	PDU = Confirmed-Request
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Time-Synchronization-Recipients
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Time-Synchronization-Recipients
+      AL = X'3E0C02001F410C02001F423F'		; test passes if ((Device, 8001), (Device, 8002)) is read back
+;      OpenTag 3
+;         AL = {Time-Synchronization-Recipients}; this statement doesn't work in VTS V2.27
+;      CloseTag 3
+    )

@@ -1,0 +1,766 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>Using NALSERV32</title>
+</head>
+<body>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="NALSERV32">
+	<param name="Keyword" value="NALSERV32.INI">
+	<param name="Keyword" value="BACnet client">
+	<param name="Keyword" value="client">
+	<param name="Keyword" value="configure">
+	<param name="Keyword" value="port">
+	<param name="Keyword" value="active">
+	<param name="Keyword" value="passive">
+	<param name="Keyword" value="passive server">
+	<param name="Keyword" value="whoIs">
+	<param name="Keyword" value="iAm">
+	<param name="Keyword" value="readProperty">
+	<param name="Keyword" value="timeSynchronization">
+	<param name="Keyword" value="NALSERV32 Status Window">
+	<param name="Keyword" value="UsePTP">
+	<param name="Keyword" value="UseMSTP">
+	<param name="Keyword" value="promiscuous">
+	<param name="Keyword" value="ARCNET">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>Using NALSERV32</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="3" align="right">
+	<a href="testing.html"><img src="prev.gif" border="0" width="20" height="20" alt="previous"></a><a href="mstp.html"><img src="next.gif" border="0" width="20" height="20" alt="next"></a><a href="home.html"><img src="home.gif" border="0" width="20" height="20" alt="home"></a>
+	</td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	<p>
+	<a href="#overview">NALSERV32 Functions</a><br>
+	<a href="#setup">Setting up NALSERV32</a><br>
+    <a href="#config">Using the NALSERV32 Configuration Dialog</a><br>
+    <a href="#nalserv32ini">NALSERV32.INI</a><br>
+    <a href="#using">Using NALSERV32</a><br>
+    </p>
+	<p>
+	<a name="overview"></a><b>NALSERV32 Functions</b><br>
+	NALSERV32.DLL provides the BACnet client application and network layer managment for VTS 
+	using up to four ports to interface to BACnet devices through the 
+	data link/physical layers. The types of ports supported by NALSERV32 are:
+	<ul>
+	<li>Up to two Ethernet and/or ARCNET adapters in any combination
+	<li>Up to one BACnet MS/TP port
+	<li>Up to one BACnet PTP port
+	</ul>
+	NALSERV32 can be configured to act as an active or passive BACnet device. As 
+	an active BACnet device, NALSERV32 acts on VTS's behalf to:
+	<ul>
+	<li>Respond to ReadProperty-Requests for VTS's device object
+	<li>Respond to Who-Is-Requests with I-Am-Requests
+	<li>Initiate periodic Who-Is-Requests and I-Am-Requests
+	<li>Initiate periodic TimeSynchronization-Requests
+	</ul>
+	NALSERV32 performs all BACnet segmentation on incoming and outgoing packets, so VTS 
+	can see and provide NPDUs atomically to NALSERV32 no matter how large. NALSERV sends 
+	and receives the appropriate segmented requests/responses and segment acks relieving VTS of 
+	having to deal with segmentation.
+	</p>
+	<p>
+	NALSERV32 can be configured to act promiscuously and accept and report <b>all</b> BACnet 
+	packets to <b>all</b> BACnet devices to VTS. In the non-promiscuous mode, NALSERV32 accepts 
+    only BACnet packets sent to its Ethernet/ARCNET adapter, its MS/TP node and when 
+	connected to a BACnet PTP device. NALSERV32 always accpets and reports broadcast BACnet 
+	packets.
+	</p>
+	<p>
+	<a name="setup"></a><b>Setting up NALSERV32</b><br>
+	When NALSERV32 is initialized by VTS, its configuration parameters are read from 
+	the <b>NALSERV32.INI</b> file which is stored in the <b>\Windows</b> or <b>\WINNT</b> 
+	folder. If there is no NALSERV32.INI file, the parameters which would have been 
+	defined in it are set to preset default values by NALSERV32.DLL.
+	</p>
+	<p>
+	NALSERV32's operating parameters, which include the properties for VTS/NALSERV32's 
+	device object, can be changed using two methods:
+	<ul>
+	<li><a href="#config">Using the NALSERV32 configuration dialog</a>
+	<li><a href="#nalserv32ini">Changing the parameters in NALSERV32.INI</a>
+	</ul>
+	</p>
+	<p>
+	<a name="config"></a><b>Using the NALSERV32 Configuration Dialog</b><br>
+	In order to use the configuration dialog, you must click the Configure menu of the 
+	NALSERV32 status window:
+	</p>
+	<p>
+	<img src="nalserv1.jpg">
+	</p>
+	<p>
+	After which the configuration dialog is displayed:
+	</p>
+	<p>
+	<img src="nalserv2.jpg">
+	</p>
+	<p>
+	<a name="nalserv32ini"></a><b>NALSERV32.INI</b><br>
+    NALSERV32.INI is a plain-text file that can be modified using any plain-text editor 
+    such as Notepad. A sample NALSERV.INI is shown below:
+ 	</p>
+	<p>
+	<img src="nalserv3.jpg">
+	</p>
+    <p>
+	The NALSERV32 parameters defined in the configuration dialog and NALSERV32.INI are 
+	described in the table below:
+	</p>
+  </tr>
+</table>
+</p>
+<p>
+<table border="1" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top" bgcolor="#CCCCCC">
+	  <font face="arial, helvetica" color="#000000">
+	  <b>Configuration Dialog</b>
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top" bgcolor="#CCCCCC">
+	  <font face="arial, helvetica" color="#000000">
+	  <b>NALSERV32.INI</b>
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top" bgcolor="#CCCCCC">
+	  <font face="arial, helvetica" color="#000000">
+	  <b>Description</b>
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="center" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  --
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  nalsdir
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The path on which nalserv support files are stored. Default=
+	  same path as NALSERV32.DLL.
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="center" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  --
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  UsePTP
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  If set to Yes, NALSERV32 will initialize PTP operation through PTP.DLL and 
+	  manage requests and responses on the PTP port. Default=No.
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="center" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  --
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  UseMSTP
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  If set to Yes, NALSERV32 will initialize MS/TP operation through MSTP.DLL and 
+	  manage requests and responses on the MSTP port. Default=No.
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Minimize Status Window?
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  MinimizeStatus
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  If checked/Yes, display NALSERV32 as an icon in the Windows taskbar. 
+	  Default=Yes. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Inhibit Transmits?
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  InhibitTX
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  If checked/Yes, inhibit the transmitting of packets from NALSERV32. 
+	  Default=No. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Passive Server?
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Passive
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  If checked/Yes, NALSERV32 does not respond to ReadProperty-Requests for its 
+	  Device Instance and does not respond to Who-Is-Requests. 
+	  Default=Yes. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Promiscuous RX?
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Promiscuous
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  If checked/Yes, NALSERV32 acts promiscuously and reports all packets to 
+	  all BACnet devices to VTS. This is valid only for Ethernet interfaces. 
+	  For ARCnet, the promiscuous option must be set through the 
+	  Windows-Network Control Panel by setting the Promiscuous 
+	  property from the ARCNET adapter's Advanced Property tab. 
+	  Default=Yes. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Time Sync Interval
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  TimeSynchInterval
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The interval in minutes for which NALSERV32 periodically broadcasts BACnet 
+	  TimeSynchronization-Requests. If this value is 0, 
+	  TimeSynchronization-Requests are not sent periodically. Default=0. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  WhoIs/IAm Interval
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  WhoIsIAmInterval
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The interval in minutes for which NALSERV32 periodically broadcasts BACnet whoIs 
+	  and I-Am-Requests. If this value is 0, Who-Is-Requests and I-Am-Requests are 
+	  not sent periodically. Default=0. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Our Peername
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  OurPeername
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The 24-character maximum Object_Name property of the VTS device object. 
+	  Default=blank. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Our Vendorname
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  OurVendorName
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The 64-character maximum Vendor_Name property of the VTS device object. 
+	  Default=PolarSoft&#174 Inc. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Our Vendor ID
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  OurVendorID
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The Vendor_Identifier for the VTS device object. 
+	  Default=4. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Our Device Instance
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  OurInstance
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The instance of the Object_Identifier property of the VTS device object. 
+	  Default=1. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Tseg
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  BACnetTseg
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The value in seconds for the APDU_Segment_Timeout property of the VTS device 
+	  object. Default=2. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Tout
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  BACnetTout
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The value in seconds for the APDU_Timeout property of the VTS device 
+	  object. Default=60. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Nretry
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  BACnetNretry
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The value in for the Number_of_APDU_Retries property of the VTS device 
+	  object. Default=3. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Window Size
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  WindowSize
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The value in for the ProposedWindowSize variable for segmented requests. 
+	  Default=1.
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Segmented Receive?
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  SegmentedRX
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  If checked/Yes, NALSERV32 will receive BACnet segmented packets. 
+	  Default=Yes. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Segmented Transmit?
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  SegmentedTX
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  If checked/Yes, NALSERV32 will transmit BACnet segmented-packets. 
+	  Default=Yes. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  TX Length
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  MaxTXapduLen
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The maximum size of an unsegmented Ethernet APDU that NALSERV32 will transmit. 
+	  Default=1470. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  RX Length
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  MaxRXapduLen
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The value for the Max_APDU_Length_Accepted property of the VTS device 
+	  object. Default=1470. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  Maximum Size Assembled APDU
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  MaxSizeALapdu
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The maximum size of a totally assembled APDU that requires BACnet segmentation. 
+	  This parameter applies to both transmitted and received APDUs. Default=8192.
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  PTP Source Address:
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  <img src="pixel.gif"> 
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  <img src="pixel.gif"> 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  SNET
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  PTPsnet 
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The decimal source routing SNET to be included in PTP NPDUs. 
+	  Default=4660 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  SNET
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  PTPslen 
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The decimal source routing SLEN to be included in PTP NPDUs. 
+	  Default=1. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  SNET
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  PTPsadr 
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  The hex source routing SADR to be included in PTP NPDUs. 
+	  Default=0. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  MSTP Properties:
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  <img src="pixel.gif"> 
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  <img src="pixel.gif"> 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  MaxMaster
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  MaxMaster 
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  If non-zero, this parameter is used to override the MS/TP MaxMaster 
+	  varibale normally defined in MSTP.INI. If this parameter is a zero 
+	  value, then NALSERV32 gets its MaxMaster value from MSTP.DLL. This 
+	  parameter corresponds to the MaxMaster property of the VTS device 
+	  object. Default=0. 
+	  </font>
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td width="170" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  MaxInfoFrames
+	  </font>
+	</td>
+    <td width="160" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  MaxInfoFrames 
+	  </font>
+	</td>
+    <td width="245" align="left" valign="top">
+	  <font face="arial, helvetica" color="#000000">
+	  If non-zero, this parameter is used to override the MS/TP MaxInfoFrames 
+	  varibale normally defined in MSTP.INI. If this parameter is a zero 
+	  value, then NALSERV32 gets its MaxInfoFrames value from MSTP.DLL. This 
+	  parameter corresponds to the MaxInfoFrames property of the VTS device 
+	  object. Default=0. 
+	  </font>
+	</td>
+  </tr>
+</table>
+</p>
+<p>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+	<p>
+	<a name="using"></a><b>Using NALSERV</b><br>
+	When you start VTS, it initializes NALSERV32. NALSERV32 provides its own 
+	status dialog and is initially minimized as an icon in the Windows taskbar in 
+	the bottom right-hand corner of your display screen.
+	</p>
+	<p> 
+	<img src="overview_toolbar.jpg" border="0">
+    </p>
+	<p>
+	Clicking on the NALSERV32 icon restores its status dialog as shown below. 
+	</p>
+	<p>
+	<img src="overview_nalserv.jpg" border="0">
+	</p>
+	<p>
+	The NALSERV32 dialog is used to indicate protocol activity in the form of BACnet packets in hex format. 
+	When you close the NALSERV32 window, it returns to its iconic form in the Windows taskbar. 
+	The NALSERV32 dialog is closed and disappears from the taskbar when you exit VTS. 
+	</p>
+	<p>
+	The areas of the status dialog are described below:
+	</p>
+	<p>
+	<ul>
+	<li><b><i>Menus:</b></i><br>
+		<img src="nalserv5.jpg"><br>
+		<img src="nalserv6.jpg"><br>
+		<img src="nalserv7.jpg">
+	<li><b><i>Status Log</i></b> indicates critical NALSERV32 events and diagnostics including:
+      <ul>
+	  <li>startup of NALSERV32 including adapter bindings
+	  <li>failed transmissions
+	  <li>listener thread termination due to error
+	  <li>received NPDUs ignored due to:
+	    <ul>
+		<li>invalid packet length
+		<li>unsupported/invalid BACnet version
+		<li>no free space available
+		<li>no invoke IDs available
+		<li>unknown invoke ID
+		</ul>
+	  </ul>
+	<li><b><i>BACnet Packets</i></b> shows BACnet received and transmitted packets including MS/TP and PTP 
+	frames in hex. You can optionally select that the network layer be interpreted using the View 
+	menu.
+	<p>
+	The packet displays are described below:<br>
+	<img src="nalserv4.jpg">
+	</p>
+	<li><b><i>Outstanding client/server InvokeIds</i></b> indicates the number of client (cid) and 
+	server (sid) Invoke IDs that are being processed by NALSERV32.
+	<li><b><i>MAC Stats</i></b> indicates MAC level and error statistics.
+	    <ul>
+		<li><b><i>RX</i></b> indicates the number of packets received
+		<li><b><i>TX</i></b> indicates the number of packets transmitted
+		<li><b><i>TO</i></b> indicates the number of packets transmitted for which there 
+		was no response
+		<li><b><i>ERROR</i></b> indicates the number of packets which had errors
+		<li><b><i>NOMA</i></b> indicates the number of packets received for which no MAC-layer 
+		buffers were available
+		<li><b><i>MAUSED</i></b> indicates the current number of MAC-layer buffers used
+		<li><b><i>MAXUSED</i></b> indicates the maximum number of MAC-layer buffers used
+		</ul>
+	</ul>
+	</p>
+ 	<a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	<a href="mstp.html">Go to the <b>Next</b> VTS Help Topic.</a><br>
+	<a href="testing.html">Go to the <b>Previous</b> VTS Help Topic.</a><br>
+	</p>
+	</font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

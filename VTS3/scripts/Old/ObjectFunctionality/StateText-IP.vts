@@ -1,0 +1,229 @@
+;---------------
+; Number_Of_States and State_Text
+;
+; Ver 1.0  29 May 2002 Steve Karg  Initial version
+;
+; Purpose: 
+; (From 135.1P, 7.3.2.16.2)
+; To verify that the size of the State_Text array corresponds to the 
+; Number_Of_States.
+;
+; In the REFERENCE section, "(B)" refers to the BACnet standard 
+; and "(T)" refers to the testing addendum.
+;---------------
+
+SETUP Number_Of_States and State_Text
+
+;-------------------------------------------------------------------------
+;MAC Address Setup
+;-------------------------------------------------------------------------
+;IUT_MAC = 05
+;MY_MAC  = 000000B0D0E911F6
+
+ IUT_IP = 10.10.10.100
+ TD_IP = 10.10.10.36
+
+;IUT_MAC = <address> ; MAC Address of the device you are testing.
+;MY_MAC  = <address> ; MAC Address of your VTS test machine.
+; Replace <address> with the actual MAC address
+; ARCNET MAC is 2 bytes
+; MS/TP MAC is 2 bytes
+; ETHERNET MAC is 16 bytes
+; VTS2 requires an even number of hex characters.
+; VTS3 requires a valid C-style constant (hex is 0x01, for example)
+;VTS2
+
+;NET_1 = 1, ETHERNET, 0 ;Network setup for VTS Test Machine - Net, Type, Port
+
+;Type can be ARCNET, MS/TP, ETHERNET
+;VTS3
+;NET_1 = "TD"
+;NET_1 = <"name"> ;Network setup for VTS Test Machine - Net, Type, Port
+; Replace <name> with the name of a port that is user defined in VTS3
+
+;-------------------------------------------------------------------------
+;Routing Setup
+;  by default IUT and TD are on the same Ethernet segment
+;------------------------------------------------------------------------- 
+;
+; Set the DNET of the remote network 
+; Comment out the following line if there is no routing (place a -- before it)
+-- DNET_REMOTE_NET  = <DNET>,<type>     
+
+-------------------------------------------------------------------------
+;DNET_REMOTE_NET = 4885, MS/TP      
+-------------------------------------------------------------------------
+
+; Replace <DNET> with the destination network number
+; Replace <type> with ARCNET, MS/TP, ETHERNET
+;
+; Every SEND block within the script must contain 
+; either Option 1: or Option 2: 
+; (See Script Customization help for more inforamtion)
+;
+;    Option 1:  Both the Device being tested and the VTS machine 
+;               are on the same segment
+; DESTINATION = IUT_MAC        
+;
+;   
+;    Option 2:  Device being tested is on an MSTP segment and the 
+;               VTS machine is on an Ethernet segment
+; DA = Broadcast
+; DNET = DNET_REMOTE_NET
+; DADR = IUT_MAC
+;
+;------------------------------------------------------------------------ 
+
+
+;-------------------------------------------------------------------------
+; Variable Setup and TEST NOTES (Combined with Test Notes)
+;------------------------------------------------------------------------- 
+;
+; Each object and instance below must match the object or property in the 
+; EPICS. These variables are referenced within the body of this script.
+;
+; Notes on Hardcoding and other changes needing to be made outside of the 
+; setup section including hard coded objects and properties 
+; 
+; TTTTT Items marked with TTTTT must be manually verified in the trace. 
+; You can search with the TTTTT string to find manually verified tests.
+;
+; BBBBB Items marked with BBBBB require manual changes to be made in the 
+; body of the script. You can search with the BBBBB to find these locations.
+
+-- TEST #1 -- Number_Of_States and State_Text
+
+;MULTISTATE_OBJECT_1 = <object>,<instance>
+
+---------------------------------------------------------------
+MULTISTATE_OBJECT_1 = MULTISTATE-INPUT,1
+---------------------------------------------------------------
+
+; Replace <object> with MULTISTATE-OUTPUT or MULTISTATE-VALUE
+; Replace <instance> with the instance number of the object
+
+SECTION Number_Of_States and State_Text
+
+-- Configuration Requirements:
+
+-- IUT is on the same network as TD
+
+;-----------------------------------------------------------------------------
+TEST #1  Number_Of_States and State_Text
+;-----------------------------------------------------------------------------
+
+-- Purpose: To verify that the size of the State_Text array corresponds
+-- to the Number_Of_States.
+
+-- Test Concept: Read the Number_Of_States property and the State_Text array 
+-- index 0 is the same number.
+
+-- Dependencies: 
+--   ReadProperty Service Execution Tests, 9.15
+
+; note: if you place some numbers in DEPENDENCIES, VTS will try to do something
+; with the numbers, and will fail the test if it can't find them.
+;DEPENDENCIES 9.15
+DEPENDENCIES none
+
+REFERENCE (B) 12.15.11, 12.15.12 (T) 7.3.2.16.2
+
+------------------------
+-- Test Configuration --
+------------------------
+-- none
+
+------------------------
+-- Test Execution     --
+------------------------
+-- Test Steps:
+
+-- Step #1: TRANSMIT ReadProperty-Request
+
+    SEND (
+      Network = "Untitled"
+      ; Every SEND block within the script must contain 
+      ; either DESTINATION or DA,DNET,DADR
+      DA = IUT_IP
+      ;DA = Broadcast
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      ;DNET =65535                         ;DNET_REMOTE_NET
+      ;DADR = IUT_MAC
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = ReadProperty
+      Object = 0, MULTISTATE_OBJECT_1
+      Property = 1, Number-Of-States
+      )
+
+-- Step #2: RECEIVE ReadProperty-ACK
+
+   EXPECT (  
+      Network = "Untitled"
+      DER = FALSE
+      ;DA = Broadcast
+      SA = IUT-IP
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, MULTISTATE_OBJECT_1
+      Property = 1, Number-Of-States
+      OpenTag 3
+        ; test says to expect "any integer greater than 0"
+        Unsigned > 0 ;any integer greater than 0
+        ; just compare to EPICS since I couldn't find a way 
+        ; to store the value received by this step for the next step.
+        ; PIZZA - gives me a warning that Object/Property is not in EPICS
+        ;AL = {Number-Of-States}
+      CloseTag 3
+      )
+
+Test #1.3 Step #3: VERIFY State_Text = (the number of states from step 2), 
+--          ARRAY INDEX = 0
+
+    SEND (
+      Network = "Untitled"
+      ; Every SEND block within the script must contain 
+      ; either DESTINATION or DA,DNET,DADR
+      DA = IUT_IP
+      ;DA = Broadcast
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      DER = TRUE
+      ;DNET = 65535                       ;DNET_REMOTE_NET
+      ;DADR = IUT_MAC
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 2
+      Service = ReadProperty
+      Object = 0, MULTISTATE_OBJECT_1
+      Property = 1, State-Text
+      Unsigned = 2, 0 ; array index 
+      )
+
+    EXPECT (     
+      Network = "Untitled"
+      DER = FALSE
+      ;DA = BROADCAST
+      SA = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, MULTISTATE_OBJECT_1
+      Property = 1, State-Text
+      Unsigned = 2, 0 ; array index 
+      OpenTag 3
+        Unsigned > 0 ;any integer greater than 0
+        -- Tester: verify that this is the same as Number of States
+        ;AL = {Number-Of-States}
+      CloseTag 3
+      )
+
+;-----------------------------------------------------------------------------
+;End of Test Script
+

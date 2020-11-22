@@ -1,0 +1,41 @@
+---------------------------------
+-->From port 0, snet 0:00006503141D
+-->Local:00E0C9000106
+>
+00 00 00 07 			--atomicFileWrite(Last)(mr50): invID=0
+C4 02 80 00 01 			--...fileIdentifier=(file,1)
+0E 				--...accessMethod is streamAccess=(
+31 00 				--      fileStartPosition=0
+65 3C 01 02 03 04 05 06 07 08   --      fileData=X'010203040506070809101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960'
+09 10 11 12 13 14 15 16 17 18 
+19 20 21 22 23 24 25 26 27 28 
+29 30 31 32 33 34 35 36 37 38 
+39 40 41 42 43 44 45 46 47 48 
+49 50 51 52 53 54 55 56 57 58 
+59 60 
+				--      "{01}{02}{03}{04}{05}{06}{07}{08}{09}{10}{11}{12}{13}{14}{15}{16}{17}{18}{19} !"#$%&'()0123456789@ABCDEFGHIPQRSTUVWXY`"
+0F 				--      )
+---------------------------------
+-->From port 0, snet 0:00006503141D
+-->Local:00E0C9000106
+>
+10 04 				--unconfirmedPrivateTransfer
+09 32 				--...vendorID=50
+19 03 				--...serviceNumber=3
+2E 				--...serviceParameters=(
+				--      )
+---------------------------------
+-->From port 0, snet 0:00006503141D
+-->Local:00E0C9000106
+>
+				--readPropertyMultiple(Last)(mr50): invID=1
+				--...listOfReadAccessSpecifications=(
+00 00 01 0E 			--      objectIdentifier=(analog-output,1)
+				--      listOfPropertyReferences=(
+0C 00 40 00 01 			--            priority-array[0]
+1E 				--            )
+09 57 19 00 			--      )
+>
+1F 				--
+>
+				--

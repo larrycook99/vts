@@ -1,0 +1,1762 @@
+  ;-------------------------------------------------------------------------------------
+  ;  RPM MAX Service Execution Tests(//Read single propertie from single object as maxed times)
+  ;    Draft
+  ;  RPM MAX yymmdd.vts
+  ;
+  ;	Ver 1.0		10/17/01	BradSp  	Initial Version
+  ;	
+  ;  Purpose: This test case verifies that IUT does not arbitrarily restrict the number 
+  ;           of properties that can be read using a single ReadPropertyMultiple request.
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and "(T)" refers 
+  ;	to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Positive ReadProperty Tests
+
+  IUT_IP = 10.10.10.100:0xBAC0
+  
+  OBJECT1 = Device, 1967	; DEVICE OBJECT
+  OBJECT2 = analog-VALUE, 1	; Object which is the subject of the Read Prop tests
+  OBJECT3 = analog-VALUE, 2	; Object which is the subject of the Read Prop tests
+  OBJECT4 = File, 104		; Object which is the subject of the Read Prop tests
+
+  INDEX0 = 0		; Index used in any test to read array length
+  INDEX1 = 1		; Array index for test #1g "Read a Single Element of an Array"
+  INDEX2 = 4		; Array index for test #1j "Read Property - Read Null Values"
+  ;------------------------------------------------------------------------------------- 
+ SECTION ReadProperty Service Execution Tests
+
+ -- Test Concept: The object-identifier is read from the device object as many times as can be conveyed in the largest request 
+ -- accepted by the IUT or as can be returned in the largest response generatable by the IUT. The calculation of the maximum 
+ -- request/response size shall be based on the IUTs MaxAPDU size and maximum segments per request/response.
+
+  TEST #1a Reading object-identifier from a Single Object 
+
+    DEPENDENCIES None
+    REFERENCE (B) ReadPropertyMultiple Service and (T) Reading a Single Property of a Single Object
+ 
+ -- Test Steps:
+
+ -- 1.	TRANSMIT ReadPropertyMultiple-Request,
+ --		'Object Identifier' =	(the IUT's device object),
+ --		'Property Identifier' =	Object-Identifier,
+ --		'Property Identifier' = 	Object-Identifier,
+ --		'Property Identifier' = 	Object-Identifier,
+ --		…
+ --		'Property Identifier' = 	Object-Identifier
+ -- 2.	RECEIVE ReadPropertyMultiple-ACK,
+ -- 		'Object Identifier' = 	(the IUT's device object),
+ -- 		'Property Identifier' =	Object-Identifier,
+ --		'Property Value' =	(the IUT's device object),
+ --		'Property Identifier' = 	Object-Identifier,
+ --		'Property Value' =	(the IUT's device object),
+ --		'Property Identifier' = 	Object-Identifier,
+ --		'Property Value' =	(the IUT's device object),
+ --		…
+ --		'Property Identifier' = 	Object-Identifier,
+ --		'Property Value' =	(the IUT's device object)
+
+--step 1:test pass if not above maximum
+SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0           ;not One Segment of a Confirmed-Service Request
+      SegResp = 0          
+      MaxResp = 1476
+      InvokeID = 1
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1
+      OpenTag 1
+Property = 0, Object-Identifier	;1
+Property = 0, Object-Identifier	;2
+Property = 0, Object-Identifier	;3
+Property = 0, Object-Identifier	;4
+Property = 0, Object-Identifier	;5
+Property = 0, Object-Identifier	;6
+Property = 0, Object-Identifier	;7
+Property = 0, Object-Identifier	;8
+Property = 0, Object-Identifier	;9
+Property = 0, Object-Identifier	;10
+Property = 0, Object-Identifier	;11
+Property = 0, Object-Identifier	;12
+Property = 0, Object-Identifier	;13
+Property = 0, Object-Identifier	;14
+Property = 0, Object-Identifier	;15
+Property = 0, Object-Identifier	;16
+Property = 0, Object-Identifier	;17
+Property = 0, Object-Identifier	;18
+Property = 0, Object-Identifier	;19
+Property = 0, Object-Identifier	;20
+Property = 0, Object-Identifier	;21
+Property = 0, Object-Identifier	;22
+Property = 0, Object-Identifier	;23
+Property = 0, Object-Identifier	;24
+Property = 0, Object-Identifier	;25
+Property = 0, Object-Identifier	;26
+Property = 0, Object-Identifier	;27
+Property = 0, Object-Identifier	;28
+Property = 0, Object-Identifier	;29
+Property = 0, Object-Identifier	;30
+Property = 0, Object-Identifier	;31
+Property = 0, Object-Identifier	;32
+Property = 0, Object-Identifier	;33
+Property = 0, Object-Identifier	;34
+Property = 0, Object-Identifier	;35
+Property = 0, Object-Identifier	;36
+Property = 0, Object-Identifier	;37
+Property = 0, Object-Identifier	;38
+Property = 0, Object-Identifier	;39
+Property = 0, Object-Identifier	;40
+Property = 0, Object-Identifier	;41
+Property = 0, Object-Identifier	;42
+Property = 0, Object-Identifier	;43
+Property = 0, Object-Identifier	;44
+Property = 0, Object-Identifier	;45
+Property = 0, Object-Identifier	;46
+Property = 0, Object-Identifier	;47
+Property = 0, Object-Identifier	;48
+Property = 0, Object-Identifier	;49
+Property = 0, Object-Identifier	;50
+Property = 0, Object-Identifier	;51
+Property = 0, Object-Identifier	;52
+Property = 0, Object-Identifier	;53
+Property = 0, Object-Identifier	;54
+Property = 0, Object-Identifier	;55
+Property = 0, Object-Identifier	;56
+Property = 0, Object-Identifier	;57
+Property = 0, Object-Identifier	;58
+Property = 0, Object-Identifier	;59
+Property = 0, Object-Identifier	;60
+Property = 0, Object-Identifier	;61
+Property = 0, Object-Identifier	;62
+Property = 0, Object-Identifier	;63
+Property = 0, Object-Identifier	;64
+Property = 0, Object-Identifier	;65
+Property = 0, Object-Identifier	;66
+Property = 0, Object-Identifier	;67
+Property = 0, Object-Identifier	;68
+Property = 0, Object-Identifier	;69
+Property = 0, Object-Identifier	;70
+Property = 0, Object-Identifier	;71
+Property = 0, Object-Identifier	;72
+Property = 0, Object-Identifier	;73
+Property = 0, Object-Identifier	;74
+Property = 0, Object-Identifier	;75
+Property = 0, Object-Identifier	;76
+Property = 0, Object-Identifier	;77
+Property = 0, Object-Identifier	;78
+Property = 0, Object-Identifier	;79
+Property = 0, Object-Identifier	;80
+Property = 0, Object-Identifier	;81
+Property = 0, Object-Identifier	;82
+Property = 0, Object-Identifier	;83
+Property = 0, Object-Identifier	;84
+Property = 0, Object-Identifier	;85
+Property = 0, Object-Identifier	;86
+Property = 0, Object-Identifier	;87
+Property = 0, Object-Identifier	;88
+Property = 0, Object-Identifier	;89
+Property = 0, Object-Identifier	;90
+Property = 0, Object-Identifier	;91
+Property = 0, Object-Identifier	;92
+Property = 0, Object-Identifier	;93
+Property = 0, Object-Identifier	;94
+Property = 0, Object-Identifier	;95
+Property = 0, Object-Identifier	;96
+Property = 0, Object-Identifier	;97
+Property = 0, Object-Identifier	;98
+Property = 0, Object-Identifier	;99
+Property = 0, Object-Identifier	;100
+Property = 0, Object-Identifier	;1
+Property = 0, Object-Identifier	;2
+Property = 0, Object-Identifier	;3
+Property = 0, Object-Identifier	;4
+Property = 0, Object-Identifier	;5
+Property = 0, Object-Identifier	;6
+Property = 0, Object-Identifier	;7
+Property = 0, Object-Identifier	;8
+Property = 0, Object-Identifier	;9
+Property = 0, Object-Identifier	;10
+Property = 0, Object-Identifier	;11
+Property = 0, Object-Identifier	;12
+Property = 0, Object-Identifier	;13
+Property = 0, Object-Identifier	;14
+Property = 0, Object-Identifier	;15
+Property = 0, Object-Identifier	;16
+Property = 0, Object-Identifier	;17
+Property = 0, Object-Identifier	;18
+Property = 0, Object-Identifier	;19
+Property = 0, Object-Identifier	;20
+Property = 0, Object-Identifier	;21
+Property = 0, Object-Identifier	;22
+Property = 0, Object-Identifier	;23
+Property = 0, Object-Identifier	;24
+Property = 0, Object-Identifier	;25
+Property = 0, Object-Identifier	;26
+Property = 0, Object-Identifier	;27
+Property = 0, Object-Identifier	;28
+Property = 0, Object-Identifier	;29
+Property = 0, Object-Identifier	;30
+Property = 0, Object-Identifier	;31
+Property = 0, Object-Identifier	;32
+Property = 0, Object-Identifier	;33
+Property = 0, Object-Identifier	;34
+Property = 0, Object-Identifier	;35
+Property = 0, Object-Identifier	;36
+Property = 0, Object-Identifier	;37
+Property = 0, Object-Identifier	;38
+Property = 0, Object-Identifier	;39
+Property = 0, Object-Identifier	;40
+Property = 0, Object-Identifier	;41
+Property = 0, Object-Identifier	;42
+Property = 0, Object-Identifier	;43
+Property = 0, Object-Identifier	;44
+Property = 0, Object-Identifier	;45
+Property = 0, Object-Identifier	;46
+Property = 0, Object-Identifier	;47
+Property = 0, Object-Identifier	;48
+Property = 0, Object-Identifier	;49
+Property = 0, Object-Identifier	;50
+Property = 0, Object-Identifier	;51
+Property = 0, Object-Identifier	;52
+Property = 0, Object-Identifier	;53
+Property = 0, Object-Identifier	;54
+Property = 0, Object-Identifier	;55
+Property = 0, Object-Identifier	;56
+Property = 0, Object-Identifier	;57
+Property = 0, Object-Identifier	;58
+Property = 0, Object-Identifier	;59
+Property = 0, Object-Identifier	;60
+Property = 0, Object-Identifier	;61
+Property = 0, Object-Identifier	;62
+CloseTag 1
+    )
+------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+      
+  -- Step #2: Receive ReadPropertyMultiple ACK
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1
+      OpenTag 1
+Property = 2, Object-Identifier    ;1
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;2
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;3
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;4
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;5
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;6
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;7
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;8
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;9
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;10
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;11
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;12
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;13
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;14
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;15
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;16
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;17
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;18
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;19
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;20
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;21
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;22
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;23
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;24
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;25
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;26
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;27
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;28
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;29
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;30
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;31
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;32
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;33
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;34
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;35
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;36
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;37
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;38
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;39
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;40
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;41
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;42
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;43
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;44
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;45
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;46
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;47
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;48
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;49
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;50
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;51
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;52
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;53
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;54
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;55
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;56
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;57
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;58
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;59
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;60
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;61
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;62
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;63
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;64
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;65
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;66
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;67
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;68
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;69
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;70
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;71
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;72
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;73
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;74
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;75
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;76
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;77
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;78
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;79
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;80
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;81
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;82
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;83
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;84
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;85
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;86
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;87
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;88
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;89
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;90
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;91
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;92
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;93
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;94
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;95
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;96
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;97
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;98
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;99
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;100
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+
+Property = 2, Object-Identifier    ;1
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;2
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;3
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;4
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;5
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;6
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;7
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;8
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;9
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;10
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;11
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;12
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;13
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;14
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;15
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;16
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;17
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;18
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;19
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;20
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;21
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;22
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;23
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;24
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;25
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;26
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;27
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;28
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;29
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;30
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;31
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;32
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;33
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;34
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;35
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;36
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;37
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;38
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;39
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;40
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;41
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;42
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;43
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;44
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;45
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;46
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;47
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;48
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;49
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;50
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;1
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;2
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;3
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;4
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;5
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;6
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;7
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;8
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;9
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;1
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;2
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;3
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+
+CloseTag 1
+    )
+--step 2:verified if above maximum
+SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0           ;not One Segment of a Confirmed-Service Request
+      SegResp = 0          
+      MaxResp = 1476
+      InvokeID = 1
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1
+      OpenTag 1
+Property = 0, Object-Identifier	;1
+Property = 0, Object-Identifier	;2
+Property = 0, Object-Identifier	;3
+Property = 0, Object-Identifier	;4
+Property = 0, Object-Identifier	;5
+Property = 0, Object-Identifier	;6
+Property = 0, Object-Identifier	;7
+Property = 0, Object-Identifier	;8
+Property = 0, Object-Identifier	;9
+Property = 0, Object-Identifier	;10
+Property = 0, Object-Identifier	;11
+Property = 0, Object-Identifier	;12
+Property = 0, Object-Identifier	;13
+Property = 0, Object-Identifier	;14
+Property = 0, Object-Identifier	;15
+Property = 0, Object-Identifier	;16
+Property = 0, Object-Identifier	;17
+Property = 0, Object-Identifier	;18
+Property = 0, Object-Identifier	;19
+Property = 0, Object-Identifier	;20
+Property = 0, Object-Identifier	;21
+Property = 0, Object-Identifier	;22
+Property = 0, Object-Identifier	;23
+Property = 0, Object-Identifier	;24
+Property = 0, Object-Identifier	;25
+Property = 0, Object-Identifier	;26
+Property = 0, Object-Identifier	;27
+Property = 0, Object-Identifier	;28
+Property = 0, Object-Identifier	;29
+Property = 0, Object-Identifier	;30
+Property = 0, Object-Identifier	;31
+Property = 0, Object-Identifier	;32
+Property = 0, Object-Identifier	;33
+Property = 0, Object-Identifier	;34
+Property = 0, Object-Identifier	;35
+Property = 0, Object-Identifier	;36
+Property = 0, Object-Identifier	;37
+Property = 0, Object-Identifier	;38
+Property = 0, Object-Identifier	;39
+Property = 0, Object-Identifier	;40
+Property = 0, Object-Identifier	;41
+Property = 0, Object-Identifier	;42
+Property = 0, Object-Identifier	;43
+Property = 0, Object-Identifier	;44
+Property = 0, Object-Identifier	;45
+Property = 0, Object-Identifier	;46
+Property = 0, Object-Identifier	;47
+Property = 0, Object-Identifier	;48
+Property = 0, Object-Identifier	;49
+Property = 0, Object-Identifier	;50
+Property = 0, Object-Identifier	;51
+Property = 0, Object-Identifier	;52
+Property = 0, Object-Identifier	;53
+Property = 0, Object-Identifier	;54
+Property = 0, Object-Identifier	;55
+Property = 0, Object-Identifier	;56
+Property = 0, Object-Identifier	;57
+Property = 0, Object-Identifier	;58
+Property = 0, Object-Identifier	;59
+Property = 0, Object-Identifier	;60
+Property = 0, Object-Identifier	;61
+Property = 0, Object-Identifier	;62
+Property = 0, Object-Identifier	;63
+Property = 0, Object-Identifier	;64
+Property = 0, Object-Identifier	;65
+Property = 0, Object-Identifier	;66
+Property = 0, Object-Identifier	;67
+Property = 0, Object-Identifier	;68
+Property = 0, Object-Identifier	;69
+Property = 0, Object-Identifier	;70
+Property = 0, Object-Identifier	;71
+Property = 0, Object-Identifier	;72
+Property = 0, Object-Identifier	;73
+Property = 0, Object-Identifier	;74
+Property = 0, Object-Identifier	;75
+Property = 0, Object-Identifier	;76
+Property = 0, Object-Identifier	;77
+Property = 0, Object-Identifier	;78
+Property = 0, Object-Identifier	;79
+Property = 0, Object-Identifier	;80
+Property = 0, Object-Identifier	;81
+Property = 0, Object-Identifier	;82
+Property = 0, Object-Identifier	;83
+Property = 0, Object-Identifier	;84
+Property = 0, Object-Identifier	;85
+Property = 0, Object-Identifier	;86
+Property = 0, Object-Identifier	;87
+Property = 0, Object-Identifier	;88
+Property = 0, Object-Identifier	;89
+Property = 0, Object-Identifier	;90
+Property = 0, Object-Identifier	;91
+Property = 0, Object-Identifier	;92
+Property = 0, Object-Identifier	;93
+Property = 0, Object-Identifier	;94
+Property = 0, Object-Identifier	;95
+Property = 0, Object-Identifier	;96
+Property = 0, Object-Identifier	;97
+Property = 0, Object-Identifier	;98
+Property = 0, Object-Identifier	;99
+Property = 0, Object-Identifier	;100
+Property = 0, Object-Identifier	;1
+Property = 0, Object-Identifier	;2
+Property = 0, Object-Identifier	;3
+Property = 0, Object-Identifier	;4
+Property = 0, Object-Identifier	;5
+Property = 0, Object-Identifier	;6
+Property = 0, Object-Identifier	;7
+Property = 0, Object-Identifier	;8
+Property = 0, Object-Identifier	;9
+Property = 0, Object-Identifier	;10
+Property = 0, Object-Identifier	;11
+Property = 0, Object-Identifier	;12
+Property = 0, Object-Identifier	;13
+Property = 0, Object-Identifier	;14
+Property = 0, Object-Identifier	;15
+Property = 0, Object-Identifier	;16
+Property = 0, Object-Identifier	;17
+Property = 0, Object-Identifier	;18
+Property = 0, Object-Identifier	;19
+Property = 0, Object-Identifier	;20
+Property = 0, Object-Identifier	;21
+Property = 0, Object-Identifier	;22
+Property = 0, Object-Identifier	;23
+Property = 0, Object-Identifier	;24
+Property = 0, Object-Identifier	;25
+Property = 0, Object-Identifier	;26
+Property = 0, Object-Identifier	;27
+Property = 0, Object-Identifier	;28
+Property = 0, Object-Identifier	;29
+Property = 0, Object-Identifier	;30
+Property = 0, Object-Identifier	;31
+Property = 0, Object-Identifier	;32
+Property = 0, Object-Identifier	;33
+Property = 0, Object-Identifier	;34
+Property = 0, Object-Identifier	;35
+Property = 0, Object-Identifier	;36
+Property = 0, Object-Identifier	;37
+Property = 0, Object-Identifier	;38
+Property = 0, Object-Identifier	;39
+Property = 0, Object-Identifier	;40
+Property = 0, Object-Identifier	;41
+Property = 0, Object-Identifier	;42
+Property = 0, Object-Identifier	;43
+Property = 0, Object-Identifier	;44
+Property = 0, Object-Identifier	;45
+Property = 0, Object-Identifier	;46
+Property = 0, Object-Identifier	;47
+Property = 0, Object-Identifier	;48
+Property = 0, Object-Identifier	;49
+Property = 0, Object-Identifier	;50
+Property = 0, Object-Identifier	;51
+Property = 0, Object-Identifier	;52
+Property = 0, Object-Identifier	;53
+Property = 0, Object-Identifier	;54
+Property = 0, Object-Identifier	;55
+Property = 0, Object-Identifier	;56
+Property = 0, Object-Identifier	;57
+Property = 0, Object-Identifier	;58
+Property = 0, Object-Identifier	;59
+Property = 0, Object-Identifier	;60
+Property = 0, Object-Identifier	;61
+Property = 0, Object-Identifier	;62
+Property = 0, Object-Identifier	;63
+CloseTag 1
+    )
+------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+      
+  -- Step #2: Receive ReadPropertyMultiple ACK
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1
+      OpenTag 1
+Property = 2, Object-Identifier    ;1
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;2
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;3
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;4
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;5
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;6
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;7
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;8
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;9
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;10
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;11
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;12
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;13
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;14
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;15
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;16
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;17
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;18
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;19
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;20
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;21
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;22
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;23
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;24
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;25
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;26
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;27
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;28
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;29
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;30
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;31
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;32
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;33
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;34
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;35
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;36
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;37
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;38
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;39
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;40
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;41
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;42
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;43
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;44
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;45
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;46
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;47
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;48
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;49
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;50
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;51
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;52
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;53
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;54
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;55
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;56
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;57
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;58
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;59
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;60
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;61
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;62
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;63
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;64
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;65
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;66
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;67
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;68
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;69
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;70
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;71
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;72
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;73
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;74
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;75
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;76
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;77
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;78
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;79
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;80
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;81
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;82
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;83
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;84
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;85
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;86
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;87
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;88
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;89
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;90
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;91
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;92
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;93
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;94
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;95
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;96
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;97
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;98
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;99
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;100
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+
+Property = 2, Object-Identifier    ;1
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;2
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;3
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;4
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;5
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;6
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;7
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;8
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;9
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;10
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;11
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;12
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;13
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;14
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;15
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;16
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;17
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;18
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;19
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;20
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;21
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;22
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;23
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;24
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;25
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;26
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;27
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;28
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;29
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;30
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;31
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;32
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;33
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;34
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;35
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;36
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;37
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;38
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;39
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;40
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;41
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;42
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;43
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;44
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;45
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;46
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;47
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;48
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;49
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;50
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;1
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;2
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;3
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;4
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;5
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;6
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;7
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;8
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;9
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;1
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;2
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;3
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+Property = 2, Object-Identifier    ;163
+OpenTag 4
+AL = {Object-Identifier}
+CloseTag 4
+
+CloseTag 1
+    )
+
+OR (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Abort
+      Service = ReadPropertyMultiple
+      Abort-Reason = 4              ;Segment-not-supported
+)

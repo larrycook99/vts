@@ -1,0 +1,82 @@
+--------------------Configuration: packet32 - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for 95\packet32.dsp", at root.
+Active configuration is Win32 (x86) Static Library (based on Win32 (x86) Static Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /G3 /Zp1 /MT /W3 /GX /Od /I "..\include95" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FAcs /Fa"Release95/" /Fp"Release95/packet32.pch" /YX /Fo"Release95/" /Fd"Release95/" /FD /c "
+			"Browser Database Maker" with flags "/nologo /o"Release95/packet32.bsc" "
+			"Library Manager" with flags "/nologo /out:"Release95\packet32.lib" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP597.tmp" with contents </nologo /G3 /Zp1 /MT /W3 /GX /Od /I "..\include95" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FAcs /Fa"Release95/" /Fp"Release95/packet32.pch" /YX /Fo"Release95/" /Fd"Release95/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for 95\Packet32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP597.tmp" 
+Creating command line "link.exe -lib /nologo /out:"Release95\packet32.lib"  ".\Release95\Packet32.obj"" 
+Compiling...
+Packet32.c
+Creating library...
+--------------------Configuration: ptp - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\ptp\ptp-95.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /G3 /Zp1 /MT /W3 /GX /O2 /I "..\Include95" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FAcs /Fa"Release95/" /Fp"Release95/ptp-95.pch" /YX /Fo"Release95/" /Fd"Release95/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Release95/ptp.res" /d "NDEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Release95/ptp.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib shell32.lib ..\sjack\release95\sjack32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release95/ptp.pdb" /map:"Release95/ptp.map" /machine:I386 /def:".\ptp.def" /out:"Release95/ptp.dll" /implib:"Release95/ptp.lib" /libpath:"Release95" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating command line "rc.exe /l 0x409 /fo"Release95/ptp.res" /d "NDEBUG" "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\ptp\ptp.rc"" 
+Creating temp file "C:\TEMP\RSP598.tmp" with contents </nologo /G3 /Zp1 /MT /W3 /GX /O2 /I "..\Include95" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FAcs /Fa"Release95/" /Fp"Release95/ptp-95.pch" /YX /Fo"Release95/" /Fd"Release95/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\ptp\ptp.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP598.tmp" 
+Creating temp file "C:\TEMP\RSP599.tmp" with contents <kernel32.lib user32.lib gdi32.lib shell32.lib ..\sjack\release95\sjack32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release95/ptp.pdb" /map:"Release95/ptp.map" /machine:I386 /def:".\ptp.def" /out:"Release95/ptp.dll" /implib:"Release95/ptp.lib" /libpath:"Release95" 
+".\Release95\ptp.obj"
+".\Release95\ptp.res"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\sjack\Release95\sjack32.lib">
+Creating command line "link.exe @C:\TEMP\RSP599.tmp" 
+Compiling resources...
+Compiling...
+ptp.c
+Linking...
+   Creating library Release95/ptp.lib and object Release95/ptp.exp
+--------------------Configuration: nalserv95 - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\nalserv95\nalserv95\nalserv95.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /G3 /Zp1 /MT /W3 /GX /O2 /I "..\..\Include95" /I "..\..\ptp" /I "..\..\mstp" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FAcs /Fa"Release95/" /Fp"Release95/nalserv95.pch" /YX /Fo"Release95/" /Fd"Release95/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Release/Nalserv32.res" /d "NDEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Release/nalserv32.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib libcmt.lib oldnames.lib "..\..\packet32 for 95\release95\packet32.lib" ..\..\bacprim32\release95\bacprim32.lib ..\..\ptp\release95\ptp.lib ..\..\mstp\release95\mstp.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release95/nalserv32.pdb" /map:"Release95/nalserv32.map" /machine:I386 /nodefaultlib:"libcmt" /nodefaultlib /def:".\Nalserv95.def" /out:"Release95/nalserv32.dll" /implib:"Release95/nalserv32.lib" /libpath:"..\..\..\..\bacdoor\bacdoor win95\packet32\release95" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating command line "rc.exe /l 0x409 /fo"Release/Nalserv32.res" /d "NDEBUG" "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\nalserv95\nalserv95\Nalserv95.rc"" 
+Creating temp file "C:\TEMP\RSP59B.tmp" with contents </nologo /G3 /Zp1 /MT /W3 /GX /O2 /I "..\..\Include95" /I "..\..\ptp" /I "..\..\mstp" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FAcs /Fa"Release95/" /Fp"Release95/nalserv95.pch" /YX /Fo"Release95/" /Fd"Release95/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\nalserv95\nalserv95\Nalserv95.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP59B.tmp" 
+Creating temp file "C:\TEMP\RSP59C.tmp" with contents <kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib libcmt.lib oldnames.lib "..\..\packet32 for 95\release95\packet32.lib" ..\..\bacprim32\release95\bacprim32.lib ..\..\ptp\release95\ptp.lib ..\..\mstp\release95\mstp.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release95/nalserv32.pdb" /map:"Release95/nalserv32.map" /machine:I386 /nodefaultlib:"libcmt" /nodefaultlib /def:".\Nalserv95.def" /out:"Release95/nalserv32.dll" /implib:"Release95/nalserv32.lib" /libpath:"..\..\..\..\bacdoor\bacdoor win95\packet32\release95" 
+".\Release95\Nalserv95.obj"
+".\Release\Nalserv32.res"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Release95\Bacprim32.lib"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\mstp\Release95\mstp.lib"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for 95\Release95\packet32.lib"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\ptp\Release95\ptp.lib">
+Creating command line "link.exe @C:\TEMP\RSP59C.tmp" 
+Compiling resources...
+Compiling...
+Nalserv95.c
+Linking...
+   Creating library Release95/nalserv32.lib and object Release95/nalserv32.exp
+
+
+
+nalserv32.dll - 0 error(s), 0 warning(s)

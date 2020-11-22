@@ -1,0 +1,15 @@
+---------------------------------
+-->From port 0, snet 0:00400531D858
+-->Local:00001A18210B
+>
+00 05 00 0E 			--readPropertyMultiple(Last)(mr1470): invID=0
+				--...listOfReadAccessSpecifications=(
+0C 00 40 00 01 			--      objectIdentifier=(analog-output,1)
+1E 				--      listOfPropertyReferences=(
+09 57 19 00 			--            priority-array[0]
+1F 				--            )
+0C 00 00 00 00 			--      objectIdentifier=(analog-input,0)
+1E 				--      listOfPropertyReferences=(
+0C 3F F0 00 00 1B 12 00 00 	--            (proprietary 1072693248)[1179648]
+1F 				--            )
+				--      )

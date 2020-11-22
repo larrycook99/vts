@@ -1,0 +1,130 @@
+
+; BACMAC95.INF
+;
+; BACMAC95 Transport
+;
+; Copyright 1998, PolarSoft Inc.
+; Copyright 1996, Microsoft Corporation
+;
+; 07-May-98 [004] JN  bacpac->bacmac
+; 31-Mar-98 [003] JN  add ClassInstall in case we're the first
+; 06-Mar-98 [002] JN  add custom install helper
+; 15-Dec-97 [001] JN  change vpacket to bacpac95
+
+[version]
+signature="$CHICAGO$"
+Class=NetTrans
+provider=%V_PS%
+
+[ClassInstall]
+AddReg=NetTrans.AddReg
+
+[NetTrans.AddReg]
+HKR,,,,%V_ClassName%
+HKR,,Installer,,netdi.dll
+HKR,,Icon,,-6
+HKR,,NoUseClass,,1
+
+[Manufacturer]
+%V_PS%=PS
+
+[PS]
+%BACMAC95.DeviceDesc%=   BACMAC95.ndi, BACMAC95                    ;BACMAC95 Driver
+
+
+;****************************************************************************
+; BACMAC95
+;****************************************************************************
+[BACMAC95.ndi]
+CopyFiles=BACMAC95.CopyNdi				;***002
+AddReg=BACMAC95.ndi.reg
+DeviceID=BACMAC95
+MaxInstance=8
+
+[BACMAC95.ndi.reg]
+HKR,,DevLoader,,*ndis					;***002
+HKR,,DeviceVxDs,,"bacmac95.vxd"				;***002
+HKR,Ndi,DeviceID,,BACMAC95
+HKR,Ndi,MaxInstance,,8
+HKR,Ndi,NdiInstaller,,"BACNDI.dll,MyNdiProc"		;***002
+
+; NDIS info
+HKR,NDIS,LogDriverName,,"BACMAC95"
+HKR,NDIS,MajorNdisVersion,1,03
+HKR,NDIS,MinorNdisVersion,1,0A
+
+; Interfaces
+HKR,Ndi\Interfaces,DefUpper,,""
+HKR,Ndi\Interfaces,DefLower,,"ndis3"
+HKR,Ndi\Interfaces,UpperRange,,""
+HKR,Ndi\Interfaces,LowerRange,,"ndis3"
+
+; Install-Remove Sections
+HKR,Ndi\Install,,,"BACMAC95.Install"
+HKR,Ndi\Remove,,,"BACMAC95.Remove"
+
+; Context help
+HKR,Ndi,HelpText,,%BACMAC95_HELP%
+
+; Need for advanced page
+HKR,Ndi\Params\None,ParamDesc,,%PARAM_NONE%
+HKR,Ndi\Params\None,default,,""
+HKR,Ndi\Params\None,type,,keyonly
+
+[BACMAC95.Install]
+AddReg=BACMAC95.AddReg
+DelReg=BACMAC95.Ins.DelReg
+CopyFiles=BACMAC95.CopyFiles.sys,BACMAC95.CopyFiles.win,BACMAC95.CopyFiles.inf
+
+[BACMAC95.AddReg]
+HKR,,DevLoader,,*ndis
+HKR,,DeviceVxDs,,"bacmac95.vxd"
+
+[BACMAC95.CopyNdi]				;		***002
+bacndi.dll					;		***002
+
+[BACMAC95.CopyFiles.sys]
+bacmac95.vxd
+bacdor95.dll
+
+[BACMAC95.CopyFiles.win]
+
+[BACMAC95.CopyFiles.inf]
+bacmac95.inf             ; this inf file (so we know how to uninstall)
+
+[BACMAC95.Remove]
+DelReg=BACMAC95.Rmv.DelReg
+DelFiles=BACMAC95.CopyFiles.sys,BACMAC95.CopyFiles.win,BACMAC95.CopyFiles.inf,BACMAC95.CopyNdi		;***002
+
+[BACMAC95.Rmv.DelReg]
+
+;****************************************************************************
+; Destination Directories
+;****************************************************************************
+[DestinationDirs]
+BACMAC95.CopyFiles.sys         = 11 ; LDID_SYS
+BACMAC95.CopyFiles.win         = 25 ; LDID_SHARED
+BACMAC95.CopyFiles.inf         = 17 ; LDID Inf Directory
+
+[SourceDisksNames]
+
+[SourceDisksFiles]
+
+;****************************************************************************
+; Localizable Strings
+;****************************************************************************
+[strings]
+V_PS="PolarSoft"
+V_CLASSNAME="Network Protocol"
+
+; Devices
+BACMAC95.DeviceDesc="BACdor95 NDIS MAC Driver"
+
+; Parameters
+PARAM_YES="Yes"
+PARAM_NO="No"
+PARAM_OFF="Off"
+PARAM_NONE="None"
+
+; Context help
+BACMAC95_HELP="BACmac95 Packet Driver is the MAC-Layer NDIS interface to BACDOR95."

@@ -1,0 +1,326 @@
+--------------  S C R I P T   V E R S I O N   I N F O   -----------------------
+;
+; Version 2      2010-12-06   By John Hartman
+;
+---------------------- S C R I P T   H E A D E R ------------------------------
+;
+; Script: Datatests
+;
+; Purpose: Test various datatypes in the decoder, and in the script parser
+;
+; These tests are not really intended to be sent to any IUT.
+; They were written to test the PDU decoding of VTS itself.
+; Various parts of this test might be harvested in order to test the
+; decoding capabilities of an IUT.
+;
+---------------------- S C R I P T   B O D Y ----------------------------------
+
+SETUP
+INCLUDE "..\config.vts"
+
+OBJECT1 = (SCHEDULE, 1)
+
+BYTES = X'650411223344'
+
+
+SECTION General tests of the detail decoder
+-------------------------------------------------------------------------------
+TEST Application and Context tagged Primitives and constructed data
+DEPENDENCIES None
+REFERENCE None
+
+    SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedPrivateTransfer
+      Unsigned 0, 300
+      Unsigned 1, 666
+      OpenTag 2
+         NULL -- verify comment here
+         NULL = 5 -- verify comment here
+
+         boolean = T -- verify comment here
+         boolean = true -- verify comment here
+         boolean = 1, false -- verify comment here
+
+         UNSIGNED = 66 -- verify comment here
+         unsigned = 6, 66 -- verify comment here
+
+         integer = 77 -- verify comment here
+         integer = 7, 77     -- verify comment here
+         integer = -77 -- verify comment here
+         integer = 7, -77     -- verify comment here
+
+         real = 3.131 -- verify comment here
+         real = 8, 3.131 -- verify comment here
+         real = -3.131 -- verify comment here
+         real = 8, -3.131 -- verify comment here
+         real = inf -- verify comment here
+         real = 8, inf -- verify comment here
+         real = +inf -- verify comment here
+         real = 8, +inf -- verify comment here
+         real = -inf -- verify comment here
+         real = 8, -inf -- verify comment here
+         real = NaN -- verify comment here
+         real = 8, NaN -- verify comment here
+
+         double = 3.131 -- verify comment here
+         double = 8, 3.131 -- verify comment here
+         double = -3.131 -- verify comment here
+         double = 8, -3.131 -- verify comment here
+         double = inf -- verify comment here
+         double = 8, inf -- verify comment here
+         double = +inf -- verify comment here
+         double = 8, +inf -- verify comment here
+         double = -inf -- verify comment here
+         double = 8, -inf -- verify comment here
+         double = NaN -- verify comment here
+         double = 8, NaN -- verify comment here
+
+         octetstring = X'010203' -- verify comment here
+         octetstring = 0, X'010203' -- verify comment here
+         octetstring = BYTES -- verify comment here
+
+         characterstring = "hi" -- verify comment here
+         characterstring = 9, "hi" -- verify comment here
+
+         bitstring = B'1010' -- verify comment here
+         bitstring = 10, B'1010' -- verify comment here
+         bitstring = [{T,F,T,F}] -- verify comment here
+         bitstring = 10, [{T,F,T,F}] -- verify comment here
+-- These are interpreted as ONE BIT bitstrings because of commas
+--         bitstring = T,F,T,F -- verify comment here
+--         bitstring = 4, 0,1,0 -- verify comment here
+-- These get "value expected"
+--         bitstring = (T,F,T,F) -- verify comment here
+--         bitstring = {T,F,T,F} -- verify comment here (this is EPICS form)
+-- bit list expected
+--         bitstring = [T,F,T,F]
+-- This gets "missing reference"
+--         bitstring = {(T,F,T,F)}
+
+         enumerated = 6 -- verify comment here
+         enumerated = 10, 6 -- verify comment here
+
+-- 135.1-2007 says dates should be wrapped in parenthesis
+--         date = FRIDAY,1/29/2010
+--         date = FRIDAY,1/29/2010 -- verify comment here
+--         date = (FRIDAY,1/29/2010)
+--         date = (FRIDAY,1/29/2010) -- verify comment here
+         date = [FRIDAY,1/29/2010]
+         date = [(FRIDAY,1/29/2010)] -- verify comment here
+         date = 11, [(FRIDAY 1/29/2010)] -- verify comment here
+         date = [(*,1/29/2010)] -- verify comment here
+         date = [(*,*/*/*)] -- verify comment here
+         date = [(*,January/29/2010)] -- verify comment here
+         date = [(*,Jan/last/2010)] -- verify comment here
+         date = [(*,December/even/2010)] -- verify comment here
+         date = [(*,Dec/odd/2010)] -- verify comment here
+         date = [(*,Even/1/2010)] -- verify comment here
+         date = [(*,Odd/1/2010)] -- verify comment here
+
+-- 135.1-2007 does not wrap times with anything
+--       time = 8:36:12.*
+--       time = 2, 8:36:12.* -- verify comment here
+         time = [8:36:12.*] -- verify comment here
+         time = [8:36:12] -- verify comment here
+         time = 12, [8:36:12.*] -- verify comment here
+         time = [*:*:*.*] -- verify comment here
+
+-- 135.1-2007 encloses object identifiers on parenthesis
+         objectidentifier = analog-output, 5
+         objectidentifier = 12, analog-output, 5
+         objectidentifier = analog-output, 5 -- verify comment here
+         objectidentifier = 13, analog-output, 5 -- verify comment here
+
+-- Some structure
+      OpenTag 0 -- verify comment here
+         enumerated = 6 -- verify comment here
+         enumerated = 10, 6 -- verify comment here
+         OpenTag 2 -- verify comment here
+            enumerated = 6 -- verify comment here
+         CloseTag 2 -- verify comment here
+      CloseTag 0 -- verify comment here
+
+      CloseTag 2 -- verify comment here
+    )
+
+TEST Tags with extended length, extended tag number, or both
+DEPENDENCIES None
+REFERENCE None
+    SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedPrivateTransfer
+      Unsigned 0, 300
+      Unsigned 1, 666
+      OpenTag 2
+         -- Octetstring with no length extension octet.
+         AL = X'6411223344'
+
+         -- Octetstring with 1 length extension octet.
+         -- (This isn't proper encoding, as the minimum tag ought to be used, but
+         -- it serves as a test of the decoder.)
+         AL = X'650411223344'
+
+         -- Octetstring with 2 length extension octets.
+         -- (This isn't proper encoding, as the minimum tag ought to be used, but
+         -- it serves as a test of the decoder.)
+         AL = X'65FE000411223344'
+
+         -- Octetstring with 4 length extension octets.
+         -- (This isn't proper encoding, as the minimum tag ought to be used, but
+         -- it serves as a test of the decoder.)
+         AL = X'65FF0000000411223344'
+
+         -- Context tag value of 15 (extended)
+         AL = X'FC0F11223344'
+
+         -- Context tag value of 16 (extended)
+         AL = X'FC1011223344'
+
+         -- Context tag value of 254(extended)
+         AL = X'FCFE11223344'
+
+         -- Context tag 16 AND 1 length extension octet.
+         -- (This isn't proper encoding, as the minimum tag ought to be used, but
+         -- it serves as a test of the decoder.)
+         AL = X'FD100411223344'
+
+         -- Context tag 16 AND 2 length extension octets.
+         -- (This isn't proper encoding, as the minimum tag ought to be used, but
+         -- it serves as a test of the decoder.)
+         AL = X'FD10FE000411223344'
+
+         -- Context tag 16 AND 4 length extension octets.
+         -- (This isn't proper encoding, as the minimum tag ought to be used, but
+         -- it serves as a test of the decoder.)
+         AL = X'FD10FF0000000411223344'
+         
+         -- value from a variable
+         AL = BYTES
+
+      CloseTag 2
+    )
+
+TEST Empty parameter block
+DEPENDENCIES None
+REFERENCE None
+    SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedPrivateTransfer
+      Unsigned 0, 300
+      Unsigned 1, 666
+      OpenTag 2
+      CloseTag 2
+    )
+
+TEST No parameter block (it's optional)
+DEPENDENCIES None
+REFERENCE None
+    SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedPrivateTransfer
+      Unsigned 0, 300
+      Unsigned 1, 666
+    )
+
+TEST Missing tag
+DEPENDENCIES None
+REFERENCE None
+    SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedPrivateTransfer
+      Unsigned 0, 300
+--      Unsigned 1, 666
+      OpenTag 2
+      CloseTag 2
+    )
+
+TEST Missing tag at end of PDU
+DEPENDENCIES None
+REFERENCE None
+    SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedPrivateTransfer
+      Unsigned 0, 300
+--      Unsigned 1, 666
+    )
+
+TEST Incorrect tag (app instead of context)
+DEPENDENCIES None
+REFERENCE None
+    SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedPrivateTransfer
+      Unsigned 0, 300
+      Unsigned 666
+    )
+
+TEST Illegal application tag
+DEPENDENCIES None
+REFERENCE None
+    SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedPrivateTransfer
+      Unsigned 0, 300
+      Unsigned 1, 666
+      OpenTag 2
+
+      -- Reserved tag value 13
+      AL = X'D155'
+
+      -- Extended app tag 16
+      AL = X'F11055'
+      CloseTag 2
+    )
+
+TEST Orphan Opening tag
+DEPENDENCIES None
+REFERENCE None
+    SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedPrivateTransfer
+      Unsigned 0, 300
+      Unsigned 1, 666
+      OpenTag 2
+      Unsigned 0, 333
+    )
+
+TEST Orphan Closing tag
+DEPENDENCIES None
+REFERENCE None
+    SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedPrivateTransfer
+      Unsigned 0, 300
+      Unsigned 1, 666
+      CloseTag 2
+      Unsigned 0, 333
+    )
+
+TEST Primitive with open tag (illegal)
+DEPENDENCIES None
+REFERENCE None
+    SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedPrivateTransfer
+      Unsigned 0, 300
+      Unsigned 1, 666
+      OpenTag 2
+
+      -- Tag is 6 (octet string), length is SIX=open tag
+      -- (Length should be 5 in the tag octet, and then an extension)
+      AL = X'66010203040506'
+
+      CloseTag 2
+    )

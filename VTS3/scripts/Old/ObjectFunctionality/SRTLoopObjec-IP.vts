@@ -1,0 +1,263 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Loop Object Test
+  ;	Setpoint_Reference Tracking
+  ;
+  ;  LoopSRTmmddyy.vts
+  ;
+  ;  Ver 1.0	05/13/01	P. Bowen	
+  ;
+  ;  Purpose: This test case verifies that Setpoint tracks the property referenced
+  ;  by Setpoint_Reference.
+  ;
+  ;  Dependencies: ReadProperty Service Execution Tests
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Loop Object Setpoint_Reference Tracking Test
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+
+  TD_IP = 10.10.10.2
+
+  LOOP_OBJECT = Loop, 1		; Loop object being tested
+  REF_OBJECT = Analog-Value, 1	; Object referenced by the loop object's...
+				; ...Controlled_Variable_Reference property
+  REF_PROPERTY = Present-Value
+  S_VAL = 7.8			; Value of loop object's setpoint property
+  S_NEW = 99.0			; New setpoint value not equal to S_VAL (used in step #6)
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+
+  IUT_IP = 208.6.162.35	; Address of IUT
+
+  ;-------------------------------------------------------------------------------------
+
+  SECTION Loop Object Setpoint_Reference Tracking Test
+
+  -- Note: this test takes place over steps #1?? - #1?? so that the test can be 
+  -- paused to verify the Present-Value property of the referenced object.
+
+  -- Configuration Requirements: 
+  --	a) Configuration Requirements: The Loop object shall be configured to
+  --	   determine the setpoint based on an object and property specified in the
+  --	   Setpoint_Reference property. This referenced setpoint shall remain 
+  --	   constant for the duration of the test except as noted in the test steps.
+  --	   If such a control loop cannot be configured this test shall be omitted.
+  --	b) IUT is on the same network as TD
+
+  -- Test Steps:
+  --
+  -- 1.	TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Setpoint_Reference
+  -- 2.	RECEIVE BACnet-ComplexACK-PDU,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Setpoint_Reference,
+  --		'Property Value' =	(any valid object property reference)
+  -- 3.	TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Setpoint
+  -- 4.	RECEIVE BACnet-ComplexACK-PDU,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Setpoint,
+  --		'Property Value' =	(any valid value)
+  -- 5.	VERIFY (the setpoint reference object), 
+  --	       (the referenced property) = (the setpoint from step 4)
+  -- 6.	IF (the referenced property of the setpoint reference object is writable) THEN
+  --		WRITE (the referenced property) = ( a different value)
+  --	ELSE
+  --		MAKE (the referenced property take on a new value)
+  -- 7.	VERIFY (the Loop object being tested), 
+  --		Setpoint = (the new value of the referenced property)
+
+  -- REFERENCE (B) Loop Object Type and (T) Loop Object Test
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Read the Object's Setpoint-Reference Property
+
+  DEPENDENCIES None
+
+  -- Steps #1 & #2: Read the loop object's Setpoint-Reference property
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Setpoint-Reference
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	PDU = ComplexAck
+      	DER = FALSE
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Setpoint-Reference
+      	OpenTag 3		
+         	AL = {Setpoint-Reference}
+      	CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1b Read the Object's Setpoint Property
+
+  DEPENDENCIES None
+
+  -- Steps #3 & #4: Read the loop object's Setpoint property
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Setpoint
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	PDU = ComplexAck
+      	DER = FALSE
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Setpoint
+      	OpenTag 3		
+         	REAL = S_VAL		; compare: Setpoint property should = S_VAL
+     	CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1c Verify the Loop Object's Referenced Property
+
+  DEPENDENCIES None
+
+  -- Step #5: Verify the setpoint reference object's referenced 
+  -- property = the Setpoint value from Step #4 (S_VAL)
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, REF_OBJECT
+      	Property = 1, REF_PROPERTY
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	PDU = ComplexAck
+      	DER = FALSE
+      	Service = ReadProperty
+      	Object = 0, REF_OBJECT
+      	Property = 1, REF_PROPERTY
+      	OpenTag 3
+         	REAL = S_VAL			; compare: referenced property should = S_VAL
+      	CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1d Write New Value to the Loop Object's Referenced Property
+
+  DEPENDENCIES None
+
+  -- Step #6: If the referenced property of the setpoint reference object is writable
+  -- then use this test step write the referenced property = a different value from 
+  -- the setpoint read in Step #5.
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = WriteProperty
+      	Object = 0, REF_OBJECT
+      	Property = 1, REF_PROPERTY
+      	OpenTag 3
+        	REAL = S_NEW			; write new setpoint value
+      	CloseTag 3
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = SimpleAck
+      	Service = WriteProperty
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1e Write New Value to the Loop Object's Referenced Property
+
+  DEPENDENCIES None
+
+  -- Step #7: Verify that the loop object's setpoint = the new value of 
+  -- the referenced property (S_NEW)
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Setpoint
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	PDU = ComplexAck
+      	DER = FALSE
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Setpoint
+      	OpenTag 3		
+         	REAL = S_NEW			; compare: loop object's Setpoint should = S_NEW
+      	CloseTag 3
+    )

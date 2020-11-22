@@ -1,0 +1,6 @@
+// DUDTOOL.H
+
+#ifndef __DUDTOOL_H_INCLUDED
+#define __DUDTOOL_H_INCLUDED
+
+#endif // __DUDTOOL_H_INCLUDED

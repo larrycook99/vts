@@ -1,0 +1,293 @@
+ ;--------------------------------------------------------------
+  ; Testing Support for the Priority Filter test
+  ; 
+  ;
+  ; Exec_GetEnrollmentSummary_PriorityFilter.vts	 enrlprimmddyy.vts
+  ; 9.5.2.4
+  ;   Ver 0.0   02/21/01    Steve Gillingham
+  ;
+  ;  In the REFERENCE sections "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;--------------------------------------------------------------
+  ;--------------------------------------------------------------
+  ;   INITIAL VALUES:
+  ;
+  ;   SCRIPT CHANGES REQUIRED:
+  ;       - The MACROs in TD_CONFIG must be assigned values that
+  ;       correctly reflect the setup of the VTS computer
+  ;       - The MACROs in IUT_CONFIG must be assigned values that
+  ;       accurately reflect the setup of the IUT device, the
+  ;       event generating object, and monitored object.
+  ;       - change Xlow where 10 < Xlow < 100 and Xhigh where 100 < Xhigh < 255
+  ;
+  ;   SCRIPT LIMITATIONS:
+  ;--------------------------------------------------------------
+
+
+SETUP Object Support Tests - Priority Filter test
+
+  ;--------------------------------------------------------------
+   IUT_IP = 208.6.162.35
+  
+  ;--------------------------------------------------------------
+  ;            CHANGE: MY_MAC address and "Untitled"
+  ; TD_CONFIG
+  ;
+  ;"Untitled" = 1, ETHERNET, 0
+  -- The network which is directly-connected to the TD
+  -- and can be used to reach the IUT.
+  -- Adjust the parameters as needed to reflect the actual
+  -- physical environment. The first value represents the 
+  -- physical network number, the second value the physical 
+  -- network type and the third value the physical port.
+
+  ;MY_MAC = 0000e8863bf9    -- MAC address of the TD
+                           -- replace with you TD address
+
+  ;--------------------------------------------------------------
+  ;              CHANGE: IUT_IP, and DEVICE_ID
+  ; IUT_CONFIG
+  ;
+  TEST_YEAR   = XX              -- the year the test is executed
+  TEST_MONTH  = XX              -- the month the test is executed
+  TEST_DAY    = XX              -- the day the test is executed
+
+  ;IUT_IP =  0040ae000d71  -- MAC address of IUT
+                           -- replace with your IUT address
+                            
+  DEVICE_ID = DEVICE,700                -- Device object instance for IUT.
+
+  EVENT_ID = EVENT-ENROLLMENT, 1        -- the event generating object
+  MONITORED_ID = MULTISTATE-INPUT, 1    -- the monitored object, same as above 
+                                        -- if intrinsic
+  MONITORED_PROP = Present-Value        -- the monitored property, present-value 
+                                        -- if intrinsic
+
+  NOTIFICATION_CLASS = 5        -- the notification class used by the event
+                                -- generating object
+
+  NORMAL_PRIORITY = 170         -- the priority at which normal transitions will 
+                                -- be generated
+
+  ;--------------------------------------------------------------
+  ; BACnet enumerated values
+  ;--------------------------------------------------------------
+
+  EVENT_STATE_NORMAL = 0
+  EVENT_STATE_FAULT = 1
+  EVENT_STATE_OFFNORMAL = 2
+  EVENT_STATE_HILIMIT = 3
+  EVENT_STATE_LOLIMIT = 4
+
+  EVENT_TYPE_CHANGE_OF_BITSTRING = 0
+  EVENT_TYPE_CHANGE_OF_STATE = 1
+  EVENT_TYPE_CHANGE_OF_VALUE = 2
+  EVENT_TYPE_COMMAND_FAILURE = 3
+  EVENT_TYPE_FLOATING_LIMIT = 4
+  EVENT_TYPE_OUT_OF_RANGE = 5
+
+  NOTIFY_TYPE_ALARM = 0
+  NOTIFY_TYPE_EVENT = 1
+  NOTIFY_TYPE_ACK = 2
+
+  ACK_FILTER_ALL = 0
+  ACK_FILTER_ACKED = 1
+  ACK_FILTER_NOT_ACKED = 2
+  
+  EVENT_STATE_FILTER_OFFNORMAL = 0
+  EVENT_STATE_FILTER_FAULT = 1
+  EVENT_STATE_FILTER_NORMAL = 2
+  EVENT_STATE_FILTER_ALL = 3
+  EVENT_STATE_FILTER_ACTIVE = 4
+
+  -- CHANGE: Xlow and Xhigh values
+  XLOW = 25
+  XHIGH = 150
+  ;--------------------------------------------------------------
+
+  Section 9.5.2.4 Priority Filter
+
+  Test #9.5.2.4
+
+ DEPENDENCIES None
+
+ REFERENCE (B) 13.9
+
+  -- Purpose: This test case verifies that the IUT can execute the
+  -- GetEnrollmentSummary when the 'Priority Filter' is used.
+  -- 
+  -- Configuration Requirements: If possible, the IUT shall be configured so 
+  -- that it has one or more event-generating objects at each of the four 
+  -- different priority levels.  The priority levels shall be 0, Xlow, Xhigh, 
+  -- 255, where 10 < Xlow < 100 and 100 < Xhigh < 255.  If only a subset of 
+  -- these cases can be supported as many of them as possible shall be 
+  -- configured.  
+  
+
+  -- 1. TRANSMIT GetEnrollmentSummary-Request
+  --        'Acknowledgment Filter' =  ALL,
+  --        'MinPriority' = 0
+  --        'MaxPriority' = 0
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = GETENROLLMENTSUMMARY
+      ENUM = 0, ACK_FILTER_ALL
+      OpenTag 4
+        Integer = 0, 0
+        Integer = 1, 0
+      CloseTag 4
+      )
+
+  -- 2. RECEIVE GetEnrollmentSummary-ACK,
+  --             'List of Enrollment Summaries' = (all configured event-
+  --                                              generating objects with
+  --                                              a priority in the specified 
+  --                                              range)
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = GETENROLLMENTSUMMARY
+      Object EVENT_ID
+      ENUM EVENT_TYPE_OUT_OF_RANGE
+      ENUM EVENT_STATE_NORMAL
+      INTEGER NORMAL_PRIORITY
+      )
+
+  -- 3. TRANSMIT GetEnrollmentSummary-Request
+  --        'Acknowledgment Filter' =  ALL,
+  --        'MinPriority' = 0
+  --        'MaxPriority' = 255
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = GETENROLLMENTSUMMARY
+      ENUM = 0, ACK_FILTER_ALL
+      OpenTag 4
+        Integer = 0, 0
+        Integer = 1, 255
+      CloseTag 4
+      )
+
+  -- 4. RECEIVE GetEnrollmentSummary-ACK,
+  --             'List of Enrollment Summaries' = (all configured event-
+  --                                               generating objects with
+  --                                               a priority in the specified 
+  --                                               range)
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = GETENROLLMENTSUMMARY
+      Object EVENT_ID
+      ENUM EVENT_TYPE_OUT_OF_RANGE
+      ENUM EVENT_STATE_NORMAL
+      INTEGER NORMAL_PRIORITY
+      )
+
+  -- 5. TRANSMIT GetEnrollmentSummary-Request
+  --        'Acknowledgment Filter' =  ALL,
+  --        'MinPriority' = XLOW
+  --        'MaxPriority' = XHIGH
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = GETENROLLMENTSUMMARY
+      ENUM = 0, ACK_FILTER_ALL
+      OpenTag 4
+        Integer = 0, XLOW
+        Integer = 1, XHIGH
+      CloseTag 4
+      )
+
+  -- 6. RECEIVE GetEnrollmentSummary-ACK,
+  --             'List of Enrollment Summaries' = (all configured event-
+  --                                               generating objects with
+  --                                               a priority in the specified 
+  --                                               range)
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = GETENROLLMENTSUMMARY
+      Object EVENT_ID
+      ENUM EVENT_TYPE_OUT_OF_RANGE
+      ENUM EVENT_STATE_NORMAL
+      INTEGER NORMAL_PRIORITY
+      )
+
+  -- 7. TRANSMIT GetEnrollmentSummary-Request
+  --        'Acknowledgment Filter' =  ALL,
+  --        'MinPriority' = XLOW
+  --        'MaxPriority' = 128
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = GETENROLLMENTSUMMARY
+      ENUM = 0, ACK_FILTER_ALL
+      OpenTag 4
+        Integer = 0, XLOW
+        Integer = 1, 128
+      CloseTag 4
+      )
+
+  -- 8. RECEIVE GetEnrollmentSummary-ACK,
+  --             'List of Enrollment Summaries' = (all configured event-
+  --                                               generating objects with
+  --                                               a priority in the specified 
+  --                                               range)
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = GETENROLLMENTSUMMARY
+      Object EVENT_ID
+      ENUM EVENT_TYPE_OUT_OF_RANGE
+      ENUM EVENT_STATE_NORMAL
+      INTEGER NORMAL_PRIORITY
+      )

@@ -1,0 +1,484 @@
+  ; Testing Support for Executing the BACnet ReadProperty Service
+  ; for BACnet devices that can only be accessed through a router.
+  ;
+  ; Version 2.0
+  ;
+  ;       written by Steven T. Bushby, 12/17/96
+  ;               updated 03/23/98 updated to match current draft test std.
+  ;               updated 04/03/98 fixed error code in case 2a
+  ;
+  ;  This test script relies on required properties of the Device object to
+  ;  test the functionality of the ReadProperty Service. This version assumes 
+  ;  that the TD and IUT are on the same Ethernet network (network 1).
+  ;
+  ;  In the REFERENCE sections "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;
+  ;  NOTE: This version implements the same tests as READPROP.VTS except
+  ;        that additional network layer information is included in each
+  ;        message. This version is for use when testing devices that reside
+  ;        on a BACnet network that cannot be directly-connected to the
+  ;        VTS machine. A router must be used to connect VTS to the IUT.
+  ;  
+  ;--------------------------------------------------------------
+
+SETUP BACnet ReadProperty Service Execution
+
+  ;--------------------------------------------------------------
+  ;
+  ; Setting up the hardware parameters for the VTS computer (TD).
+  ;
+  ;
+  ;
+  ; the network parameter for the TD
+  ;
+  NET_1 = 1, ETHERNET, 0
+  -- The network which is directly-connected to the TD
+  -- and can be used to reach the IUT.
+  -- Adjust the parameters as needed to reflect the actual
+  -- physical environment. The first value represents the 
+  -- physical network number, the second value the physical 
+  -- network type and the third value the physical port.
+
+  MY_MAC = 00a0242daf41    -- MAC address of the TD
+                           -- replace with you TD address
+
+  ;--------------------------------------------------------------
+  ;
+  ; Setting up the hardware parameters for the IUT.
+  ;
+  ;
+  IUT_MAC = 10             -- MAC address of IUT
+                           -- replace with your IUT address
+                            
+  DEVICE_ID = 101          -- Device object instance for IUT.
+
+  ;--------------------------------------------------------------
+  ;
+  ; Setting up the network environment
+  ;
+  ;
+
+  IUT_DNET = 21, MS/TP
+  --- The network to which the IUT is directly-connected. The first
+  --- value represents the network number, the second value the 
+  --- network type. (The physical port is not needed)
+
+  ROUTER_MAC = 00602d000008
+  -- MAC address of the router that can reach IUT_DNET from NET_1
+
+  ;--------------------------------------------------------------  
+
+SECTION Testing the execution of the ReadProperty service
+
+  ;--------------------------------------------------------------
+  ; Test group 1 implements the positive ReadProperty service
+  ; execution tests.
+
+  TEST #1a
+  -- Sending a ReadProperty to retrieve the Object_Identifier 
+  -- property of the Device object. This test verifies the ability
+  -- to read an object identifier value.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)12.9.5,15.5; (T)9.15.1.1
+
+  SEND (
+    NETWORK = NET_1
+    DESTINATION = ROUTER_MAC
+    DNET = IUT_DNET
+    DADR = IUT_MAC
+    DER = TRUE
+    PDU = Confirmed-Request
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Object-Identifier
+    )
+
+  -- The IUT should send a complex acknowledgement containing a
+  -- ReadPropertyAck and the value of the Object_Identifier property
+  -- of the DEVICE object. This value should match the EPICS database
+
+  EXPECT (
+    NETWORK = NET_1
+    SNET = IUT_DNET
+    SADR = IUT_MAC
+    DER = FALSE
+    PDU = ComplexAck
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Object-Identifier
+    OpenTag 3                               ;Property Value(s)
+      AL = {Object-Identifier}              ;compare with database
+    CloseTag 3                                   
+    )
+
+;--------------------------------------------------------------
+
+  TEST #1b
+  -- Sending a ReadProperty to retrieve the Object_Type of the
+  -- DEVICE object. This test verifies the ability to read an 
+  -- enumeration value.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)12.9.5,15.5; (T) 9.15.1.2
+
+  SEND (
+    NETWORK = NET_1
+    DESTINATION = ROUTER_MAC
+    DNET = IUT_DNET
+    DADR = IUT_MAC
+    DER = TRUE
+    PDU = Confirmed-Request
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Object-Type
+    )
+
+  -- The IUT should send a complex acknowledgement containing a
+  -- ReadPropertyAck and the value of the Object_Type property
+  -- of the DEVICE object.
+
+  EXPECT (
+    NETWORK = NET_1
+    SNET = IUT_DNET
+    SADR = IUT_MAC
+    DER = FALSE
+    PDU = ComplexAck
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Object-Type
+    OpenTag 3                               ;Property Value(s)
+      AL = {Object-Type}                    ;compare with database
+    CloseTag 3
+    )
+
+;--------------------------------------------------------------
+
+  TEST #1c
+  -- Sending a ReadProperty to retrieve the Vendor-Name of the
+  -- DEVICE object. This test verifies the ability to read a 
+  -- characterstring value.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)12.9.5,15.5; (T)9.15.1.3
+
+  SEND (
+    NETWORK = NET_1
+    DESTINATION = ROUTER_MAC
+    DNET = IUT_DNET
+    DADR = IUT_MAC
+    DER = TRUE
+    PDU = Confirmed-Request
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Vendor-Name
+    )
+
+  -- The IUT should send a complex acknowledgement containing a
+  -- ReadPropertyAck and the value of the Vendor_Name property
+  -- of the DEVICE object.
+
+  EXPECT (
+    NETWORK = NET_1
+    SNET = IUT_DNET
+    SADR = IUT_MAC
+    DER = FALSE
+    PDU = ComplexAck
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Vendor-Name
+    OpenTag 3                               ;Property Value(s)
+      AL = {Vendor-Name}                    ;compare with database
+    CloseTag 3
+    )
+
+;--------------------------------------------------------------
+
+  TEST #1d
+  -- Sending a ReadProperty to retrieve the Vendor_Identifier of 
+  -- the DEVICE object. This test verifies the ability to read an 
+  -- unsigned value.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)12.9.5,15.5; (T)9.15.1.4
+
+  SEND (
+    NETWORK = NET_1
+    DESTINATION = ROUTER_MAC
+    DNET = IUT_DNET
+    DADR = IUT_MAC
+    DER = TRUE
+    PDU = Confirmed-Request
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Vendor-Identifier
+    )
+
+  -- The IUT should send a complex acknowledgement containing a
+  -- ReadPropertyAck and the value of the Vendor_Identifier property
+  -- of the DEVICE object.
+
+  EXPECT (
+    NETWORK = NET_1
+    SNET = IUT_DNET
+    SADR = IUT_MAC
+    DER = FALSE
+    PDU = ComplexAck
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Vendor-Identifier
+    OpenTag 3                               ;Property Value(s)
+      AL = {Vendor-Identifier}              ;compare with database
+    CloseTag 3
+    )
+
+
+  ;--------------------------------------------------------------
+
+  TEST #1e
+  -- Sending a ReadProperty to retrieve the Object_List of the
+  -- DEVICE object with no array index. This test verifies the ability
+  -- to read an entire array.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)12.9.16,15.5,15.5.1.1.3; (T)9.15.1.5
+
+  SEND (
+    NETWORK = NET_1
+    DESTINATION = ROUTER_MAC
+    DNET = IUT_DNET
+    DADR = IUT_MAC
+    DER = TRUE
+    PDU = Confirmed-Request
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Object-List
+    )
+
+  -- The device should send a complex acknowledge containing a
+  -- ReadPropertyAck and the whole array of the Object_List property
+  -- of the DEVICE object.
+  --
+  -- Note that if segmentation is not supported and the Object_List is
+  -- too long to return in one message the IUT should return an Abort
+  -- indicating that segmentation is not supported. This was not included
+  -- in the script in order to flag the problem so that another array can
+  -- be used instead.
+
+  EXPECT (
+    NETWORK = NET_1
+    SNET = IUT_DNET
+    SADR = IUT_MAC
+    DER = FALSE
+    PDU = ComplexAck
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Object-List
+    OpenTag 3                               ;Property Value(s)
+      AL = {Object-List}
+    CloseTag 3
+    )
+
+  ;--------------------------------------------------------------
+
+  TEST #1f
+  -- Sending a ReadProperty to retrieve the Object-List of the
+  -- DEVICE object with an array index of zero. This tests the special
+  -- case of array index 0.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)12.(p.136 paragraph 3); (T)9.15.1.6
+
+  SEND (
+    NETWORK = NET_1
+    DESTINATION = ROUTER_MAC
+    DNET = IUT_DNET
+    DADR = IUT_MAC
+    DER = TRUE
+    PDU = Confirmed-Request
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Object-List
+    Unsigned = 2, 0                         ;Array Index = 0
+    )
+
+  -- The device should send a complex acknowledge containing a
+  -- ReadPropertyAck and the length of the array of the Object-List
+  -- property of the DEVICE object.
+
+  EXPECT (
+    NETWORK = NET_1
+    SNET = IUT_DNET
+    SADR = IUT_MAC
+    DER = FALSE
+    PDU = ComplexAck
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Object-List
+    Unsigned = 2, 0                         ;Array Index = 0
+    OpenTag 3                               ;Property Value(s)
+      AL = {Object-List[0]}                 ;compare with database
+    CloseTag 3
+    )
+
+  ;--------------------------------------------------------------
+
+  TEST #1g
+  -- Sending a ReadProperty to retrieve the Object-List of the
+  -- DEVICE object with an array index of 1. This tests the normal
+  -- case of reading a single indexed value.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)12.9.16,15.5; (T)9.15.7
+
+  SEND (
+    NETWORK = NET_1
+    DESTINATION = ROUTER_MAC
+    DNET = IUT_DNET
+    DADR = IUT_MAC
+    DER = TRUE
+    PDU = Confirmed-Request
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Object-List
+    Unsigned = 2, 1                         ;Array Index = 1
+    )
+
+  -- The device should send a complex acknowledge containing a
+  -- ReadPropertyAck and first object identifier of the Object-List
+  -- property of the DEVICE object.
+
+  -- Note: VTS does assumes that the order of entries in the
+  -- Object_List array is the same order as they are listed in the
+  -- EPICS.
+
+  EXPECT (
+    NETWORK = NET_1
+    SNET = IUT_DNET
+    SADR = IUT_MAC
+    DER = FALSE
+    PDU = ComplexAck
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Object-List
+    Unsigned = 2, 1                         ;Array Index = 1
+    OpenTag 3                               ;Property Value(s)
+      AL = {Object-List[1]}                 ;compare with database
+    CloseTag 3
+    )
+
+  ;--------------------------------------------------------------
+  ; Test group 2 implements the negative ReadProperty service
+  ; execution tests.
+
+  ;--------------------------------------------------------------
+
+  TEST #2a
+  --- Sending a ReadProperty to retrieve the Vendor-Name of the
+  --- DEVICE object with an array index of 1. This tests proper 
+  --- handling of the error condition of providing an array index
+  --- for a property that is not an array.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)15.5,15.5.1.1.3; (T)9.15.2.1
+
+  SEND (
+    NETWORK = NET_1
+    DESTINATION = ROUTER_MAC
+    DNET = IUT_DNET
+    DADR = IUT_MAC
+    DER = TRUE
+    PDU = Confirmed-Request
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Vendor-Name
+    Unsigned = 2, 1                         ;Array Index = 1
+    )
+
+  -- The device should send an error or a reject message as a
+  -- response, because the Vendor-Name property is not indexed.
+
+  EXPECT (
+    NETWORK = NET_1
+    SNET = IUT_DNET
+    SADR = IUT_MAC
+    DER = FALSE
+    PDU = Error
+    Error-Choice = ReadProperty
+    ENUMERATED = 2                       ;error class: property
+    ENUMERATED = 42                      ;error code: invalid array index
+    )
+
+  OR (
+    NETWORK = NET_1
+    SNET = IUT_DNET
+    SADR = IUT_MAC
+    DER = FALSE
+    PDU = Error
+    Error-Choice = ReadProperty
+    ENUMERATED = 5                       ;error class: services
+    ENUMERATED = 7                      ;error code: inconsistent parameters
+    )
+
+  OR (
+    NETWORK = NET_1
+    SNET = IUT_DNET
+    SADR = IUT_MAC
+    DER = FALSE
+    PDU = Reject
+    Reject-Reason = 2                     ;inconsistent parameters
+    )
+
+
+
+
+  ;--------------------------------------------------------------
+
+  TEST #2b
+  --- Sending a ReadProperty to retrieve the Object-List of the
+  --- DEVICE object required by the standard with a very high array
+  --- index. This tests proper handling of an out-of-range index.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)12.9.16,15.5; (T)9.15.2.2
+
+  SEND (
+    NETWORK = NET_1
+    DESTINATION = ROUTER_MAC
+    DNET = IUT_DNET
+    DADR = IUT_MAC
+    DER = TRUE
+    PDU = Confirmed-Request
+    Service = ReadProperty
+    Object = 0, DEVICE, DEVICE_ID
+    Property = 1, Object-List
+    Unsigned = 2, 32000                     ;Array Index = 32000
+    )
+
+  --- The device should send an error message with an Error-Class =
+  --- Property and an Error-Code = Invalid-Array-Index.
+
+  EXPECT (
+    NETWORK = NET_1
+    SNET = IUT_DNET
+    SADR = IUT_MAC
+    DER = FALSE
+    PDU = Error
+    Service = ReadProperty
+    Enumerated = 2                          ;error class: property
+    Enumerated = 42                         ;error code: invalid array index
+    )
+
+
+
+

@@ -1,0 +1,574 @@
+;-------------------------------------------------------------------------------------
+  ;  Negative WritePropertyMultiple Service Execution Tests
+  ;	Draft
+  ;  nWPMmmddyy.vts
+  ;
+  ;  Ver 1.0	04/01/01	Bradsp  	Initial version
+  ;  Ver 1.1    09/17/01        Bradsp          Marked with easy change symbols and Routing sections
+  ;  Purpose: This file defines the tests necessary to to verify correct execution 
+  ;	      of WritePropertyMultiple service requests under circumstances where the 
+  ;	      service is NOT expected to be successfully completed. 
+  ;
+  ;  Dependencies: xxxxxxxxxxxxxxx
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and "(T)" refers to
+  ;  the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Negative WritePropertyMultiple Service Execution Tests
+
+  ;------------------------------------------------------------------------------------- 
+  ; Notes on Hardcoding and other changes needing to be made outside of the setup section including hard coded objects and properties 
+  ; Items marked and found with *** are hardcoded or the error messages must be manually verified in the trace. 
+  ; The error expects are commented out.
+  ;  Test 1 Manaully verify (Property, unknown property
+  ;  Test 2 Manually verify (Object, unknown object)
+  ;  Test 3 Manually verify (Property Write Access Denied)
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG 
+  ; All objects and properties are listed here including notes on there use
+
+   IUT_IP = 10.10.10.100:0xBAC0
+   TD_IP = 10.10.10.36:0xBAC0  
+  
+    A = ANSI, "XX"            ; Change This initial value in EPICS
+    B = ANSI, "Desired Temperature"         ; Newly written value   
+    C = ANSI, "test2written" 
+    D = ANSI, "test3written" 
+
+  OBJECT3 = Device, 1967 	; Device object (supported)
+  OBJECT2 = Analog-Input, 77    ; this object should not exist in the device
+  OBJECT1  Analog-Value, 1      ; Test 1 Object
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG 
+  ; 
+  
+
+  -- TEST #1A Writing Multiple Properties with a Property Access Error (commented)
+              -- MANUAL SEND AND RECEIVE - MANUALLY VERIFY ERROR IN STEP 3  
+              -- BODY CHANGE  MANAULLY PUT IN PLACE A PROPERTY AND DATATYPE NOT SUPPORTED IN STEP 2.
+	         BADPROP = 27          ; THIS IS ENUMERATED FROM PAGE 376 IN THE BACNET STANDARD
+
+  -- TEST #1B Writing Multiple Properties with an Object Access Error (commented)
+              -- MANUAL SEND AND RECEIVE - MANUALLY VERIFY ERROR IN STEP 3   
+              -- BODY CHANGE  
+
+  -- TEST #1C	Writing Multiple Properties with a Write Access Error (commented)
+              -- MANUAL SEND AND RECEIVE   - MANUALLY VERIFY ERROR IN STEP 4
+              -- BODY CHANGE  
+
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+  ;
+  ;  Routing_Config
+  ;  
+
+  -- DNET_MSTP = 20001, MS/TP     ; Sets the DNET of the remote MSTP network (Comment if no routing)
+
+  ;-----IUT and TD are on the same Ethernet segment
+  ;   DESTINATION = IUT_MAC 
+  ;-----IUT is on an MSTP segment and TD is on an Ethernet segment
+  ;   DA = Broadcast
+  ;   DNET = DNET_MSTP
+  ;   DADR = IUT_MAC
+  ;------------------------------------------------------------------------------------- 
+
+
+  SECTION Negative WritePropertyMultiple Service Execution Tests
+
+  -- Configuration Requirements: 
+  --	a) Two objects shall be selected by the tester from the IUT's database. 
+  --	   The various tests consist of reading combinations of properties from 
+  --	   one or both of these objects. In the test descriptions the Object_Identifier
+  --	   for these objects are designated Object1 and Object2. Properties selected by
+  --	   the tester are designated P1, P2, P3, etc. as needed.
+  --	b) The IUT's EPICS must be modified to add an unsupported property
+  --	c) IUT is on the same network as the TD.
+
+  ;-------------------------------------------------------------------------------------
+  
+TEST #1A Writing Multiple Properties with a Property Access Error
+
+  --  Purpose: This test case verifies the ability to correctly execute a WritePropertyMultiple service request for which the 'List of Write    
+  --  Access Specifications' contains a specification for an unsupported property.
+ 
+  --  Test Steps:
+
+  --  1.	VERIFY (Object1), P1 = (the value specified for this property in the EPICS)
+  --  2.	TRANSMIT WritePropertyMultiple-Request,
+  --		'Object Identifier' =	Object1,
+  --  		'Property Identifier' =	P1,
+  --	 	'Property Value' =	(any value of the appropriate datatype except for the one verified in step 1),
+  --		'Property Identifier' =	P2,
+  --		'Property Value' =	(any value of the appropriate datatype)
+  --  3.	RECEIVE WritePropertyMultiple-Error,
+  --		Error Class =		PROPERTY,
+  --		Error Code =		UNKNOWN_PROPERTY,
+  --		objectIdentifier =		Object1,
+  --	 	propertyIdentifier =	P2
+  --  4.	VERIFY (Object1), P1 = (the value specified for P1 in step 3)
+
+
+  -- Step #1: Send ReadPropertyMultiple request for multiple properties from a
+  -- single supported object. This test verifies the values of the 
+
+
+  -- Step #1: Verify (read) the current value of the supported property
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1      
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Description                       ; Variable
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Description                        ; Variable
+      OpenTag 3
+       CHARSTRING = B                          ; Init value - check EPICS
+      CloseTag 3                                   
+    )
+
+ --  2.	TRANSMIT WritePropertyMultiple-Request, (P1 will work and P2 will fail with an error code)
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 2      
+      Service = WritePropertyMultiple
+      Object = 0, OBJECT1
+      OpenTag 1
+        Property = 0, Description				;This property is typically writable     	
+        OpenTag 2
+            CHARSTRING = C
+        CloseTag 2
+        Property = 0, BADPROP			;This property is typically not present 
+        OpenTag 2
+            REAL = 7
+         CloseTag 2
+       CloseTag 1                                   
+    )
+
+ --  3.	RECEIVE WritePropertyMultiple-Error,   ; *** Fail - The Expect is incorrect here Must read manually
+
+  EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = error
+      Error-Choice = WritePropertyMultiple
+      OpenTag 0
+       Enum = 2               ;Property
+       Enum = 40              ;Write-Access-Denied
+      CloseTag 0
+      OpenTag 1
+       Object = 0,OBJECT1  
+       Property = 1,Description
+      CloseTag 1
+       		
+         )
+
+
+  --  4.	VERIFY (Object1), P1 = (the value specified for P1 in step 3)
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 3      
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Description
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1 
+      Property = 1, Description
+      OpenTag 3
+       CHARSTRING = B			; Initial value in the EPICS
+      CloseTag 3                                   
+    )
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+
+
+
+TEST #1B	Writing Multiple Properties with an Object Access Error
+--  Purpose: This test case verifies the ability to correctly execute a WritePropertyMultiple service --  request for which the 'List of Write Access Specifications' contains a specification for an --  unsupported object.
+
+
+--  Test Steps:
+
+--  1.	VERIFY (Object1), P1 = (the value specified for this property in the EPICS)
+--  2.	TRANSMIT WritePropertyMultiple-Request,
+--		'Object Identifier' =	Object1,
+--		'Property Identifier' =	P1,
+--		'Property Value' =	(any value of the appropriate datatype except for the one --  verified in step 1),
+--		'Object Identifier' =	BadObject,
+--		'Property Identifier' =	P2,
+--		'Property Value' =	(any value of the appropriate datatype)
+--  3.	RECEIVE WritePropertyMultiple-Error,
+--		Error Class =		OBJECT,
+--		Error Code =		UNKNOWN_OBJECT,
+--		objectIdentifier =		BadObject,
+--		propertyIdentifier =	P2
+--  4.	VERIFY (Object1), P1 = (the value specified for P1 in step 2)
+
+
+-- Step #1: VERIFY (Object1), P1 = (the value specified for this property in the EPICS)
+
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1      
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Description                       ; Variable
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Description                        ; Variable
+      OpenTag 3
+        CHARSTRING = B                          ;  value - from test 1
+      CloseTag 3                                   
+    )
+
+
+--  2.	TRANSMIT WritePropertyMultiple-Request,
+
+      SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 2      
+      Service = WritePropertyMultiple
+      Object = 0, OBJECT1
+      OpenTag 1
+        Property = 0, Description
+        OpenTag 2
+           CHARSTRING = C
+        CloseTag 2
+      CloseTag 1
+      Object = 0, OBJECT2
+      OpenTag 1
+        Property = 0, present-value
+        OpenTag 2
+            REAL = 121212
+        CloseTag 2
+      CloseTag 1                                   
+     )
+
+
+--  3.	RECEIVE WritePropertyMultiple-Error    ; *** This expect fails; Must read manually
+
+   EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = error
+      Error-Choice = WritePropertyMultiple
+      OpenTag 0
+       Enum = 2               ;Property
+       Enum = 40              ;Write-Access-Denied
+      CloseTag 0
+      OpenTag 1
+       Object = 0,OBJECT1  
+       Property = 1,Description
+      CloseTag 1
+      )
+
+      --  4. VERIFY (Object1), P1 = (the value specified for P1 in step 2)
+  SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 3      
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Description                       ; Variable
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Description                        ; Variable
+      OpenTag 3
+        CHARSTRING = B                          ; Init value - check EPICS
+      CloseTag 3                                   
+    )
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------
+
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+
+
+TEST #1C	Writing Multiple Properties with a Write Access Error
+
+--  Purpose: This test case verifies the ability to correctly execute a WritePropertyMultiple service --  request for which the 'List of Write Access Specifications' contains a specification for a read only --  property.
+
+--  Test Steps:
+
+--  1.	VERIFY (Object1), P1 = (the value specified for this property in the EPICS)
+--  2.	VERIFY (Object1), P2 = (the value specified for this property in the EPICS)
+--  3.	TRANSMIT WritePropertyMultiple-Request,
+--		'Object Identifier' =	Object1,
+--		'Property Identifier' =	P1,
+--		'Property Value' =	(any value of the appropriate datatype except for the one --  verified in step 1),
+--		'Property Identifier' =	P2,
+--		'Property Value' =	(any value of the appropriate datatype except the one verified --  in step 1)
+--  4.	RECEIVE WritePropertyMultiple-Error,
+--		Error Class =		PROPERTY,
+--		Error Code =		WRITE_ACCESS_DENIED,
+--		objectIdentifier =		Object1,
+--		propertyIdentifier =	P2
+--  5.	VERIFY (Object1), P1 = 	(the value specified for P1 in step 3)
+--  6.	VERIFY (Object1), P2 = 	(the value specified for this property in the EPICS)
+
+
+
+--  	Step #1  VERIFY (Object1), P1 = (the value specified for this property in the EPICS)
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1      
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Description
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1 
+      Property = 1, Description
+      OpenTag 3
+        CHARSTRING = B  ; if Property Write failed in test 2
+      CloseTag 3
+    )
+
+--   Step #2	VERIFY (Object1), P2 = (the value specified for this property in the EPICS)
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 2      
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, object-type
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1 
+      Property = 1, object-type
+      OpenTag 3
+        Enumerated = 2               ;
+      CloseTag 3
+    )
+
+--    Step #3	TRANSMIT WritePropertyMultiple-Request,
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 3      
+      Service = WritePropertyMultiple
+      Object = 0, OBJECT1
+      OpenTag 1
+        Property = 0, Description
+        OpenTag 2
+           Charstring = D     ; This should write
+        CloseTag 2
+        Property = 0, object-type
+        OpenTag 2
+            Enumerated = 3   ; This should not write
+        CloseTag 2
+       CloseTag 1                                   
+    )
+
+
+--   	Step #4 RECEIVE WritePropertyMultiple-Error,
+
+  EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = error
+      Error-Choice = WritePropertyMultiple
+      OpenTag 0
+       Enum = 2               ;Property
+       Enum = 40              ;Write-Access-Denied
+      CloseTag 0
+      OpenTag 1
+       Object = 0,OBJECT1  
+       Property = 1,Description
+      CloseTag 1
+    )
+
+--  Step #5  VERIFY (Object1), P1 = 	(the value specified for P1 in step 3)
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 4      
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Description
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1 
+      Property = 1, Description
+      OpenTag 3
+        CHARSTRING = B ; if Propert of Description can't be write
+      CloseTag 3
+    )
+
+--  Step #6  VERIFY (Object1), P2 = 	(the value specified for this property in the EPICS)
+
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 5      
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, object-type
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      DER = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU 
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1 
+      Property = 1, object-type
+      OpenTag 3
+        Enumerated = 2                     ; *** This value is hard coded (This value must match the epics.
+      CloseTag 3
+    )
+
+
+

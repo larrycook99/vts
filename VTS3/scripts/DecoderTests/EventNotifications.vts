@@ -1,0 +1,799 @@
+--------------  S C R I P T   V E R S I O N   I N F O   -----------------------
+;
+; Version 1      2010-01-28   By John Hartman
+;
+---------------------- S C R I P T   H E A D E R ------------------------------
+;
+; Script: EventNotifications
+; Test: 
+;
+; Purpose: Test the various flavors of BACnetEventNotification
+;
+---------------------- S C R I P T   B O D Y ----------------------------------
+SETUP Test the various flavors of BACnetEventNotification
+INCLUDE "..\config.vts"
+
+OBJECT1 = (ANALOG-INPUT, 1)
+OBJECT2 = (ANALOG-OUTPUT, 1)
+OBJECT3 = (BINARY-INPUT, 1)
+OBJECT4 = (BINARY-OUTPUT, 1)
+
+SECTION Event Notifications
+-------------------------------------------------------------------------------
+TEST 0 Change of bitstring
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         time = 0, [8:36:12.0]
+;        Unsigned = 1, 12345
+;        OpenTag 2
+;           date = [(FRIDAY,1/29/2010)]
+;           time = [8:36:12.0]
+;        CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 0   ; BACnetEventType
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 1   ; notifyType (alarm)
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 2  ; tostate: BACnetEventState off-normal
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 0
+            Bitstring = 0, B'10101010101'
+            Bitstring = 1, B'1000'
+         CloseTag 0
+      CloseTag 12
+    )
+
+TEST 1.1 Change of state - BOOLEAN
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         Unsigned = 1, 12345
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 1   ; BACnetEventType: change of state
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType alarm
+      Boolean = 9, FALSE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 2  ; tostate: BACnetEventState off-normal
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 1
+            ; BACnetPropertyStates
+            OpenTag 0
+               Boolean = 0, FALSE
+            CloseTag 0
+            Bitstring = 1, B'1000'
+         CloseTag 1
+      CloseTag 12
+    )
+
+TEST 1.2 Change of state - BinaryPV
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         Unsigned = 1, 12345
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 1   ; BACnetEventType: change of state
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType alarm
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 2  ; tostate: BACnetEventState off-normal
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 1
+            ; BACnetPropertyStates
+            OpenTag 0
+               Enumerated = 1, 1
+            CloseTag 0
+            Bitstring = 1, B'1000'
+         CloseTag 1
+      CloseTag 12
+    )
+
+TEST 1.3 Change of state - Unsigned
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         Unsigned = 1, 12345
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 1   ; BACnetEventType: change of state
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType alarm
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 2  ; tostate: BACnetEventState off-normal
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 1
+            ; BACnetPropertyStates
+            OpenTag 0
+               Unsigned = 11, 1234
+            CloseTag 0
+            Bitstring = 1, B'1000'
+         CloseTag 1
+      CloseTag 12
+    )
+
+TEST 2.1 Change of value - BITSTRING
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 2   ; BACnetEventType: change of value
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 1   ; notifyType event
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 2
+            OpenTag 0
+               Bitstring = 0, B'11'
+            CloseTag 0
+            Bitstring = 1, B'1000'
+         CloseTag 2
+      CloseTag 12
+    )
+
+TEST 2.2 Change of value - REAL
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 2   ; BACnetEventType: change of value
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 1   ; notifyType event
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 2
+            OpenTag 0
+               Real = 1, 6.54321
+            CloseTag 0
+            Bitstring = 1, B'1000'
+         CloseTag 2
+      CloseTag 12
+    )
+
+TEST 3.1 command failure analog
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT2
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 3   ; BACnetEventType: command failure
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 3
+            OpenTag 0
+               Real = 123.456
+            CloseTag 0
+            Bitstring = 1, B'1000'
+            OpenTag 2
+               Real = 100.0
+            CloseTag 2
+         CloseTag 3
+      CloseTag 12
+    )
+
+TEST 3.2 command failure binaryPV
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT4
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 3   ; BACnetEventType: command failure
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 3
+            OpenTag 0
+               Enumerated = 1
+            CloseTag 0
+            Bitstring = 1, B'1000'
+            OpenTag 2
+               Enumerated = 0
+            CloseTag 2
+         CloseTag 3
+      CloseTag 12
+    )
+
+TEST 3.3 command failure boolean
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT4
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 3   ; BACnetEventType: command failure
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 3
+            OpenTag 0
+               Boolean = FALSE
+            CloseTag 0
+            Bitstring = 1, B'1000'
+            OpenTag 2
+               Boolean = TRUE
+            CloseTag 2
+         CloseTag 3
+      CloseTag 12
+    )
+
+TEST 3.4 command failure unsigned
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 3   ; BACnetEventType: command failure
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 3
+            OpenTag 0
+               Unsigned = 6
+            CloseTag 0
+            Bitstring = 1, B'1000'
+            OpenTag 2
+               Unsigned = 7
+            CloseTag 2
+         CloseTag 3
+      CloseTag 12
+    )
+
+
+TEST 4 floating limit
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         time = 0, [8:36:12.0]
+;        Unsigned = 1, 12345
+;        OpenTag 2
+;           date = [(FRIDAY,1/29/2010)]
+;           time = [8:36:12.0]
+;        CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 4   ; BACnetEventType: floating limit
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 4
+            Real = 0, 123.456
+            Bitstring = 1, B'1000'
+            Real = 2, 100.0
+            Real = 3, 10.0
+         CloseTag 4
+      CloseTag 12
+    )
+
+
+TEST 5 Out of Range
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 5   ; BACnetEventType: out-of-range
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 5
+            Real = 0, 123.456
+            Bitstring = 1, B'1000'
+            Real = 2, 10.0
+            Real = 3, 100.0
+         CloseTag 5
+      CloseTag 12
+    )
+
+
+TEST 6 Complex event type
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 6   ; BACnetEventType: complex
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 6
+            Property 0, present-value
+            Unsigned 1, 6
+            OpenTag 2
+               Real 123.456
+            CloseTag 2
+            Unsigned 3, 4
+
+            Property 0, object-name
+            OpenTag 2
+               Characterstring "fifi"
+            CloseTag 2
+         CloseTag 6
+      CloseTag 12
+    )
+
+
+TEST 8.1 Change of life safety - low values
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 8   ; BACnetEventType: Change of life safety
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 8
+            Enumerated = 0, 0
+            Enumerated = 1, 0
+            Bitstring = 2, B'1000'
+            Enumerated = 3, 0
+         CloseTag 8
+      CloseTag 12
+    )
+
+
+TEST 8.2 Change of life safety - high values
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 8   ; BACnetEventType: Change of life safety
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 8
+            Enumerated = 0, 23
+            Enumerated = 1, 14
+            Bitstring = 2, B'1000'
+            Enumerated = 3, 9
+         CloseTag 8
+      CloseTag 12
+    )
+
+
+TEST 9 Extended
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 9   ; BACnetEventType: Extended
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 9
+            Unsigned = 0, 2
+            Unsigned = 1, 666
+            OpenTag 2
+               Null
+               Real = 123.4
+               Unsigned = 666
+               Boolean = TRUE
+               double = 123.4
+               octetstring = X'AA55'
+               bitstring = B'101'
+               enumerated = 1600
+               OpenTag 0
+                  Object = 0, IUT_DEVICE_OBJECT
+                  Object = 1, OBJECT3
+                  Property = 2, present-value
+                  Unsigned 3, 6
+                  OpenTag 4
+                     Enumerated 1
+                  CloseTag 4
+               CloseTag 0
+            CloseTag 2
+         CloseTag 9
+      CloseTag 12
+    )
+
+
+TEST 10.1 Buffer Ready with device
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 10   ; BACnetEventType: buffer ready
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 10
+            OpenTag 0
+               Object = 0, OBJECT3
+               Property = 1, present-value
+               Unsigned 2, 6
+               Object = 3, IUT_DEVICE_OBJECT
+            CloseTag 0
+            Unsigned 1, 600
+            Unsigned 2, 700
+         CloseTag 10
+      CloseTag 12
+    )
+
+
+TEST 10.2 Buffer Ready without device
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 10   ; BACnetEventType: buffer ready
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 10
+            OpenTag 0
+               Object = 0, OBJECT3
+               Property = 1, present-value
+            CloseTag 0
+            Unsigned 1, 60000
+            Unsigned 2, 70000
+         CloseTag 10
+      CloseTag 12
+    )
+
+
+TEST 11 unsigned range
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [8:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 11   ; BACnetEventType: unsigned range
+      CharacterString = 7, "I have fallen and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 11
+            Unsigned = 0, 666
+            Bitstring = 1, B'1000'
+            Unsigned = 2, 665
+         CloseTag 11
+      CloseTag 12
+    )
+
+
+-------------------------------------------------------------------------------
+TEST N ACK Notification
+DEPENDENCIES None
+REFERENCE None
+   SEND (
+      DA = IUT_ADDR
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedEventNotification
+
+      Unsigned = 0, 123456
+      Object = 1, IUT_DEVICE_OBJECT
+      Object = 2, OBJECT1
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+        OpenTag 2
+           date = [(FRIDAY,1/29/2010)]
+           time = [8:36:12.0]
+        CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 0   ; BACnetEventType
+      Enumerated = 8, 2   ; notifyType (alarm ack notification)
+      Enumerated = 11, 2  ; tostate: BACnetEventState off-normal
+    )
+
+

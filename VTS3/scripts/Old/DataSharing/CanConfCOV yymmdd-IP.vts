@@ -1,0 +1,139 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Positive SubscribeCOV Service Execution Tests
+  ;	Canceling COV Subscriptions Test Case
+  ;
+  ; CancelConfirmedCOV.vts		CanCoCOVddmmyy.vts
+  ;
+  ;  Ver 1.0   06/02/01    P. Bowen	Initial version
+  ;
+  ;  Purpose: This test case verifies that the IUT correctly responds to a
+  ;	SubscribeCOV request to cancel a COV subscription. This test cancels
+  ;	the subscription made in the "Confirmed COV Notifications" test case.
+  ;
+  ; Dependencies: Confirmed COV Notifications Test Case
+  ;  
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Canceling COV Subscriptions Test Case
+
+  ;-------------------------------------------------------------------------------------
+   IUT_IP = 208.6.162.35
+   --IUT_IP = 10.10.10.100
+  ;--------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+
+  ;"Untitled" = 1, ETHERNET, 0	; Net 1, type Ethernet, Port 0  which connects the TD and IUT
+
+  ;MY_MAC = 000102B22D5C		; MAC address of the TD
+
+  OBJECT1 = Analog-Value, 1	; Object which is the subject of this test case
+
+  PID = 50			; Same PID as in Confirmed COV Notifications Test Case
+  WRITE_PRIORITY = 1		; Priority for writing changes
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  
+  ;IUT_IP = 0040AE001360	; Address of IUT
+
+  ;-------------------------------------------------------------------------------------
+ 
+   SECTION Canceling COV Subscriptions Test Case
+
+  -- This test takes place across test #1a - #1b so the TD can be manually paused
+  -- between tests. This is necessary since a time delay is needed in this test 
+  -- sequence and VTS currently doesn't give us a means for doing this within the 
+  -- script.
+
+  -- Configuration Requirements:
+  --	1) The IUT shall be configured with at least one object that supports
+  --		subscriptions for COV notifications.
+  --	2) IUT is on the same network as the TD.
+
+  -- Test Steps:
+  --
+  -- 1.	TRANSMIT SubscribeCOV-Request,
+  --	 'Subscriber Process Identifier' = (the process identifier used in
+  --		Confirmed COV Notifications Test Case),
+  --	 'Monitored Object Identifier' = (the same object used in Confirmed COV 
+  --		Notifications Test Case)
+  -- 2.	RECEIVE BACnet-SimpleACK-PDU
+  -- 3.	WAIT Notification Fail Time
+  -- 4.	MAKE (a change to the monitored object that would cause a COV notification if there were an active subscription)
+
+  -- Passing Result: The IUT shall not transmit a COV notification message.
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Transmit UnsubscribeCOV Request and Receive SimpleACK
+
+  DEPENDENCIES None
+
+  REFERENCE (B) SubscribeCOV Service and (T) Positive SubscribeCOV Service Execution Tests
+
+  -- Step #1 & 2: Send Unsubscribe COV Request to IUT and Receive Simple ACK
+  
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = SubscribeCOV		; Cancel COV Subscription request
+      Unsigned = 0, PID			; Process-Identifier = PID
+      Object = 1, OBJECT1		; Object-Identifier = OBJECT1
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = SimpleAck
+      Service = SubscribeCOV
+    )
+
+  -- Step #3: Wait Notification Fail Time
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1b Make a Change to the Object That Would Cause a COV Notification
+
+  -- Step #4: Make Out-of-Service = TRUE and Verify (manually) that no
+  -- COV Notification is issued
+
+   SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1
+      Property = 1, Out-of-Service
+      OpenTag 3
+        BOOLEAN = TRUE			; Put OBJECT1 out of service
+      CloseTag 3
+      Unsigned = 4, WRITE_PRIORITY	; Set Out-of-Service write priority
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )

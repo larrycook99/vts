@@ -1,0 +1,579 @@
+>
+02 05 38 0C 			--readProperty(Last)(SA)(mr1470): invID=56
+0C 00 00 00 05 			--...objectIdentifier=(analog-input,5)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 2B 0C 			--Complex ACK(Last): invID=43,readProperty
+0C 00 00 00 06 			--...objectIdentifier=(analog-input,6)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 54 98 0F 3F 		--...propertyValue=212.594
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 2D 0C 			--Complex ACK(Last): invID=45,readProperty
+0C 00 00 00 09 			--...objectIdentifier=(analog-input,9)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 54 F4 3A 3F 		--...propertyValue=212.954
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 39 0C 			--readProperty(Last)(SA)(mr1470): invID=57
+0C 00 00 00 07 			--...objectIdentifier=(analog-input,7)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 2E 0C 			--Complex ACK(Last): invID=46,readProperty
+0C 00 00 00 0A 			--...objectIdentifier=(analog-input,10)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 55 22 4B 3F 		--...propertyValue=213.134
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 2F 0C 			--Complex ACK(Last): invID=47,readProperty
+0C 00 00 00 0B 			--...objectIdentifier=(analog-input,11)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 55 50 60 3F 		--...propertyValue=213.314
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 3A 0C 			--readProperty(Last)(SA)(mr1470): invID=58
+0C 00 00 00 06 			--...objectIdentifier=(analog-input,6)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 30 0C 			--Complex ACK(Last): invID=48,readProperty
+0C 00 00 00 0E 			--...objectIdentifier=(analog-input,14)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 55 AC 8A 3F 		--...propertyValue=213.674
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 3B 0C 			--readProperty(Last)(SA)(mr1470): invID=59
+0C 00 00 00 09 			--...objectIdentifier=(analog-input,9)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 31 0C 			--Complex ACK(Last): invID=49,readProperty
+0C 00 00 00 0C 			--...objectIdentifier=(analog-input,12)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 55 7E 76 3F 		--...propertyValue=213.494
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 3C 0C 			--readProperty(Last)(SA)(mr1470): invID=60
+0C 00 00 00 0A 			--...objectIdentifier=(analog-input,10)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 32 0C 			--Complex ACK(Last): invID=50,readProperty
+0C 00 00 00 14 			--...objectIdentifier=(analog-input,20)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 53 83 93 3F 		--...propertyValue=211.514
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 33 0C 			--Complex ACK(Last): invID=51,readProperty
+0C 00 00 00 01 			--...objectIdentifier=(analog-input,1)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 53 B1 A9 3F 		--...propertyValue=211.694
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 3D 0C 			--readProperty(Last)(SA)(mr1470): invID=61
+0C 00 00 00 0B 			--...objectIdentifier=(analog-input,11)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 3E 0C 			--readProperty(Last)(SA)(mr1470): invID=62
+0C 00 00 00 0E 			--...objectIdentifier=(analog-input,14)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 34 0C 			--Complex ACK(Last): invID=52,readProperty
+0C 00 00 00 0F 			--...objectIdentifier=(analog-input,15)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 55 DA A0 3F 		--...propertyValue=213.854
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 3F 0C 			--readProperty(Last)(SA)(mr1470): invID=63
+0C 00 00 00 0C 			--...objectIdentifier=(analog-input,12)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 35 0C 			--Complex ACK(Last): invID=53,readProperty
+0C 00 00 00 02 			--...objectIdentifier=(analog-input,2)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 53 DF BE 3F 		--...propertyValue=211.874
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 40 0C 			--readProperty(Last)(SA)(mr1470): invID=64
+0C 00 00 00 14 			--...objectIdentifier=(analog-input,20)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 36 0C 			--Complex ACK(Last): invID=54,readProperty
+0C 00 00 00 03 			--...objectIdentifier=(analog-input,3)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 54 0D D3 3F 		--...propertyValue=212.054
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 41 0C 			--readProperty(Last)(SA)(mr1470): invID=65
+0C 00 00 00 01 			--...objectIdentifier=(analog-input,1)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 37 0C 			--Complex ACK(Last): invID=55,readProperty
+0C 00 00 00 04 			--...objectIdentifier=(analog-input,4)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 54 3B E5 3F 		--...propertyValue=212.234
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 38 0C 			--Complex ACK(Last): invID=56,readProperty
+0C 00 00 00 05 			--...objectIdentifier=(analog-input,5)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 54 69 FA 3F 		--...propertyValue=212.414
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 42 0C 			--readProperty(Last)(SA)(mr1470): invID=66
+0C 00 00 00 0F 			--...objectIdentifier=(analog-input,15)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+50 39 0C 92 01 00 91 09 	--Error: invID=57, readProperty, proprietary errorclass 256:invalid data type
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 43 0C 			--readProperty(Last)(SA)(mr1470): invID=67
+0C 00 00 00 02 			--...objectIdentifier=(analog-input,2)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 44 0C 			--readProperty(Last)(SA)(mr1470): invID=68
+0C 00 00 00 03 			--...objectIdentifier=(analog-input,3)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 45 0C 			--readProperty(Last)(SA)(mr1470): invID=69
+0C 00 00 00 04 			--...objectIdentifier=(analog-input,4)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 3A 0C 			--Complex ACK(Last): invID=58,readProperty
+0C 00 00 00 06 			--...objectIdentifier=(analog-input,6)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 54 98 0F 3F 		--...propertyValue=212.594
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 46 0C 			--readProperty(Last)(SA)(mr1470): invID=70
+0C 00 00 00 05 			--...objectIdentifier=(analog-input,5)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 3B 0C 			--Complex ACK(Last): invID=59,readProperty
+0C 00 00 00 09 			--...objectIdentifier=(analog-input,9)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 54 F4 3A 3F 		--...propertyValue=212.954
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 47 0C 			--readProperty(Last)(SA)(mr1470): invID=71
+0C 00 00 00 07 			--...objectIdentifier=(analog-input,7)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 3C 0C 			--Complex ACK(Last): invID=60,readProperty
+0C 00 00 00 0A 			--...objectIdentifier=(analog-input,10)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 55 22 4B 3F 		--...propertyValue=213.134
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 48 0C 			--readProperty(Last)(SA)(mr1470): invID=72
+0C 00 00 00 06 			--...objectIdentifier=(analog-input,6)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 49 0C 			--readProperty(Last)(SA)(mr1470): invID=73
+0C 00 00 00 09 			--...objectIdentifier=(analog-input,9)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 3D 0C 			--Complex ACK(Last): invID=61,readProperty
+0C 00 00 00 0B 			--...objectIdentifier=(analog-input,11)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 55 50 60 3F 		--...propertyValue=213.314
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 21 0C 			--readProperty(Last)(SA)(mr1470): invID=33
+0C 00 00 00 0D 			--...objectIdentifier=(analog-input,13)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 3E 0C 			--Complex ACK(Last): invID=62,readProperty
+0C 00 00 00 0E 			--...objectIdentifier=(analog-input,14)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 55 AC 8A 3F 		--...propertyValue=213.674
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 4A 0C 			--readProperty(Last)(SA)(mr1470): invID=74
+0C 00 00 00 0A 			--...objectIdentifier=(analog-input,10)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 3F 0C 			--Complex ACK(Last): invID=63,readProperty
+0C 00 00 00 0C 			--...objectIdentifier=(analog-input,12)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 55 7E 76 3F 		--...propertyValue=213.494
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 4B 0C 			--readProperty(Last)(SA)(mr1470): invID=75
+0C 00 00 00 0B 			--...objectIdentifier=(analog-input,11)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 40 0C 			--Complex ACK(Last): invID=64,readProperty
+0C 00 00 00 14 			--...objectIdentifier=(analog-input,20)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 08 B2 3F 		--...propertyValue=214.034
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 41 0C 			--Complex ACK(Last): invID=65,readProperty
+0C 00 00 00 01 			--...objectIdentifier=(analog-input,1)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 64 DC 3F 		--...propertyValue=214.394
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 4C 0C 			--readProperty(Last)(SA)(mr1470): invID=76
+0C 00 00 00 0C 			--...objectIdentifier=(analog-input,12)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 4D 0C 			--readProperty(Last)(SA)(mr1470): invID=77
+0C 00 00 00 0E 			--...objectIdentifier=(analog-input,14)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 42 0C 			--Complex ACK(Last): invID=66,readProperty
+0C 00 00 00 0F 			--...objectIdentifier=(analog-input,15)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 55 DA A0 3F 		--...propertyValue=213.854
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 4E 0C 			--readProperty(Last)(SA)(mr1470): invID=78
+0C 00 00 00 14 			--...objectIdentifier=(analog-input,20)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 43 0C 			--Complex ACK(Last): invID=67,readProperty
+0C 00 00 00 02 			--...objectIdentifier=(analog-input,2)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 36 C6 3F 		--...propertyValue=214.214
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 4F 0C 			--readProperty(Last)(SA)(mr1470): invID=79
+0C 00 00 00 01 			--...objectIdentifier=(analog-input,1)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 44 0C 			--Complex ACK(Last): invID=68,readProperty
+0C 00 00 00 03 			--...objectIdentifier=(analog-input,3)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 EF 18 3F 		--...propertyValue=214.934
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 50 0C 			--readProperty(Last)(SA)(mr1470): invID=80
+0C 00 00 00 02 			--...objectIdentifier=(analog-input,2)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 51 0C 			--readProperty(Last)(SA)(mr1470): invID=81
+0C 00 00 00 0F 			--...objectIdentifier=(analog-input,15)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 45 0C 			--Complex ACK(Last): invID=69,readProperty
+0C 00 00 00 04 			--...objectIdentifier=(analog-input,4)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 C1 06 3F 		--...propertyValue=214.754
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 46 0C 			--Complex ACK(Last): invID=70,readProperty
+0C 00 00 00 05 			--...objectIdentifier=(analog-input,5)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 92 F1 3F 		--...propertyValue=214.574
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 52 0C 			--readProperty(Last)(SA)(mr1470): invID=82
+0C 00 00 00 03 			--...objectIdentifier=(analog-input,3)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+50 47 0C 92 01 00 91 09 	--Error: invID=71, readProperty, proprietary errorclass 256:invalid data type
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 53 0C 			--readProperty(Last)(SA)(mr1470): invID=83
+0C 00 00 00 04 			--...objectIdentifier=(analog-input,4)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 48 0C 			--Complex ACK(Last): invID=72,readProperty
+0C 00 00 00 06 			--...objectIdentifier=(analog-input,6)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 57 D5 7E 3F 		--...propertyValue=215.834
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 54 0C 			--readProperty(Last)(SA)(mr1470): invID=84
+0C 00 00 00 05 			--...objectIdentifier=(analog-input,5)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 49 0C 			--Complex ACK(Last): invID=73,readProperty
+0C 00 00 00 09 			--...objectIdentifier=(analog-input,9)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 57 A7 6D 3F 		--...propertyValue=215.654
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 55 0C 			--readProperty(Last)(SA)(mr1470): invID=85
+0C 00 00 00 07 			--...objectIdentifier=(analog-input,7)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 56 0C 			--readProperty(Last)(SA)(mr1470): invID=86
+0C 00 00 00 06 			--...objectIdentifier=(analog-input,6)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 4A 0C 			--Complex ACK(Last): invID=74,readProperty
+0C 00 00 00 0A 			--...objectIdentifier=(analog-input,10)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 57 79 57 3F 		--...propertyValue=215.474
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 21 0C 			--Complex ACK(Last): invID=33,readProperty
+0C 00 00 00 0D 			--...objectIdentifier=(analog-input,13)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 58 03 93 3F 		--...propertyValue=216.014
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 4B 0C 			--Complex ACK(Last): invID=75,readProperty
+0C 00 00 00 0B 			--...objectIdentifier=(analog-input,11)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 57 4B 42 3F 		--...propertyValue=215.294
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 4D 0C 			--Complex ACK(Last): invID=77,readProperty
+0C 00 00 00 0E 			--...objectIdentifier=(analog-input,14)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 58 8D D3 3F 		--...propertyValue=216.554
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 4C 0C 			--Complex ACK(Last): invID=76,readProperty
+0C 00 00 00 0C 			--...objectIdentifier=(analog-input,12)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 58 5F BE 3F 		--...propertyValue=216.374
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 4E 0C 			--Complex ACK(Last): invID=78,readProperty
+0C 00 00 00 14 			--...objectIdentifier=(analog-input,20)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 08 B2 3F 		--...propertyValue=214.034
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 4F 0C 			--Complex ACK(Last): invID=79,readProperty
+0C 00 00 00 01 			--...objectIdentifier=(analog-input,1)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 64 DC 3F 		--...propertyValue=214.394
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 50 0C 			--Complex ACK(Last): invID=80,readProperty
+0C 00 00 00 02 			--...objectIdentifier=(analog-input,2)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 36 C6 3F 		--...propertyValue=214.214
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 51 0C 			--Complex ACK(Last): invID=81,readProperty
+0C 00 00 00 0F 			--...objectIdentifier=(analog-input,15)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 58 31 A9 3F 		--...propertyValue=216.194
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 52 0C 			--Complex ACK(Last): invID=82,readProperty
+0C 00 00 00 03 			--...objectIdentifier=(analog-input,3)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 EF 18 3F 		--...propertyValue=214.934
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 53 0C 			--Complex ACK(Last): invID=83,readProperty
+0C 00 00 00 04 			--...objectIdentifier=(analog-input,4)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 C1 06 3F 		--...propertyValue=214.754
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 54 0C 			--Complex ACK(Last): invID=84,readProperty
+0C 00 00 00 05 			--...objectIdentifier=(analog-input,5)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 56 92 F1 3F 		--...propertyValue=214.574
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+50 55 0C 92 01 00 91 09 	--Error: invID=85, readProperty, proprietary errorclass 256:invalid data type
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 56 0C 			--Complex ACK(Last): invID=86,readProperty
+0C 00 00 00 06 			--...objectIdentifier=(analog-input,6)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 57 D5 7E 3F 		--...propertyValue=215.834
+---------------------------------
+-->From port 0, snet 0:00400530E316
+-->Local:00001A18210B
+>
+02 05 2C 0C 			--readProperty(Last)(SA)(mr1470): invID=44
+0C 00 00 00 08 			--...objectIdentifier=(analog-input,8)
+19 55 				--...propertyIdentifier=present-value
+---------------------------------
+-->From port 0, snet 0:00001A18210B
+-->Local:00400530E316
+>
+30 2C 0C 			--Complex ACK(Last): invID=44,readProperty
+0C 00 00 00 08 			--...objectIdentifier=(analog-input,8)
+19 55 				--...propertyIdentifier=present-value
+3E 44 43 57 1D 2D 3F 		--...propertyValue=215.114

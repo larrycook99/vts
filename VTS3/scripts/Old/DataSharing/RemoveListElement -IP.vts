@@ -1,0 +1,167 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Positive RemoveListElement Service Execution Tests
+  ;
+  ;  RemoveListElement.vts	remlistmmddyy.vts
+  ;
+  ;  Ver 1.0	03/02/01	P. Bowen
+  ;
+  ;  Purpose: This test group will verify correct execution of RemoveListElement
+  ;	      service requests under circumstances where the service is expected
+  ;	      to be successfully completed.
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  SETUP Positive RemoveListElement Service Execution Tests
+  
+  IUT_IP = 10.10.10.100:0xBAC0
+  TD_IP  = 10.10.10.36:0XBAC0 
+  
+  OBJECT1 = Device, 1967	; DEVICE OBJECT
+  OBJECT2 = analog-VALUE, 1	; Object which is the subject of the Read Prop tests
+  OBJECT3 = analog-VALUE, 2	; Object which is the subject of the Read Prop tests
+  OBJECT4 = File, 104		; Object which is the subject of the Read Prop tests
+
+  INDEX0 = 0		; Index used in any test to read array length
+  INDEX1 = 1		; Array index for test #1g "Read a Single Element of an Array"
+  INDEX2 = 2		; Array index for test #1j "Read Property - Read Null Values"
+  INDEX3 = 3
+  INDEX4 = 4
+ ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+
+  SECTION Positive RemoveListElement Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1 -- Remove List Element
+
+  DEPENDENCIES none
+
+  REFERENCE (B) Object Access Services - RemoveListELement Service
+
+  -- Step #1: Verify (read) the Time-Synchronization-Recipients property for the Device object
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Time-Synchronization-Recipients
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Time-Synchronization-Recipients
+      OpenTag 3
+         AL = X'0C02001F410C02001F42'	; test passes if list contains objects
+      CloseTag 3			; written in AddListElement test
+    )
+
+  OR(
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Error
+     Error-Choice = ReadProperty
+     Enum = 2                  ;Error Class: Property
+     Enum = 32                 ;Unknown
+  )
+  -- Step #2: Remove the list of devices in the Time-Synchronization-Recipients
+  -- property value and receive a simple acknowledgement
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1
+      Service = RemoveListElement
+      Object = 0, OBJECT1
+      Property = 1, Time-Synchronization-Recipients
+      OpenTag 3
+ 	BACnetObjectIdentifier = OBJECT2   ;, OBJECT3 ; this statement doesn't work in VTS V2.27
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = SimpleAck
+      Service = RemoveListElement
+      )
+ 
+ OR(
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Error
+     Error-Choice = RemoveListElement
+    OpenTag 0
+     Enum = 2                  ;Error Class: Property
+     Enum = 32                 ;Unknown
+    CloseTag 0
+   Unsigned = 1,0
+  )
+ -- Step #4: Verify that the list elements have been removed
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 1
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Time-Synchronization-Recipients
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Time-Synchronization-Recipients
+      OpenTag 3
+       AL = X'3E3F'		; test passes if Time-Synchronization-Recipients list is empty
+      CloseTag 3
+    )
+
+  OR(
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Error
+     Error-Choice = ReadProperty
+     Enum = 2                  ;Error Class: Property
+     Enum = 32                 ;Unknown
+  )

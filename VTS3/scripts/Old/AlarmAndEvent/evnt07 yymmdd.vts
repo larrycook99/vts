@@ -1,0 +1,1232 @@
+  ;--------------------------------------------------------------
+  ; Testing Support for Executing the ConfirmedEventNotification Service
+  ; with the OutOfRange event type.
+  ;
+  ; Exec_EventType_OutOfRange.vts	evnt07mmddyy.vts
+  ; 8.3.6
+  ;   Ver 0.0   12/20/00    Carl Neilson
+  ;
+  ;  In the REFERENCE sections "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;--------------------------------------------------------------
+  ;--------------------------------------------------------------
+  ;   INITIAL VALUES:
+  ;       MONITORED_ID.MONITORED_PROP = NORMAL_VALUE
+  ;       MONITORED_ID.StatusFlags = NORMAL_STATUS_FLAGS
+  ;       MONITORED_ID.Reliability = NO_FAULT_DETECTED
+  ;
+  ;   SCRIPT CHANGES REQUIRED:
+  ;       - The MACROs in TD_CONFIG must be assigned values that
+  ;       correctly reflect the setup of the VTS computer
+  ;       - The MACROs in IUT_CONFIG must be assigned values that
+  ;       accurately reflect the setup of the IUT device, the
+  ;       event generating object, and monitored object.
+  ;       - The timestamps format must be set in the script body
+  ;       - The notification-class lines must be commented out
+  ;       if the IUT uses Recipient properties instead.
+  ;
+  ;   SCRIPT LIMITATIONS:
+  ;       - the timestamps property of the event generating object
+  ;       cannot be validated
+  ;       - the timestamps returned provided in the 
+  ;       ConfirmedEventNotification service are not properly
+  ;       validated
+  ;       - the time-delay in the event generating object should
+  ;       be 0 as VTS cannot wait.
+  ;       - sequence number timestamps are not supported unless the
+  ;       sequence numbers that will be returned will be known
+  ;       ahead of time.
+  ;--------------------------------------------------------------
+
+
+SETUP ConfirmedEventNotification - Out Of Range Tests
+
+  ;--------------------------------------------------------------
+     IUT_IP = 208.6.162.35
+  
+  ;--------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+  ;"Untitled" = 1, ETHERNET, 0
+  -- The network which is directly-connected to the TD
+  -- and can be used to reach the IUT.
+  -- Adjust the parameters as needed to reflect the actual
+  -- physical environment. The first value represents the 
+  -- physical network number, the second value the physical 
+  -- network type and the third value the physical port.
+
+  ;MY_MAC = 0050dafdecaa    -- MAC address of the TD
+                           -- replace with you TD address
+
+  ;--------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  TEST_YEAR   = 2000            -- the year the test is executed
+  TEST_MONTH  = XX              -- the month the test is executed
+  TEST_DAY    = XX              -- the day the test is executed
+
+  ;IUT_IP = 0040ae000e3a   -- MAC address of IUT
+                           -- replace with your IUT address
+                            
+  DEVICE_ID = DEVICE,700                -- Device object instance for IUT.
+
+  EVENT_ID = EVENT-ENROLLMENT, 1        -- the event generating object
+  MONITORED_ID = MULTISTATE-INPUT, 1    -- the monitored object, same as above
+                                        -- if intrinsic
+  MONITORED_PROP = Present-Value        -- the monitored property, present-value
+                                        -- if intrinsic
+
+  LOW_LIMIT = 10                        -- the LowLimit value in the event 
+                                        -- object
+  HI_LIMIT = 90                         -- the HiLimit value in the event object
+  DEADBAND = 3                          -- the Deadband value in the event
+                                        -- object 
+
+  LOW_LIMIT_VALUE = 1           -- a value that causes a LOW-LIMIT transition
+  HI_LIMIT_VALUE = 100          -- a value that causes a HI-LIMIT transition
+  NORMAL_VALUE = 50             -- a value that causes a NORMAL transition
+  LOW_LIMIT_DB_VALUE = 11       -- a value in the low deadband range
+  HI_LIMIT_DB_VALUE = 89        -- a value in the hi deadband range
+
+  NOTIFICATION_CLASS = 5        -- the notification class used by the event
+                                -- generating object
+
+  NORMAL_PRIORITY = 170         -- the priority at which normal transitions will
+                                -- be generated
+  FAULT_PRIORITY = 100          -- the priority at which fault transitions will
+                                -- be generated
+  OFFNORMAL_PRIORITY = 90       -- the priority at which offnormal transitions
+                                -- will be generated
+
+  NOTIFY_TYPE = NOTIFY_TYPE_ALARM   -- the notify type of the event to be
+                                    -- generated
+
+  OFFNORMAL_ACK_REQUIRED = TRUE -- whether the OFFNORMAL transition will require
+                                -- an ACK
+  NORMAL_ACK_REQUIRED = FALSE   -- whether the NORMAL transition will require an
+                                -- ACK
+  FAULT_ACK_REQUIRED = TRUE     -- whether the FAULT transition will require an
+                                -- ACK
+
+  HILIMIT_TEXT = ANSI,"OffNormal"    -- text for each type of transition
+  LOWLIMIT_TEXT = ANSI,"OffNormal"
+  NORMAL_TEXT = ANSI,"Normal"
+  FAULT_TEXT = ANSI,"Fault"
+
+
+  -- status flags expected after each transition (order is
+  -- alarm,fault,overridden,outofservice)
+  -- for intrinsic alarming, the first bit must be set in the OFFNORMAL and
+  -- FAULT ones and not set in the NORMAL case. for algorithmic, the first bit
+  -- must never be set.
+  OFFNORMAL_STATUS_FLAGS = F,F,F,T 
+  NORMAL_STATUS_FLAGS = F,F,F,T
+  FAULT_STATUS_FLAGS = F,T,F,T
+
+  -- if the IUT uses sequence number timestamps then the sequence numbers
+  -- that will be returned by the IUT need to be entered here
+  SEQUENCE_NO_1 = 1
+  SEQUENCE_NO_2 = 2
+  SEQUENCE_NO_3 = 3
+  SEQUENCE_NO_4 = 4
+
+  ;--------------------------------------------------------------
+  ; BACnet enumerated values
+  ;--------------------------------------------------------------
+
+  EVENT_STATE_NORMAL = 0
+  EVENT_STATE_FAULT = 1
+  EVENT_STATE_OFFNORMAL = 2
+  EVENT_STATE_HILIMIT = 3
+  EVENT_STATE_LOLIMIT = 4
+
+  EVENT_TYPE_OUT_OF_RANGE = 5
+
+  NOTIFY_TYPE_ALARM = 0
+  NOTIFY_TYPE_EVENT = 1
+  NOTIFY_TYPE_ACK = 2
+
+  ;--------------------------------------------------------------
+
+  SECTION 8.3.6 ConfirmedEventNotification Tests - Out Of Range Test
+
+  TEST #8.3.6
+
+  DEPENDENCIES Read Property Service Execution Tests, 9.15; Write Property  Service Execution Tests, 9.19;
+
+  REFERENCE (B) 12.1, 12.2, 12.3, 12.10, 13.2, 12.3.6, 13.7, and (T) 8.3.6
+
+  -- Purpose: This test case verifies the correct operation of the OUT_OF_RANGE
+  -- event algorithm. It applies to Event Enrollment objects with an Event_Type
+  -- of OUT_OF_RANGE and to intrinsic event reporting for Analog Input, Analog
+  -- Output, and Analog Value objects.
+  -- 
+  -- Test Concept: The object begins the test in a NORMAL state. The
+  -- Present_Value (referenced property) is raised to a value that is below but
+  -- within Deadband of the high limit. At this point the object should still be
+  -- in a NORMAL state. The Present_Value (referenced property) is raised to a 
+  -- value that is above the high limit. After the time delay expires the object 
+  -- should enter the HIGH_LIMIT state and transmit an event notification 
+  -- message. The Present_Value (referenced property) is lowered to a value that
+  -- is below the high limit but still within Deadband of the limit. The object
+  -- should remain in the HIGH_LIMIT state. The Present_Value (referenced 
+  -- property) is lowered further to a normal value that is not within Deadband
+  -- of a limit. After the time delay expires the object should enter the NORMAL 
+  -- state and issue an event notification. The same process is repeated to test 
+  -- the low limit.
+  -- 
+  -- Configuration Requirements: The IUT shall be configured such that the
+  -- Event_Enable property has a value of TRUE for the TO-OFFNORMAL and TO-
+  -- NORMAL transitions. For object using intrinsic reporting the Limit_Enable
+  -- property shall have a value of TRUE for both HighLimit and LowLimit events.
+  -- The Issue_Confirmed_Notifications property shall have a value of TRUE. The 
+  -- event-generating objects shall be in a NORMAL state at the start of the 
+  -- test.
+  -- 
+  -- In the test description below Present_Value is used as the referenced
+  -- property. If an Event Enrollment object is being tested Present_Value 
+  -- should be replaced by the appropriate property reference.
+
+  -- 1. VERIFY Event_State = NORMAL
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      OpenTag 3                               ;Property Value(s)
+        ENUM = EVENT_STATE_NORMAL
+      CloseTag 3                                   
+      )
+
+  -- 2. IF (Present_Value is writable) THEN
+  --      WRITE Present_Value = (a value x such that (High_Limit - Deadband) < x
+  --                             < High_Limit)
+  --    ELSE
+  --      MAKE (Present_Value have a value x such that (High_Limit - Deadband) <
+  --            x < High_Limit)
+
+    -- CHANGE: if the monitored property is not writable comment this step out
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, MONITORED_ID
+      Property = 1, MONITORED_PROP
+      OpenTag 3
+        UNSIGNED = HI_LIMIT_DB_VALUE   -- should be REAL
+      CloseTag 3
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = WriteProperty                      
+      )
+
+  -- 3. WAIT (Time_Delay + Notification Fail Time)
+
+  -- 4. CHECK (verify that no notification has been transmitted)
+
+    AND (
+      NETWORK = "Untitled"
+      )
+
+  -- 5. VERIFY Event_State = NORMAL
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      OpenTag 3                               ;Property Value(s)
+        ENUM = EVENT_STATE_NORMAL
+      CloseTag 3                                   
+      )
+
+  -- 6. IF (Present_Value is writable) THEN
+  --      WRITE Present_Value = (a value x such that x > High_Limit)
+  --    ELSE
+  --      MAKE (Present_Value have a value x such that x > High_Limit)
+
+    -- CHANGE: if the monitored property is not writable comment this step out
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, MONITORED_ID
+      Property = 1, MONITORED_PROP
+      OpenTag 3
+        UNSIGNED = HI_LIMIT_VALUE   -- should be REAL
+      CloseTag 3
+      )
+
+  -- 7. WAIT Time_Delay
+  -- 8. BEFORE Notification Fail Time
+  --      RECEIVE ConfirmedEventNotification-Request,
+  --        'Process Identifier' =    (any valid process ID),
+  --        'Initiating Device Identifier' =  IUT,
+  --        'Event Object Identifier' = (the intrinsic reporting object being
+  --                                     tested or the object referenced by the 
+  --                                     Event Enrollment object being tested),
+  --        'Time Stamp' =    (the current local time),
+  --        'Notification Class' =    (the configured notification class),
+  --        'Priority' =      (the value configured to correspond to a TO-
+  --                           OFFNORMAL transition),
+  --        'Event Type' =    OUT_OF_RANGE,
+  --        'Notify Type' =   EVENT | ALARM,
+  --        'AckRequired' =   TRUE | FALSE,
+  --        'From State' =    NORMAL,
+  --        'To State' =      HIGH_LIMIT,
+  --        ' Event Values' =   Present_Value, Status_Flags, Deadband,
+  --                            High_Limit
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = WriteProperty                      
+      )
+
+    AND (
+      NETWORK = "Untitled"
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ConfirmedEventNotification
+      INTEGER = 0, PROCESS_ID          -- process id
+      Object = 1, DEVICE_ID            -- initiating device
+      Object = 2, EVENT_ID             -- event generating object
+      OpenTag 3                        -- timestamp
+
+          -- CHANGE: choose the type of timestamp returned by the IUT
+          -- Time
+  --      OpenTag 0
+  --        TIME = XX
+  --      CloseTag 0        
+          -- Sequence number
+  --      OpenTag 1
+  --        INTEGER = SEQUENCE_NO_1
+  --      CloseTag 1        
+        -- DateTime
+        OpenTag 2
+          DATE = TEST_MONTH TEST_DAY, TEST_YEAR
+          TIME = 0, XX
+        CloseTag 2        
+      CloseTag 3
+      -- CHANGE: comment out the next line if the IUT does not use notification
+      -- classes
+      INTEGER = 4,NOTIFICATION_CLASS
+      INTEGER = 5,OFFNORMAL_PRIORITY
+      ENUM = 6,EVENT_TYPE_OUT_OF_RANGE                           -- Out Of Range
+      CHARSTRING = 7,HILIMIT_TEXT
+      ENUM = 8,NOTIFY_TYPE
+      BOOLEAN = 9,OFFNORMAL_ACK_REQUIRED              
+      ENUM = 10,EVENT_STATE_NORMAL
+      ENUM = 11,EVENT_STATE_HILIMIT
+      OpenTag 12
+        OpenTag 5
+          INTEGER = 0,HILIMIT_VALUE             -- should be real
+          BITSTRING = 1,OFFNORMAL_STATUS_FLAGS
+          INTEGER = 2,DEADBAND                  -- should be real
+          INTEGER = 3,HILIMIT                   -- should be real
+        CloseTag 5
+      CloseTag 12
+      )                      
+
+  -- 9.  TRANSMIT BACnet-SimpleACK-PDU
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = ConfirmedEventNotification
+      )
+
+  -- 10. VERIFY Status_Flags = (TRUE, FALSE, ?, ?)
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, Status-Flags
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Status-Flags
+      OpenTag 3
+        BITSTRING = OFFNORMAL_STATUS_FLAGS
+      CloseTag 3                                   
+      )
+
+  -- 11. VERIFY Event_State = HIGH_LIMIT
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      OpenTag 3
+        ENUM = EVENT_STATE_HILIMIT
+      CloseTag 3                                   
+      )
+
+  -- 12. IF (Protocol_Version > 1 | Protocol_Revision ³ 1) THEN
+  --       VERIFY Event_Time_Stamps = (the timestamp in step 8, *, *)
+    -- cannot do such tests in this language
+
+  
+  
+  -- 13. IF (Present_Value is writable) THEN
+  --       WRITE Present_Value = (a value x such that (High_Limit - Deadband)< x
+  --                              < High_Limit)
+  --     ELSE
+  --       MAKE (Present_Value have a value x such that (High_Limit - Deadband)<
+  --             x < High_Limit)
+    -- CHANGE: if the monitored property is not writable comment this step out
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, MONITORED_ID
+      Property = 1, MONITORED_PROP
+      OpenTag 3
+        UNSIGNED = HI_LIMIT_DB_VALUE   -- should be REAL
+      CloseTag 3
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = WriteProperty                      
+      )
+
+  -- 14. WAIT (Time_Delay + Notification Fail Time)
+  -- 15. CHECK (verify that no notification message has been transmitted)
+
+    AND (
+      NETWORK = "Untitled"
+      )
+
+  -- 16. VERIFY Event_State = HIGH_LIMIT
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      OpenTag 3
+        ENUM = EVENT_STATE_HILIMIT
+      CloseTag 3                                   
+      )
+
+  -- 17. IF (Present_Value is writable) THEN
+  --       WRITE Present_Value = (a value x such that (Low_Limit + Deadband) < x
+  --                              < (High_Limit - 
+  --        Deadband))
+  --     ELSE
+  --       MAKE (Present_Value have a value x such that (Low_Limit + Deadband) <
+  --             x < (High_Limit - Deadband))
+
+    -- CHANGE: if the monitored property is not writable comment this step out
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, MONITORED_ID
+      Property = 1, MONITORED_PROP
+      OpenTag 3
+        UNSIGNED = NORMAL_VALUE   -- should be REAL
+      CloseTag 3
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = WriteProperty                      
+      )
+
+
+  -- 18. WAIT Time_Delay
+  -- 19. BEFORE Notification Fail Time
+  --       RECEIVE ConfirmedEventNotification-Request,
+  --         'Process Identifier' =    (any valid process ID),
+  --         'Initiating Device Identifier' =  IUT,
+  --         'Event Object Identifier' = (the intrinsic reporting object being
+  --                                      tested or the object referenced by the 
+  --                                      Event Enrollment object being tested),
+  --         'Time Stamp' =    (the current local time),
+  --         'Notification Class' =    (the configured notification class),
+  --         'Priority' =      (the value configured to correspond to a TO-
+  --                            NORMAL transition),
+  --         'Event Type' =    OUT_OF_RANGE,
+  --         'Notify Type' =   EVENT | ALARM,
+  --         'AckRequired' =   TRUE | FALSE,
+  --         'From State' =    HIGH_LIMIT,
+  --         'To State' =      NORMAL,
+  --         ' Event Values' =   Present_Value, Status_Flags, Deadband,
+  --                             High_Limit
+
+    AND (
+      NETWORK = "Untitled"
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ConfirmedEventNotification
+      INTEGER = 0, PROCESS_ID     -- process id
+      Object = 1, DEVICE_ID       -- initiating device
+      Object = 2, EVENT_ID        -- event generating object
+      OpenTag 3                   -- timestamp
+          -- Time
+  --      OpenTag 0
+  --        TIME = XX
+  --      CloseTag 0        
+          -- Sequence number
+  --      OpenTag 1
+  --        INTEGER = SEQUENCE_NO_2
+  --      CloseTag 1        
+        -- DateTime
+        OpenTag 2
+          DATE = TEST_MONTH TEST_DAY, TEST_YEAR
+          TIME = 0, XX
+        CloseTag 2        
+      CloseTag 3
+      -- CHANGE: comment out the next line if the IUT does not use notification
+      -- classes
+      INTEGER = 4,NOTIFICATION_CLASS
+      INTEGER = 5,NORMAL_PRIORITY
+      ENUM = 6,EVENT_TYPE_OUT_OF_RANGE
+      CHARSTRING = 7,NORMAL_TEXT
+      ENUM = 8,NOTIFY_TYPE
+      BOOLEAN = 9,NORMAL_ACK_REQUIRED              
+      ENUM = 10,EVENT_STATE_HILIMIT
+      ENUM = 11,EVENT_STATE_NORMAL
+      OpenTag 12
+        OpenTag 5
+          INTEGER = 0,NORMAL_VALUE             -- should be real
+          BITSTRING = 1,NORMAL_STATUS_FLAGS
+          INTEGER = 2,DEADBAND                  -- should be real
+          INTEGER = 3,HILIMIT                   -- should be real
+        CloseTag 5
+      CloseTag 12
+      )                      
+
+
+  -- 20. TRANSMIT BACnet-SimpleACK-PDU
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = ConfirmedEventNotification
+      )
+
+  -- 21. VERIFY Status_Flags = (FALSE, FALSE, ?, ?)
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, Status-Flags
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Status-Flags
+      OpenTag 3
+        BITSTRING = NORMAL_STATUS_FLAGS
+      CloseTag 3                                   
+      )
+
+
+  -- 22. VERIFY Event_State = NORMAL
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      OpenTag 3
+        ENUM = EVENT_STATE_NORMAL
+      CloseTag 3                                   
+      )
+
+  -- 23. IF (Protocol_Version > 1 | Protocol_Revision ³ 1) THEN
+  --       VERIFY Event_Time_Stamps = (the timestamp in step 8, *, the timestamp
+  --                                   in step 19)
+    -- cannot do such tests in this language
+
+  -- 24. IF (Present_Value is writable) THEN
+  --       WRITE Present_Value = (a value x such that Low_Limit < x < (Low_Limit
+  --                              + Deadband))
+  --     ELSE
+  --       MAKE (Present_Value have a value x such that Low_Limit < x <
+  --            (Low_Limit + Deadband))
+
+    -- CHANGE: if the monitored property is not writable comment this step out
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+
+      Service = WriteProperty
+      Object = 0, MONITORED_ID
+      Property = 1, MONITORED_PROP
+      OpenTag 3
+        UNSIGNED = LOW_LIMIT_DB_VALUE   -- should be REAL
+      CloseTag 3
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = WriteProperty                      
+      )
+
+  -- 25. WAIT (Time_Delay + Notification Fail Time)
+  -- 26. CHECK (verify that no notification message has been transmitted)
+
+    AND (
+      NETWORK = "Untitled"
+      )
+
+  -- 27. VERIFY Event_State = NORMAL
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      OpenTag 3
+        ENUM = EVENT_STATE_NORMAL
+      CloseTag 3                                   
+      )
+
+  -- 28. IF (Present_Value is writable) THEN
+  --       WRITE Present_Value = (a value x such x < Low_Limit)
+  --     ELSE
+  --       MAKE (Present_Value have a value x such that x < Low_Limit)
+
+    -- CHANGE: if the monitored property is not writable comment this step out
+  
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, MONITORED_ID
+      Property = 1, MONITORED_PROP
+      OpenTag 3
+        UNSIGNED = LOW_LIMIT_VALUE   -- should be REAL
+      CloseTag 3
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = WriteProperty                      
+      )
+
+  -- 29. WAIT Time_Delay
+  -- 30. BEFORE Notification Fail Time
+  --       RECEIVE ConfirmedEventNotification-Request,
+  --         'Process Identifier' =    (any valid process ID),
+  --         'Initiating Device Identifier' =  IUT,
+  --         'Event Object Identifier' = (the intrinsic reporting object being
+  --                                      tested or the object referenced by the 
+  --                                      Event Enrollment object being tested),
+  --         'Time Stamp' =    (the current local time),
+  --         'Notification Class' =    (the configured notification class),
+  --         'Priority' =      (the value configured to correspond to a TO-
+  --                            OFFNORMAL transition),
+  --         'Event Type' =    OUT_OF_RANGE,
+  --         'Notify Type' =   EVENT | ALARM,
+  --         'AckRequired' =   TRUE | FALSE,
+  --         'From State' =    NORMAL,
+  --         'To State' =      LOW_LIMIT,
+  --         ' Event Values' =   Present_Value, Status_Flags, Deadband,
+  --                             Low_Limit
+
+    -- CHANGE: if the monitored property is not writable change 'AND' to
+    -- 'EXPECT'
+
+    AND (
+      NETWORK = "Untitled"
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ConfirmedEventNotification
+      INTEGER = 0, PROCESS_ID          -- process id
+      Object = 1, DEVICE_ID            -- initiating device
+      Object = 2, EVENT_ID             -- event generating object
+      OpenTag 3                        -- timestamp
+          -- Time
+  --      OpenTag 0
+  --        TIME = XX
+  --      CloseTag 0        
+          -- Sequence number
+  --      OpenTag 1
+  --        INTEGER = SEQUENCE_NO_3
+  --      CloseTag 1        
+        -- DateTime
+        OpenTag 2
+          DATE = TEST_MONTH TEST_DAY, TEST_YEAR
+          TIME = 0, XX
+        CloseTag 2        
+      CloseTag 3
+      -- CHANGE: comment out the next line if the IUT does not use notification
+      -- classes
+      INTEGER = 4,NOTIFICATION_CLASS
+      INTEGER = 5,OFFNORMAL_PRIORITY
+      ENUM = 6,EVENT_TYPE_OUT_OF_RANGE
+      CHARSTRING = 7,LOWLIMIT_TEXT
+      ENUM = 8,NOTIFY_TYPE
+      BOOLEAN = 9,OFFNORMAL_ACK_REQUIRED              
+      ENUM = 10,EVENT_STATE_NORMAL
+      ENUM = 11,EVENT_STATE_LOWLIMIT
+      OpenTag 12
+        OpenTag 5
+          INTEGER = 0,LOW_LIMIT_VALUE           -- should be real
+          BITSTRING = 1,OFFNORMAL_STATUS_FLAGS
+          INTEGER = 2,DEADBAND                  -- should be real
+          INTEGER = 3,LOWLIMIT                  -- should be real
+        CloseTag 5
+      CloseTag 12
+      )                      
+
+  -- 31. TRANSMIT BACnet-SimpleACK-PDU
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = ConfirmedEventNotification
+      )
+
+  -- 32. VERIFY Status_Flags = (TRUE, FALSE, FALSE, FALSE)
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, Status-Flags
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Status-Flags
+      OpenTag 3
+        BITSTRING = OFFNORMAL_STATUS_FLAGS
+      CloseTag 3                                   
+      )
+
+  -- 33. VERIFY Event_State = LOW_LIMIT
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      OpenTag 3
+        ENUM = EVENT_STATE_LOWLIMIT
+      CloseTag 3                                   
+      )
+
+  -- 34. IF (Protocol_Version > 1 | Protocol_Revision ³ 1) THEN
+  --     VERIFY Event_Time_Stamps = (the timestamp in step 30, *, the timestamp
+  --                                 in step 19)
+
+    -- cannot do such tests in this language
+
+  -- 35. IF (Present_Value is writable) THEN
+  --       WRITE Present_Value = (a value x such that Low_Limit < x < (Low_Limit
+  --                              + Deadband))
+  --     ELSE
+  --       MAKE (Present_Value have a value x such that Low_Limit <  x <
+  --            (Low_Limit + Deadband))
+
+    -- CHANGE: if the monitored property is not writable comment this step out
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, MONITORED_ID
+      Property = 1, MONITORED_PROP
+      OpenTag 3
+        UNSIGNED = LOW_LIMIT_DB_VALUE   -- should be REAL
+      CloseTag 3
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = WriteProperty                      
+      )
+
+  -- 36. WAIT (Time_Delay + Notification Fail Time)
+  -- 37. CHECK (verify that no notification message has been transmitted)
+
+    -- CHANGE: if the monitored property is not writable change 'AND' to
+    -- 'EXPECT'
+
+    AND (
+      NETWORK = "Untitled"
+      )
+
+  -- 38. VERIFY Event_State = LOW_LIMIT
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      OpenTag 3
+        ENUM = EVENT_STATE_LOWLIMIT
+      CloseTag 3                                   
+      )
+
+  -- 39. IF (Present_Value is writable) THEN
+  --       WRITE Present_Value = (a value x such that (Low_Limit + Deadband) < x
+  --                              < (High_Limit - Deadband))
+  --     ELSE
+  --       MAKE (Present_Value have a value x such that (Low_Limit + Deadband) < 
+  --             x < (High_Limit - Deadband))
+  
+    -- CHANGE: if the monitored property is not writable comment this step out
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, MONITORED_ID
+      Property = 1, MONITORED_PROP
+      OpenTag 3
+        UNSIGNED = NORMAL_VALUE   -- should be REAL
+      CloseTag 3
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = WriteProperty                      
+      )
+
+  -- 40. WAIT Time_Delay
+  -- 41. BEFORE Notification Fail Time
+  --       RECEIVE ConfirmedEventNotification-Request,
+  --         'Process Identifier' =    (any valid process ID),
+  --         'Initiating Device Identifier' =  IUT,
+  --         'Event Object Identifier' = (the intrinsic reporting object being
+  --                                      tested or the object referenced by the 
+  --                                      Event Enrollment object being tested),
+  --         'Time Stamp' =    (the current local time),
+  --         'Notification Class' =    (the configured notification class),
+  --         'Priority' =      (the value configured to correspond to a TO-
+  --                            NORMAL transition),
+  --         'Event Type' =    OUT_OF_RANGE,
+  --         'Notify Type' =   EVENT | ALARM,
+  --         'AckRequired' =   TRUE | FALSE,
+  --         'From State' =    LOW_LIMIT,
+  --         'To State' =      NORMAL,
+  --         ' Event Values' =   Present_Value, Status_Flags, Deadband,
+  --                             Low_Limit
+
+    AND (
+      NETWORK = "Untitled"
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ConfirmedEventNotification
+      INTEGER = 0, PROCESS_ID          -- process id
+      Object = 1, DEVICE_ID            -- initiating device
+      Object = 2, EVENT_ID             -- event generating object
+      OpenTag 3                        -- timestamp
+          -- Time
+  --      OpenTag 0
+  --        TIME = XX
+  --      CloseTag 0        
+          -- Sequence number
+  --      OpenTag 1
+  --        INTEGER = SEQUENCE_NO_4
+  --      CloseTag 1        
+        -- DateTime
+        OpenTag 2
+          DATE = TEST_MONTH TEST_DAY, TEST_YEAR
+          TIME = 0, XX
+        CloseTag 2        
+      CloseTag 3
+      -- CHANGE: comment out the next line if the IUT does not use notification
+      -- classes
+      INTEGER = 4,NOTIFICATION_CLASS
+      INTEGER = 5,NORMAL_PRIORITY
+      ENUM = 6,EVENT_TYPE_OUT_OF_RANGE
+      CHARSTRING = 7,NORMAL_TEXT
+      ENUM = 8,NOTIFY_TYPE
+      BOOLEAN = 9,NORMAL_ACK_REQUIRED              
+      ENUM = 10,EVENT_STATE_LOWLIMIT
+      ENUM = 11,EVENT_STATE_NORMAL
+      OpenTag 12
+        OpenTag 5
+          INTEGER = 0,NORMAL_VALUE              -- should be real
+          BITSTRING = 1,NORMAL_STATUS_FLAGS
+          INTEGER = 2,DEADBAND                  -- should be real
+          INTEGER = 3,LOWLIMIT                  -- should be real
+        CloseTag 5
+      CloseTag 12
+      )                      
+
+  -- 42. TRANSMIT BACnet-SimpleACK-PDU
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = FALSE
+      PDU = Simple-Ack
+      Service = ConfirmedEventNotification
+      )
+
+  -- 43. VERIFY Status_Flags = (FALSE, FALSE, ?, ?)
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, Status-Flags
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Status-Flags
+      OpenTag 3
+        BITSTRING = NORMAL_STATUS_FLAGS
+      CloseTag 3                                   
+      )
+
+  -- 44. VERIFY Event_State = NORMAL
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, EVENT_ID
+      Property = 1, Event-State
+      OpenTag 3
+        ENUM = EVENT_STATE_NORMAL
+      CloseTag 3                                   
+      )
+
+  -- 45. IF (Protocol_Version > 1 | Protocol_Revision ³ 1) THEN
+  --       VERIFY Event_Time_Stamps = (the timestamp in step 30, *, the
+  --                                   timestamp in step 41)
+    -- cannot do such tests in this language

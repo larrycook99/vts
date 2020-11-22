@@ -1,0 +1,240 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Unconfirmed Change of Value (COV) Notification Service Initiation Tests
+  ;	COV Notification from a Multi-state Input, Multi-state Output, and 
+  ;	Multi-state Value Object Status Flags Property
+  ;
+  ;  UnconfirmedCOV_MSF.vts	UnCOVddmmyy-06.vts
+  ;
+  ;  Ver 0.1	03/18/01	P. Bowen	Initial version, untested (no MI/MO/MV objects)
+  ;  Ver 0.2	05/27/01	P. Bowen	Updated test step documentation
+  ;						and make LIFETIME = 0
+  ;
+  ;  Purpose: This test case verifies that the IUT can initiate 
+  ;	UnconfirmedCOVNotification service requests conveying a change of the 
+  ;	Status_Flags property of Multi-state Input, Multi-state Output, and Multi-state
+  ;	Value objects
+  ;  
+  ;  Note: the following tests should be executed before running this test:
+  ;	ReadProperty Service Execution Tests
+  ;	WriteProperty Service Execution Tests
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Unconfirmed COV Notification Test - Multi-state Object Status Flags Property
+
+  --IUT_IP = 10.10.10.100
+  IUT_IP = 208.6.162.35
+  TD_IP = 10.10.10.36
+
+  OBJECT1 = Multistate-Value, 2	; Object which is the subject of the status flag tests
+  
+  PID = 13			; Subscriber Process Identifier
+  LIFETIME = 0			; Subscription lifetime in secs (0 = indefinite)
+  WRITE_PRIORITY = 1		; Priority for writing PV changes
+
+	                            
+  ;-------------------------------------------------------------------------------------
+ 
+   SECTION Unconfirmed COV Notification Test - Multi-state Object Status Flags Property
+
+  -- This test takes place across test steps #1a - #1c so the TD can be manually 
+  -- paused between tests. This is necessary since the COV Notifications must be 
+  -- verified manually.
+
+  -- Configuration Requirements: At the beginning of the test, the Out-Of-Service 
+  -- property shall have a value of FALSE.
+
+  -- Test Concept: A subscription for COV notifications is established. The 
+  -- Status_Flags property of the monitored object is then changed and a 
+  -- notification shall be received. The value of the Status-Flags property can 
+  -- be changed by using the WriteProperty service or by another means. For some 
+  -- implementations writing to the Out_Of_Service property will accomplish this 
+  -- task. For implementations where it is not possible to write to Status_Flags 
+  -- or Out_Of_Service, the vendor shall provide an alternative trigger mechanism
+  -- to accomplish this task. All of these methods are equally acceptable.
+  --
+  -- Test Steps:
+  --	REPEAT X = (one supported object of each type from the set Multi-state Input, 
+  --		    Multi-state Output, and Multi-state Value) DO {
+  --	1. TRANSMIT SubscribeCOV-Request,
+  --		'Subscriber Process Identifier' = (any value > 0 chosen by the TD),
+  --		'Monitored Object Identifier' =	X,
+  --		'Issue Confirmed Notifications' = FALSE,
+  --		'Lifetime' = 0
+  --	2. RECEIVE BACnet-SimpleACK-PDU
+  --	3. RECEIVE UnconfirmedCOVNotification-Request,
+  --		'Subscriber Process Identifier' = (the same value used in step 1),
+  --		'Initiating Device Identifier' = IUT,
+  --		'Monitored Object Identifier' =	X,
+  -- 		'Time Remaining' = 0,
+  --		'List of Values' = (the initial Present_Value and initial Status_Flags)
+  --	4. WRITE X, Out_Of_Service = TRUE | WRITE X, Status_Flags = (a value that 
+  --		differs from "initial Status_Flags") | MAKE (Status_Flags = any value 
+  --		that differs from "initial Status_Flags")
+  --	5. IF (WriteProperty is used in step 4) THEN RECEIVE BACnet-SimpleACK-PDU
+  --	6. BEFORE Notification Fail Time
+  --	   RECEIVE UnconfirmedCOVNotification-Request,
+  --		'Subscriber Process Identifier' = (the same value used in step 1),
+  --		'Initiating Device Identifier' = IUT,
+  --		'Monitored Object Identifier' =	X,
+  --		'Time Remaining' = 0,
+  --		'List of Values' = (the initial Present_Value and new Status_Flags)
+  --	7. TRANSMIT SubscribeCOV-Request,
+  --		'Subscriber Process Identifier' = (the same value used in step 1),
+  --		'Monitored Object Identifier' =	X
+  --	8. RECEIVE BACnet-SimpleACK-PDU
+  --	9. IF (Out_Of_Service was changed in step 4) THEN
+  --		WRITE X, Out_Of_Service = FALSE
+  -- 		RECEIVE BACnet-SimpleACK-PDU
+  --	}
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Subscribe to COV and Receive Unconfirmed COV Notification Request
+
+  DEPENDENCIES None
+
+  REFERENCE (B) Unconfirmed COV Notification Service and (T) Unconfirmed COV Notification Test - MI/MO/MV SF Property
+
+  -- Steps #1 - 2: Subscribe to COV and Receive Simple ACK
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = SubscribeCOV
+      Unsigned = 0, PID			; Process-Identifier = PID
+      Object = 1, OBJECT1		; Object-Identifier = OBJECT1
+      Boolean = 2, FALSE		; Request unconfirmed notifications
+      Unsigned = 3, LIFETIME		; Subscribe for LIFETIME seconds
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = SubscribeCOV
+    )
+
+  -- Step #3: Receive Unconfirmed COV Notification Request
+
+  --  AND (				; Can't control the timing of the IUT's
+  --    NETWORK = NET_1			; COV Notification Request so TD can't
+  --    DER = FALSE			; use this EXPECT statement
+  --    PDU = Confirmed-Request
+  --    Service = UnconfirmedCOVNotification
+  --  )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1b Make Out-of-Service = TRUE and Receive Unconfirmed COV Notification Request
+
+  DEPENDENCIES None
+
+  -- Steps #4 & 5: Make Out-of-Service = TRUE and Receive Simple ACK
+
+   SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 2
+      Service = WriteProperty
+      Object = 0, OBJECT1
+      Property = 1, Out-of-Service
+      OpenTag 3
+        BOOLEAN = TRUE			; Change Out-of-Service (initially = FALSE)
+      CloseTag 3
+      Unsigned = 4, WRITE_PRIORITY	; Set Out-of-Service write priority
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+  -- Step #6: Before NotificationFailTime Receive Unconfirmed COV Notification Request
+
+  --  AND (				; Can't control the timing of the IUT's
+  --    NETWORK = NET_1			; COV Notification Request so TD can't
+  --    DER = FALSE			; use this EXPECT statement
+  --    PDU = Confirmed-Request
+  --    Service = UnconfirmedCOVNotification
+  --  )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1c Send Unsubscribe COV Request and Make Out-of-Service = FALSE
+
+  DEPENDENCIES None
+
+  -- Steps #7 & 8: Send Unsubscribe COV Request to IUT and Receive Simple ACK
+  
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      Service = SubscribeCOV		; Cancel COV Subscription request
+      Unsigned = 0, PID			; Process-Identifier = PID
+      Object = 1, OBJECT1		; Object-Identifier = OBJECT1
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = SubscribeCOV
+    )
+
+  -- Step #9: Make Out-of-Service = FALSE
+
+   SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 4
+      Service = WriteProperty
+      Object = 0, OBJECT1
+      Property = 1, Out-of-Service
+      OpenTag 3
+         BOOLEAN = FALSE		; Make Out-of-Service = FALSE
+      CloseTag 3
+      Unsigned = 4, WRITE_PRIORITY	; Set Out-of-Service write priority
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+    )

@@ -1,0 +1,529 @@
+ ;-------------------------------------------------------------------------------------
+  ;  7.3.1.8	Binary Object Change of State TestsService Execution Tests
+  ;    Draft
+  ;  RPmmddyy.vts
+  ;
+  ;	Ver 1.0		10/25/01	BradSp	Initial Version
+  ;	
+  ;   Purpose: This test case verifies that the properties of binary objects that collectively track state changes (changes in Present_Value)
+  ;   function as required. If the Change_Of_State_Count, Change_Of_State_Time, and Time_Of_State_Count_Reset properties are not 
+  ;   supported this test shall be omitted. This test applies to Binary Input, Binary Output, and Binary Value objects.
+
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and "(T)" refers 
+  ;	to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+   SETUP Positive OBJECT FUNCT
+
+  ;------------------------------------------------------------------------------------- 
+  ; Notes on Hardcoding and other changes needing to be made outside of the setup section including hard coded objects and properties 
+  ; Items marked and found with *** are hardcoded or the error messages must be manually verified in the trace. 
+  ;
+  ;
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG  All objects and properties are listed here including notes on there use
+  ;
+  
+  TD_IP = 10.10.10.2
+	
+  --------- Global Variables ---------
+  OBJECT1 = Binary-VALUE, 1		; Object which is the subject of the Binary Object Change tests
+  DEVOBJ1  = 0, DEVICE, 245146                ; Device object
+  STEP5OV = 1                           ; This number must be the opposite of what is in ther epics for the binary objects present value
+
+                        
+--------------------------SECTION (A) READING CURRENT VALUES----------------------------
+-- Test steps 1 -3 are automatically sent
+-- Test Steps 2 and 4 must be manually read in VTS trace (WRITE DOWN CHANGE-OF-STATE-VALUE)
+                               
+
+--------------------------SECTION (B) WRITE OPPOSITE VALUE and read date/time------------
+-- Test Step 5 runs here and sets the present value to the opposite value (MAKE SURE THE STEP5OV VARIABLE IS SET CORRECTLY)
+-- Test steps 6 runs automatically
+-- Test step 7 EXPECT runs in this section -- the results must be manually read in the VTS trace. 
+--               (Note the vts trace values for Time and date for comaprison in Section (D)) 
+-- Test steps 8,9 run automatically
+
+
+--------------------------Section (C) Step 10 wait 30 seconds----------------------------
+-- Wait 30 seconds - proceed to section (D)
+
+                              
+
+                                
+--------------------------Section (D) Date & Time compared with Change_Of_State_Time-----
+-- Runs script Test 11 - 14 
+-- (Manually  verify results for step 12 and step 14) Compare Date/time from section (B) in 
+-- previous VTS trace and compare with the newly received VTS trace of Change_Of_State_Time. 3 - 4 SECOND DIFFERENCE IS ACCEPTABLE BECAUSE OF vts LIMITATION
+
+
+--------------------------Section (E) Date/Time compared w/ Time_Of_State_Count_Reset----
+-- RUN section E STEP 15 - 19 IF Time_Of_State_Count_Reset IS WRITABLE 
+-- MANUALLY VERIFY TIME-OF-STATE-COUNT-RESET in the VTS trace window Compare this value with the previous sent date and time
+                                
+
+
+ 
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+
+  IUT_IP = 208.6.162.35		; Address of IUT
+
+  ;-------------------------------------------------------------------------------------
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ;  Routing_Config
+  ;  
+
+  -- DNET_MSTP = 20001, MS/TP     ; Sets the DNET of the remote MSTP network (Comment if no routing)
+
+  ;-----IUT and TD are on the same Ethernet segment
+  ;   DA = IUT_IP 
+  ;-----IUT is on an MSTP segment and TD is on an Ethernet segment
+  ;   DA = Broadcast
+  ;   DNET = DNET_MSTP
+  ;   DADR = IUT_IP
+  ;------------------------------------------------------------------------------------ 
+  SECTION ReadProperty Service Execution Tests
+
+  -- Reference (T) Positive ReadProperty Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD.
+
+
+
+
+-- Purpose: This test case verifies that the properties of binary objects that collectively track state changes (changes in Present_Value)
+-- function as required. If the Change_Of_State_Count, Change_Of_State_Time, and Time_Of_State_Count_Reset properties are not 
+-- supported this test shall be omitted. This test applies to Binary Input, Binary Output, and Binary Value objects.
+
+-- Test Concept: The Present_Value of the binary object under test is changed. The Change_Of_State_Count property is checked to 
+-- verify that it has been incremented and the Change_Of_State_Time property is checked to verify that it has been updated. 
+-- The Change_Of_State_Count is reset and Time_Of_State_Count_Reset is checked to verify that it has been updated appropriately.
+
+-- Configuration Requirements: The object being tested shall be configured such that the Present_Value and Change_Of_State_Count 
+-- properties are writable or another means of changing these properties shall be provided.
+
+-- Test Steps:
+
+-- 1.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the object being tested),
+--		'Property Identifier' = 	Present_Value
+-- 2.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the object being tested),
+--		'Property Identifier' =	Present_Value,
+--		'Property Value' =	ACTIVE | INACTIVE
+-- 3.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the object being tested),
+--		'Property Identifier' = 	Change_Of_State_Count
+-- 4.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the object being tested),
+--		'Property Identifier' =	Change_Of_State_Count,
+--		'Property Value' =	(any valid value, N)
+------------------------------------------------------------------------
+-- 5.	IF (Present_Value is writable) THEN
+--		IF (the value returned in step 2 was ACTIVE) THEN
+--			WRITE Present_Value = INACTIVE
+--			VERIFY Present_Value = INACTIVE
+--		ELSE
+--			WRITE Present_Value = ACTIVE
+--			VERIFY Present_Value = ACTIVE
+--	ELSE
+--		MAKE(Present_Value change to the opposite state)
+-- 6.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the IUT's Device object),
+--		'Property Identifier' = 	Local_Date
+-- 7.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the IUT's Device object),
+--		'Property Identifier' =	Local Date,
+--		'Property Value' =	(the current local date, D)
+-- 8.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the IUT's Device object),
+--		'Property Identifier' = 	Local_Time
+-- 9.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the IUT's Device object),
+--		'Property Identifier' =	Local_Time,
+--		'Property Value' =	(the current local time, TLOC)
+------------------------------------------------------------------------
+-- 10.	WAIT Internal Processing Fail Time
+------------------------------------------------------------------------
+-- 11.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the object being tested),
+--		'Property Identifier' = 	Change_Of_State_Time
+-- 12.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the object being tested),
+--		'Property Identifier' =	Change_Of_State_Time,
+--		'Property Value' =	(a date and time such that the date = D and the time is approximately TLOC)
+-- 13.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the object being tested),
+--		'Property Identifier' = 	Change_Of_State_Count
+-- 14.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the object being tested),
+--		'Property Identifier' =	Change_Of_State_Count,
+--		'Property Value' =	N + 1
+------------------------------------------------------------------------
+-- 15.	IF (Change_Of_State_Count is writable) THEN
+--		WRITE Change_Of_State_Count = 0
+--		VERIFY Change_Of_State_Count = 0
+--	ELSE
+--		MAKE (Change_Of_State_Count = 0)
+-- 16.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the IUT's Device object),
+--		'Property Identifier' = 	Local_Time
+-- 17.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the IUT's Device object),
+--		'Property Identifier' =	Local_Time,
+--		'Property Value' =	(the current local time, TLOC)
+-- 18.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the object being tested),
+--		'Property Identifier' = 	Time_Of_State_Count_Reset
+-- 19.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the object being tested),
+--		'Property Identifier' =	Time_Of_State_Count_Reset,
+--		'Property Value' =	(a date and time such that the date = D and the time is approximately TLOC)
+--
+
+
+---------------------------------------------------------------------------------------- 
+--------------------------SECTION (A) READING CURRENT VALUES----------------------------
+---------------------------------------------------------------------------------------- 
+
+
+ TEST #1  (A)
+
+Dependencies NONE ;ReadProperty Service Execution Tests, 9.15; WriteProperty Service Execution Tests, 9.19
+Reference  12.4.14, 12.4.15, 12.4.16, 12.5.14, 12.5.15, 12.5.16, 12.6.12, 12.6.13, 12.6.14
+
+-- STEP 1.	TRANSMIT ReadProperty-Request,
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, present-value	; Type BACnetObjectIdentifier
+    )
+
+-- STEP 2.	RECEIVE ReadProperty-ACK,
+
+  
+
+-- STEP 3.	TRANSMIT ReadProperty-Request, manual
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, CHANGE-OF-STATE-COUNT	; Type BACnetObjectIdentifier
+    )
+
+-- STEP 4.	RECEIVE ReadProperty-ACK, manaul
+
+
+
+
+-------------------------------------------------------------------------------------------------------------
+--------------------------SECTION (B) WRITE OPPOSITE VALUE and read date/time--------------------------------
+-------------------------------------------------------------------------------------------------------------
+
+
+
+ TEST #2  (B)
+
+Dependencies NONE ; ReadProperty Service Execution Tests, 9.15; WriteProperty Service Execution Tests, 9.19
+Reference  12.4.14, 12.4.15, 12.4.16, 12.5.14, 12.5.15, 12.5.16, 12.6.12, 12.6.13, 12.6.14
+
+
+
+-- STEP 5.	READ AND WRITE OPPOSITE VALUE TO PRESENT-VALUE
+
+   SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = WriteProperty
+      	Object = 0, OBJECT1
+      	Property = 1, PRESENT-VALUE
+      	OpenTag 3
+       		ENUMERATED = STEP5OV
+      	CloseTag 3
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	SA = IUT_IP
+      	DER = FALSE
+      	PDU = SimpleAck
+      	Service = WriteProperty
+    )
+
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, present-value	
+    )
+
+
+  EXPECT (
+    	NETWORK = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	SA = IUT_IP
+    	DER = FALSE
+    	PDU = ComplexAck
+    	Service = ReadProperty
+    	Object = 0, OBJECT1
+    	Property = 1, present-value
+    	OpenTag 3
+       		ENUMERATED = STEP5OV
+    	CloseTag 3                                   
+  )
+
+-- Test step #6 - 9
+
+
+SEND (
+	NETWORK = "Untitled"
+	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+	Service = ReadProperty
+	Object = DEVOBJ1
+	Property = 1, Local-time		; Required property of type Date
+)
+
+SEND (
+	NETWORK = "Untitled"
+	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+	Service = ReadProperty
+	Object = DEVOBJ1
+	Property = 1, Local-Date		; Required property of type Date
+)
+
+
+
+-----------------------------------------------------------------------------------------
+--------------------------Section (C) Step 10 wait 30 seconds----------------------------
+-----------------------------------------------------------------------------------------
+
+-- Test #3 C
+
+-- Dependencies NONE ; ReadProperty Service Execution Tests, 9.15; WriteProperty Service Execution Tests, 9.19
+
+-- Reference  12.4.14, 12.4.15, 12.4.16, 12.5.14, 12.5.15, 12.5.16, 12.6.12, 12.6.13, and 12.6.14
+-- 10.	WAIT Internal Processing Fail Time Maually wait 30 seconds
+
+
+
+----------------------------------------------------------------------------------------------------------------
+--------------------------Section (D) Date & Time compared with Change_Of_State_Time----------------------------
+----------------------------------------------------------------------------------------------------------------
+
+Test step #4 d 11 - 14
+
+Dependencies NONE ; ReadProperty Service Execution Tests, 9.15; WriteProperty Service Execution Tests, 9.19
+
+Reference  12.4.14, 12.4.15, 12.4.16, 12.5.14, 12.5.15, 12.5.16, 12.6.12, 12.6.13, and 12.6.14
+
+ SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, CHANGE-OF-STATE-TIME	; Type BACnetObjectIdentifier
+    )
+
+
+ SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, CHANGE-OF-STATE-COUNT	; Type BACnetObjectIdentifier
+    )
+
+  EXPECT (
+    	NETWORK = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	SA = IUT_IP
+    	DER = FALSE
+    	PDU = ComplexAck
+    	Service = ReadProperty
+    	Object = 0, OBJECT1
+    	Property = 1, CHANGE-OF-STATE-COUNT
+    	OpenTag 3
+       		UNSIGNED = 48     ; COUNTING THIE INITIAL CHANGE IN STEP 5 THIS VALUE SHOULD BE 1
+    	CloseTag 3                                   
+  )
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+-------------Section (E) Date/Time compared w/ Time_Of_State_Count_Reset--------------------------------
+--------------------------------------------------------------------------------------------------------
+
+
+ TEST step #15 -  Change_Of_State_Count SECTION
+
+Dependencies NONE ;ReadProperty Service Execution Tests, 9.15; WriteProperty Service Execution Tests, 9.19
+
+Reference  12.4.14, 12.4.15, 12.4.16, 12.5.14, 12.5.15, 12.5.16, 12.6.12, 12.6.13, and 12.6.14
+
+ SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = WriteProperty
+      	Object = 0, OBJECT1
+      	Property = 1, CHANGE-OF-STATE-COUNT
+      	OpenTag 3
+       		UNSIGNED = 47
+      	CloseTag 3
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	SA = IUT_IP
+      	DER = FALSE
+      	PDU = SimpleAck
+      	Service = WriteProperty
+    )
+
+  -- Step #: Verify the value written to the IUT
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, CHANGE-OF-STATE-COUNT
+    )
+
+    EXPECT (
+     	NETWORK = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, CHANGE-OF-STATE-COUNT
+      	OpenTag 3
+        	UNSIGNED = 47
+      	CloseTag 3                                   
+    )
+
+
+-- STEP 16
+SEND (
+	NETWORK = "Untitled"
+	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+	Service = ReadProperty
+	Object = DEVOBJ1
+	Property = 1, Local-time		; Required property of type Date
+)
+
+
+
+SEND (
+	NETWORK = "Untitled"
+	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+	Service = ReadProperty
+	Object = 0, OBJECT1
+	Property = 1, TIME-OF-STATE-COUNT-RESET		; Required property of type Date
+)
+
+
+

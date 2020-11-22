@@ -1,0 +1,1795 @@
+; Script templates fot VTS (selected on the script editor's Insert menu)
+;
+; Each SECTION becomes a choice on the script editor's Insert menu.
+; Each ITEM becomes a choice in the template selection dialog for its SECTION.
+; The text lines between ITEM and ENDITEM are inserted into the script.
+;
+;===============================================================================
+;===============================================================================
+SECTION Primitive Datatypes
+
+ITEM NULL
+NULL
+ENDITEM
+
+;===============================================================================
+ITEM Boolean
+Boolean = T
+ENDITEM
+
+;===============================================================================
+ITEM Unsigned
+Unsigned = 6
+ENDITEM
+
+;===============================================================================
+ITEM Signed Integer
+Integer = 7
+ENDITEM
+
+;===============================================================================
+ITEM Real
+Real = 3.14
+ENDITEM
+
+;===============================================================================
+ITEM Double
+Double = 3.14
+ENDITEM
+
+;===============================================================================
+ITEM Octet String
+Octetstring = X'010203'
+ENDITEM
+
+;===============================================================================
+ITEM Character String
+Characterstring = "your_text"
+ENDITEM
+
+;===============================================================================
+ITEM Bit String
+Bitstring = [{T,F,T,F}]
+ENDITEM
+
+;===============================================================================
+ITEM Enumerated
+Enumerated = 6
+ENDITEM
+
+;===============================================================================
+ITEM Date
+Date = [(Monday,27-October-2014)]
+ENDITEM
+
+;===============================================================================
+ITEM Time
+Time = [8:36:12.00]
+ENDITEM
+
+;===============================================================================
+ITEM Object Identifier
+ObjectIdentifier = analog-input, 1
+ENDITEM
+
+;===============================================================================
+ITEM Paired Context Tag 0
+OpenTag 0
+CloseTag 0
+ENDITEM
+
+;===============================================================================
+ITEM Paired Context Tag 1
+OpenTag 1
+CloseTag 1
+ENDITEM
+
+;===============================================================================
+ITEM Paired Context Tag 2
+OpenTag 2
+CloseTag 2
+ENDITEM
+
+;===============================================================================
+ITEM Paired Context Tag 3
+OpenTag 3
+CloseTag 3
+ENDITEM
+
+;===============================================================================
+ITEM Paired Context Tag 4
+OpenTag 4
+CloseTag 4
+ENDITEM
+
+;===============================================================================
+ITEM Paired Context Tag 5
+OpenTag 5
+CloseTag 5
+ENDITEM
+
+;===============================================================================
+ITEM Paired Context Tag 6
+OpenTag 6
+CloseTag 6
+ENDITEM
+
+;===============================================================================
+ITEM Paired Context Tag 7
+OpenTag 7
+CloseTag 7
+ENDITEM
+
+;===============================================================================
+ITEM Paired Context Tag 8
+OpenTag 8
+CloseTag 8
+ENDITEM
+
+;===============================================================================
+ITEM Paired Context Tag 9
+OpenTag 9
+CloseTag 9
+ENDITEM
+
+;===============================================================================
+;===============================================================================
+SECTION Constructed Datatypes
+
+ITEM BACnetCalendarEntry - date CHOICE
+OpenTag 0
+   Date = [(Monday,27-October-2014)]
+CloseTag 0
+ENDITEM
+
+;===============================================================================
+ITEM BACnetCalendarEntry - date range CHOICE
+OpenTag 1
+   Date = [(Monday,27-October-2014)]
+   Date = [(Wednesday,29-October-2014)]
+CloseTag 1
+ENDITEM
+
+;===============================================================================
+ITEM BACnetCalendarEntry - WeekNDay CHOICE
+OpenTag 2
+   -- Month 1-12, 13=odd, 14=even or 0xFF; Week 1-5, 6=last or 0xFF; Day 1-7 (1=Monday) or 0xFF
+   Octetstring X'000000'
+CloseTag 2
+ENDITEM
+
+;===============================================================================
+ITEM BACnetDailySchedule
+OpenTag 0
+   -- Zero or more BACnetTimeValues
+CloseTag 0
+ENDITEM
+
+;===============================================================================
+ITEM BACnetTimeValue - BinaryPV CHOICE
+Time [8:00:00.0]
+Enumerated 0
+ENDITEM
+
+;===============================================================================
+ITEM BACnetTimeValue - Real CHOICE
+Time [8:00:00.0]
+Real 0.0
+ENDITEM
+
+;===============================================================================
+ITEM BACnetTimeValue - Unsigned CHOICE
+Time [8:00:00.0]
+Unsigned 0
+ENDITEM
+
+;===============================================================================
+ITEM BACnetAddress
+Unsigned your_network_number
+Octetstring your_mac_address
+ENDITEM
+
+;===============================================================================
+ITEM BACnetDeviceObjectPropertyReference
+Object   = 0, your_object_id__or_type_and_instance
+Property = 1, your_property
+Unsigned = 2, index_if_you_need_it
+Object   = 3, your_device_id_if_you_need_it
+ENDITEM
+
+;===============================================================================
+ITEM BACnetDeviceObjectPropertyValue
+Object   = 0, your_device_id
+Object   = 1, your_object_id__or_type_and_instance
+Property = 2, your_property
+Unsigned = 3, index_if_you_need_it
+OpenTag    4
+   -- <your_value_here>
+CloseTag   4
+ENDITEM
+
+;===============================================================================
+ITEM BACnetDeviceObjectReference
+Object   = 0, your_device_id_if_you_need_it
+Object   = 1, your_object_id__or_type_and_instance
+ENDITEM
+
+;===============================================================================
+ITEM BACnetObjectPropertyReference
+Object   = 0, your_object_id__or_type_and_instance
+Property = 1, your_property
+Unsigned = 2, index_if_you_need_it
+ENDITEM
+
+;===============================================================================
+ITEM BACnetObjectPropertyValue
+Object   = 0, your_object_id__or_type_and_instance
+Property = 1, your_property
+Unsigned = 2, index_if_you_need_it
+OpenTag    3
+   -- <your_value_here>
+CloseTag   3
+Unsigned = 4, priority_if_you_need_it
+ENDITEM
+
+;===============================================================================
+ITEM BACnetPropertyReference
+Property = 0, your_property
+Unsigned = 1, index_if_you_need_it
+ENDITEM
+
+;===============================================================================
+ITEM BACnetPropertyValue
+Property = 0, your_property
+Unsigned = 1, index_if_you_need_it
+OpenTag    2
+   -- <your_value_here>
+CloseTag   2
+Unsigned = 3, priority_if_you_need_it
+ENDITEM
+
+;===============================================================================
+ITEM ReadAccessResult
+Object   = 0, your_object_id__or_type_and_instance
+OpenTag    1 -- listOfResults
+   -- sequence of results with [4] value or [5] Error
+   Property = 2, your_property
+   Unsigned = 3, index_if_you_need_it
+   OpenTag    4
+      -- <your_value_here>
+   CloseTag   4
+CloseTag   1
+ENDITEM
+
+;===============================================================================
+ITEM ReadAccessSpecification
+Object   = 0, your_object_id__or_type_and_instance
+OpenTag    1 -- listOfPropertyReferences
+   -- sequence of BACnetPropertyReference
+   Property = 0, your_property
+   Unsigned = 1, index_if_you_need_it
+CloseTag   1
+ENDITEM
+
+;===============================================================================
+ITEM WriteAccessSpecification
+Object   = 0, your_object_id__or_type_and_instance
+OpenTag    1 -- listOfProperties
+   -- sequence of BACnetPropertyValue
+   Property = 0, your_property
+   Unsigned = 1, index_if_you_need_it
+   OpenTag    2
+      -- <your_value_here>
+   CloseTag   2
+   Unsigned = 3, priority_if_you_need_it
+CloseTag   1
+ENDITEM
+
+;===============================================================================
+;===============================================================================
+SECTION Object Access Service templates
+
+ITEM CreateObject by ObjectType
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = CreateObject
+   OpenTag 0
+      Enum = 0, your_object_type
+   CloseTag 0
+   OpenTag 1 -- Optional list of BACnetPropertyValue
+      Property = 0, your_property
+      Unsigned = 1, index_if_you_need_it
+      OpenTag    2
+         -- <your_value_here>
+      CloseTag   2
+      Unsigned = 3, priority_if_you_need_it
+   CloseTag 1
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = ComplexAck
+   Service = CreateObject
+   Object = your_object
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM CreateObject by ObjectIdentifier
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = CreateObject
+   OpenTag 0
+      Object = 1, your_object_id__or_type_and_instance
+   CloseTag 0
+   OpenTag 1 -- Optional list of BACnetPropertyValue
+      Property = 0, your_property
+      Unsigned = 1, index_if_you_need_it
+      OpenTag    2
+         -- <your_value_here>
+      CloseTag   2
+      Unsigned = 3, priority_if_you_need_it
+   CloseTag 1
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = ComplexAck
+   Service = CreateObject
+   Object = your_object
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM DeleteObject
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = DeleteObject
+   Object  = your_object_id__or_type_and_instance
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = SimpleAck
+   Service = DeleteObject
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM ReadProperty
+SEND (
+   DA  = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, your_object_id__or_type_and_instance
+   Property = 1, your_property
+   Unsigned = 2, index_if_you_need_it
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, your_object_id__or_type_and_instance
+   Property = 1, your_property
+   Unsigned = 2, index_if_you_need_it
+   OpenTag 3
+      -- your property value here
+   CloseTag 3
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM ReadPropertyMultiple
+SEND (
+   DA  = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = ReadPropertyMultiple
+
+   -- repeat this section for each object
+   Object = 0, your_object_id__or_type_and_instance
+   OpenTag 1
+      -- repeat this section for each property
+      Property = 0, your_property
+      Unsigned = 1, index_if_you_need_it
+   CloseTag 1
+)
+
+EXPECT (
+   SA = IUT_ADDR
+   PDU = ComplexAck
+   Service = ReadPropertyMultiple
+
+   -- repeat this section for each object
+   Object = 0, your_object_id__or_type_and_instance
+   OpenTag 1
+      -- repeat this section for each property, or replace with ANY
+      Property = 2, your_property
+      Unsigned = 3, index_if_you_need_it
+      OpenTag 4
+         -- your property value here
+      CloseTag 4
+   CloseTag 1
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM ReadRange by Position
+SEND (
+   DA  = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = ReadRange
+   Object   = 0, your_object_id__or_type_and_instance
+   Property = 1, your_property
+   Unsigned = 2, index_if_you_need_it
+
+   -- byPosition
+   OpenTag 3
+      Unsigned your_referenceIndex
+      Integer  your-count
+   CloseTag 3
+)
+
+EXPECT (
+   SA = IUT_ADDR
+   PDU = ComplexAck
+   Service = ReadRange
+
+   Object   = 0, your_object_id__or_type_and_instance
+   Property = 1, your_property
+   Unsigned = 2, index_if_you_need_it
+   Bitstring = 3, your_result_flags
+   Unsigned = 4, your_item_count
+   OpenTag 5
+      -- your list pf property values here
+   CloseTag 5
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM ReadRange by SequenceNumber
+SEND (
+   DA  = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = ReadRange
+   Object   = 0, your_object_id__or_type_and_instance
+   Property = 1, your_property
+   Unsigned = 2, index_if_you_need_it
+
+   -- bySequenceNumber
+   OpenTag 6
+      Unsigned your_referenceIndex
+      Integer  your-count
+   CloseTag 6
+)
+
+EXPECT (
+   SA = IUT_ADDR
+   PDU = ComplexAck
+   Service = ReadRange
+
+   Object   = 0, your_object_id__or_type_and_instance
+   Property = 1, your_property
+   Unsigned = 2, index_if_you_need_it
+   Bitstring = 3, your_result_flags
+   Unsigned = 4, your_item_count
+   OpenTag 5
+      -- your list pf property values here
+   CloseTag 5
+   Unsigned = 6, your_first_sequence_number
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM ReadRange by Time
+SEND (
+   DA  = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = ReadRange
+   Object   = 0, your_object_id__or_type_and_instance
+   Property = 1, your_property
+   Unsigned = 2, index_if_you_need_it
+
+   -- byTime
+   OpenTag 7
+      Date     your_referenceDate
+      Time     your_referenceTime
+      Integer  your-count
+   CloseTag 7
+)
+
+EXPECT (
+   SA = IUT_ADDR
+   PDU = ComplexAck
+   Service = ReadRange
+
+   Object   = 0, your_object_id__or_type_and_instance
+   Property = 1, your_property
+   Unsigned = 2, index_if_you_need_it
+   Bitstring = 3, your_result_flags
+   Unsigned = 4, your_item_count
+   OpenTag 5
+      -- your list pf property values here
+   CloseTag 5
+   Unsigned = 6, your_first_sequence_number
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM WriteProperty
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = WriteProperty
+   Object   = 0, your_object_id__or_type_and_instance
+   Property = 1, property_id
+   Unsigned = 2, index_if_you_need_it
+   OpenTag 3
+      -- your data here
+   CloseTag 3
+   Unsigned = 4, priority_if_you_need_it
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = SimpleAck
+   Service = WriteProperty
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM AddListElement
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = AddListElement
+   Object   = 0, your_object_id__or_type_and_instance
+   Property = 1, property_id
+   Unsigned = 2, index_if_you_need_it
+   OpenTag 3
+      -- one or more list-element data here
+   CloseTag 3
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = SimpleAck
+   Service = AddListElement
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM RemoveListElement
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = RemoveListElement
+   Object   = 0, your_object_id__or_type_and_instance
+   Property = 1, property_id
+   Unsigned = 2, index_if_you_need_it
+   OpenTag 3
+      -- one or more list-element data here
+   CloseTag 3
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = SimpleAck
+   Service = RemoveListElement
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM WritePropertyMultiple
+SEND (
+   DA  = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = WritePropertyMultiple
+
+   -- repeat this section for each object
+   Object = 0, your_object_id__or_type_and_instance
+   OpenTag 1
+      -- repeat this section for each property
+      Property = 0, your_property
+      Unsigned = 1, index_if_you_need_it
+      OpenTag 2
+         -- your property value here
+      CloseTag 2
+      Unsigned = 3, priority_if_you_need_it
+   CloseTag 1
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = SimpleAck
+   Service = WritePropertyMultiple
+)
+
+ENDITEM
+
+;===============================================================================
+;===============================================================================
+SECTION Device Management Service templates
+
+;===============================================================================
+ITEM DeviceCommunicationControl
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = DeviceCommunicationControl
+   Unsigned        = 0, optional_duration
+   enum            = 1, your_enable -- 0=enable, 1=disable, 2=disable-initiation
+   characterstring = 2, optional_password
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = SimpleAck
+   Service = DeviceCommunicationControl
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM ReinitializeDevice
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = ReinitializeDevice
+   enum            = 0, your_state
+   -- 0=coldstart, 1=warmstart,
+   -- 2=startbackup, 3=endbackup
+   -- 4=startrestore, 5=endrestore, 6=abortrestore
+   characterstring = 1, optional_password
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = SimpleAck
+   Service = ReinitializeDevice
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM Who-Is
+SEND (
+   -- use broadcast for local broadcast, or globalBroadcast for global broadcast
+   DA  = GlobalBroadcast
+   PDU = Unconfirmed-Request
+   Service = Who-Is
+   Unsigned = 0, optional_low_limit  ; Device identifier low limit
+   Unsigned = 1, optional_high_limit ; Device identifier high limit
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM I-Am
+SEND (
+   -- use broadcast for local broadcast, or globalBroadcast for global broadcast
+   DA  = GlobalBroadcast
+   PDU = Unconfirmed-Request
+   Service = I-Am
+   Object   = DEVICE, your_instance
+   Unsigned = your_max_APDU
+   enum     = your_segmentation ; 0=seg-both, 1=seg-tx, 2=seg-rx, 3=no-seg
+   Unsigned = your_vendorID
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM Who-Has by ObjectIdentifier
+SEND (
+   -- use broadcast for local broadcast, or globalBroadcast for global broadcast
+   DA  = GlobalBroadcast
+   PDU = Unconfirmed-Request
+   Service = Who-Has
+   Unsigned = 0, optional_low_limit  ; Device identifier low limit
+   Unsigned = 1, optional_high_limit ; Device identifier high limit
+   Object   = 2, your_object_type, your_object_instance
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM Who-Has by Object Name
+SEND (
+   -- use broadcast for local broadcast, or globalBroadcast for global broadcast
+   DA  = GlobalBroadcast
+   PDU = Unconfirmed-Request
+   Service = Who-Has
+   Unsigned = 0, optional_low_limit  ; Device identifier low limit
+   Unsigned = 1, optional_high_limit ; Device identifier high limit
+   characterstring = 3, your_object_name
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM I-Have
+SEND (
+   -- use broadcast for local broadcast, or globalBroadcast for global broadcast
+   DA  = GlobalBroadcast
+   PDU = Unconfirmed-Request
+   Service = I-Have
+   Object   = DEVICE, your_device_instance
+   Object   = your_object_type, your_object_instance
+   characterstring = your_object_name
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM TimeSynchronization
+SEND (
+   -- use broadcast for local broadcast, or globalBroadcast for global broadcast
+   DA  = GlobalBroadcast
+   PDU = Unconfirmed-Request
+   Service = TimeSynchronization
+   Date = [(Monday,27-October-2014)]
+   Time = [8:36:12.00]
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM UTCTimeSynchronization
+SEND (
+   -- use broadcast for local broadcast, or globalBroadcast for global broadcast
+   DA  = GlobalBroadcast
+   PDU = Unconfirmed-Request
+   Service = UTCTimeSynchronization
+   Date = [(Monday,27-October-2014)]
+   Time = [8:36:12.00]
+)
+
+ENDITEM
+
+;===============================================================================
+;===============================================================================
+SECTION Alarm and Event Service templates
+
+ITEM AcknowledgeAlarm-Request
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = AcknowledgeAlarm
+   Unsigned 0,         your_acknowledgingProcessIdentifier
+   ObjectIdentifier 1, your_eventObjectIdentifier
+   Enumerated 2,       your_eventStateAcknowledged
+   OpenTag 3
+      OpenTag 2
+         Date = [(Monday,27-October-2014)]
+         Time = [8:36:12.0]
+      CloseTag 2
+   CloseTag 3
+   Characterstring 4,  your_acknowledgmentSource
+   OpenTag 5
+      OpenTag 2
+         Date = [(Monday,27-October-2014)]
+         Time = [8:36:12.0]
+      CloseTag 2
+   CloseTag 5
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = SimpleAck
+   Service = AcknowledgeAlarm
+   Object = your_object
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM GetAlarmSummary
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = GetAlarmSummary
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = ComplexAck
+   Service = GetAlarmSummary
+
+   -- list of zero or more items:
+   Object = your_object
+   enum   = your_BACnetEventState
+   bitstring = [{T,F,T,F}]  ; BACnetEventTransitionBits
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM GetEnrollmentSummary
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = GetEnrollmentSummary
+   enum     = 0, your_optional_ackFilter -- 0=all, 1=acked, 2=not-acked
+   OpenTag    1
+      -- BACnetRecipientProcess
+      OpenTag    0
+         -- CHOICE of [0] device or [1] BAcnetAddress
+         Object = 0, your_device
+;;         OpenTag  1
+;;            Unsigned    your_network
+;;            OctetString your_mac_address
+;;         CloseTag 1
+      CloseTag   0
+      Unsigned = 1, your_processID
+   CloseTag   1
+   enum     = 2, your_optional_stateFilter -- 0=offnormal, 1=fault, 2=normal, 3=all, 4=active
+   enum     = 3, your_optional_eventTypeFilter
+   OpenTag    4 -- optional priority Filter
+      Unsigned = 0, your_minPriority
+      Unsigned = 1, your_maxPriority
+   CloseTag   4
+   Unsigned = 5, your_optionalNotificationClassFilter
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = ComplexAck
+   Service = GetEnrollmentSummary
+
+   -- list of zero or more items:
+   Object = your_object
+   enum   = your_eventType
+   enum   = your_eventState
+   Unsigned = your_priority
+   Unsigned = your_optional_notificationClass
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM GetEventInformation
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = GetEventInformation
+   Object = 0, your_optional_last_object_received
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = ComplexAck
+   Service = GetEventInformation
+
+   -- list of zero or more items:
+   OpenTag 0
+      Object    = 0, your_object
+      enum      = 1, your_BACnetEventState
+      bitstring = 2, [{T,F,T,F}]  ; BACnetEventTransitionBits
+      OpenTag     3
+         -- 3 BACnetTimeStamps.  Using DateTime here.
+         OpenTag 2
+            Date = [(Monday,27-October-2014)]
+            Time = [8:36:12.00]
+         CloseTag 2
+         OpenTag 2
+            Date = [(Monday,27-October-2014)]
+            Time = [8:36:12.00]
+         CloseTag 2
+         OpenTag 2
+            Date = [(Monday,27-October-2014)]
+            Time = [8:36:12.00]
+         CloseTag 2
+      CloseTag    3
+      enum      = 4, your_BACnetNotifyType
+      bitstring = 5, [{T,F,T,F}]  ; your_eventEnable
+      OpenTag     6
+         Unsigned your_eventPriority1
+         Unsigned your_eventPriority2
+         Unsigned your_eventPriority3
+      CloseTag    6
+   CloseTag 0
+
+   boolean = 1, ?   ; more_events
+)
+
+ENDITEM
+
+;===============================================================================
+;===============================================================================
+SECTION Other Service templates
+
+ITEM AtomicReadFile - Stream Access
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = AtomicReadFile
+   Object = your_object_id__or_type_and_instance
+   OpenTag 0
+      Integer   your_fileStartPosition
+      Unsigned  your_requestedOctetCount
+   CloseTag 0
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = ComplexAck
+   Service = AtomicReadFile
+   Boolean     your_endOfFile
+   OpenTag 0
+      Integer      your_fileStartPosition
+      OctetString  your_fileData
+   CloseTag 0
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM AtomicReadFile - Record Access
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = AtomicReadFile
+   Object = your_object_id__or_type_and_instance
+   OpenTag 1
+      Integer   your_fileStartRecord
+      Unsigned  your_requestedRecordCount
+   CloseTag 1
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = ComplexAck
+   Service = AtomicReadFile
+   Boolean     your_endOfFile
+   OpenTag 1
+      Integer      your_fileStartRecord
+      Unsigned     your_returnedRecordCount
+      OctetString  your_fileData1 -- first record
+      OctetString  your_fileDataN -- as many records as you want
+   CloseTag 1
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM AtomicWriteFile - Stream Access
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = AtomicWriteFile
+   Object = your_object_id__or_type_and_instance
+   OpenTag 0
+      Integer      your_fileStartPosition
+      OctetString  your_fileData
+   CloseTag 0
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = ComplexAck
+   Service = AtomicWriteFile
+   Integer 0, your_fileStartPosition
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM AtomicWriteFile - Record Access
+SEND (
+   DA = IUT_ADDR
+   PDU = Confirmed-Request
+   Service = AtomicWriteFile
+   Object = your_object_id__or_type_and_instance
+   OpenTag 1
+      Integer      your_fileStartRecord
+      OctetString  your_fileData1 -- first record
+      OctetString  your_fileDataN -- as many records as you want
+   CloseTag 1
+)
+
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = ComplexAck
+   Service = AtomicWriteFile
+   Integer 1, your_fileStartRecord
+)
+
+ENDITEM
+
+;===============================================================================
+;===============================================================================
+SECTION Script File Elements
+ITEM Header for a test file
+;-------------------------------------------------------------------------------
+;
+; Script:  your_text
+;
+; Version: your_text
+;
+; Purpose: your_text
+;
+;-------------------------------------------------------------------------------
+SETUP
+INCLUDE "..\config.vts"
+SECTION your_text
+
+ENDITEM
+
+;===============================================================================
+ITEM Test - Basic test header
+;-------------------------------------------------------------------------------
+TEST your_text
+DEPENDENCIES None
+REFERENCE None
+
+ENDITEM
+
+;===============================================================================
+ITEM MAKE Dialog (show text and an OK button)
+MAKE "Your title for the Make Dialog" (
+  "Your text here"
+  "as many lines as you want"
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM CHECK Dialog (show text and Pass and Fail buttons)
+CHECK "Your title for the Check Dialog" (
+  "Your text here"
+  "as many lines as you want"
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM Expect Reject
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = Reject
+   Reject-Reason = your_reject_reason
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM Expect Abort
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = Abort
+   Abort-Reason = your_abort_reason
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM Expect Simple Error
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = Error
+   Service = your_service_choice
+   Enum = your_error_class
+   Enum = your_error_choice
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM Expect Create Error
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = Error
+   Service = CreateObject
+   OpenTag 0
+      Enum = your_error_class
+      Enum = your_error_choice
+   CloseTag 0
+   Unsigned = 1, index_of_first_failed_property
+)
+
+ENDITEM
+
+;===============================================================================
+ITEM Expect WritePropertyMultiple Error
+EXPECT (
+   SA  = IUT_ADDR
+   PDU = Error
+   Service = WritePropertyMultiple
+   OpenTag 0
+      Enum = your_error_class
+      Enum = your_error_choice
+   CloseTag 0
+   OpenTag 1
+      Object = 0, first_failed_object
+      Property = 1, first_failed_property
+   CloseTag 1
+)
+
+ENDITEM
+
+;===============================================================================
+;===============================================================================
+SECTION Error Class enumeration values
+
+ITEM ErrorClassDEVICE
+Enum 0 -- ErrorClass DEVICE
+ENDITEM
+
+ITEM ErrorClass OBJECT
+Enum 1 -- ErrorClass OBJECT
+ENDITEM
+
+ITEM ErrorClass PROPERTY
+Enum 2 -- ErrorClass PROPERTY
+ENDITEM
+
+ITEM ErrorClass RESOURCES
+Enum 3 -- ErrorClass RESOURCES
+ENDITEM
+
+ITEM ErrorClass SECURITY
+Enum 4 -- ErrorClass SECURITY
+ENDITEM
+
+ITEM ErrorClass SERVICES
+Enum 5 -- ErrorClass SERVICES
+ENDITEM
+
+ITEM ErrorClass VT
+Enum 6 -- ErrorClass VT
+ENDITEM
+
+ITEM ErrorClass COMMUNICATION
+Enum 7 -- ErrorClass COMMUNICATION
+ENDITEM
+
+;===============================================================================
+;===============================================================================
+SECTION Error Code enumeration values
+
+ITEM ErrorCode OTHER
+Enum 0 -- ErrorCode OTHER
+ENDITEM
+
+ITEM ErrorCode AUTHENTICATION_FAILED
+Enum 1 -- ErrorCode AUTHENTICATION_FAILED
+ENDITEM
+
+ITEM ErrorCode CONFIGURATION_IN_PROGRESS
+Enum 2 -- ErrorCode CONFIGURATION_IN_PROGRESS
+ENDITEM
+
+ITEM ErrorCode DEVICE_BUSY
+Enum 3 -- ErrorCode DEVICE_BUSY
+ENDITEM
+
+ITEM ErrorCode DYNAMIC_CREATION_NOT_SUPPORTED
+Enum 4 -- ErrorCode DYNAMIC_CREATION_NOT_SUPPORTED
+ENDITEM
+
+ITEM ErrorCode FILE_ACCESS_DENIED
+Enum 5 -- ErrorCode FILE_ACCESS_DENIED
+ENDITEM
+
+ITEM ErrorCode INCOMPATIBLE_SECURITY_LEVELS
+Enum 6 -- ErrorCode INCOMPATIBLE_SECURITY_LEVELS
+ENDITEM
+
+ITEM ErrorCode INCONSISTENT_PARAMETERS
+Enum 7 -- ErrorCode INCONSISTENT_PARAMETERS
+ENDITEM
+
+ITEM ErrorCode INCONSISTENT_SELECTION
+Enum 8 -- ErrorCode INCONSISTENT_SELECTION
+ENDITEM
+
+ITEM ErrorCode INVALID_DATA_TYPE
+Enum 9 -- ErrorCode INVALID_DATA_TYPE
+ENDITEM
+
+ITEM ErrorCode INVALID_FILE_ACCESS_METHOD
+Enum 10 -- ErrorCode INVALID_FILE_ACCESS_METHOD
+ENDITEM
+
+ITEM ErrorCode INVALID_FILE_START_POSITION
+Enum 11 -- ErrorCode INVALID_FILE_START_POSITION
+ENDITEM
+
+ITEM ErrorCode INVALID_OPERATOR_NAME
+Enum 12 -- ErrorCode INVALID_OPERATOR_NAME
+ENDITEM
+
+ITEM ErrorCode INVALID_PARAMETER_DATA_TYPE
+Enum 13 -- ErrorCode INVALID_PARAMETER_DATA_TYPE
+ENDITEM
+
+ITEM ErrorCode INVALID_TIME_STAMP
+Enum 14 -- ErrorCode INVALID_TIME_STAMP
+ENDITEM
+
+ITEM ErrorCode KEY_GENERATION_ERROR
+Enum 15 -- ErrorCode KEY_GENERATION_ERROR
+ENDITEM
+
+ITEM ErrorCode MISSING_REQUIRED_PARAMETER
+Enum 16 -- ErrorCode MISSING_REQUIRED_PARAMETER
+ENDITEM
+
+ITEM ErrorCode NO_OBJECTS_OF_SPECIFED_TYPE
+Enum 17 -- ErrorCode NO_OBJECTS_OF_SPECIFED_TYPE
+ENDITEM
+
+ITEM ErrorCode NO_SPACE_FOR_OBJECT
+Enum 18 -- ErrorCode NO_SPACE_FOR_OBJECT
+ENDITEM
+
+ITEM ErrorCode NO_SPACE_TO_ADD_LIST_ELEMENT
+Enum 19 -- ErrorCode NO_SPACE_TO_ADD_LIST_ELEMENT
+ENDITEM
+
+ITEM ErrorCode NO_SPACE_TO_WRITE_PROPERTY
+Enum 20 -- ErrorCode NO_SPACE_TO_WRITE_PROPERTY
+ENDITEM
+
+ITEM ErrorCode NO_VT_SESSIONS_AVAILABLE
+Enum 21 -- ErrorCode NO_VT_SESSIONS_AVAILABLE
+ENDITEM
+
+ITEM ErrorCode PROPERTY_IS_NOT_A_LIST
+Enum 22 -- ErrorCode PROPERTY_IS_NOT_A_LIST
+ENDITEM
+
+ITEM ErrorCode OBJECT_DELETION_NOT_PERMITTED
+Enum 23 -- ErrorCode OBJECT_DELETION_NOT_PERMITTED
+ENDITEM
+
+ITEM ErrorCode OBJECT_IDENTIFIER_EXISTS
+Enum 24 -- ErrorCode OBJECT_IDENTIFIER_EXISTS
+ENDITEM
+
+ITEM ErrorCode OPERATIONAL_PROBLEM
+Enum 25 -- ErrorCode OPERATIONAL_PROBLEM
+ENDITEM
+
+ITEM ErrorCode PASSWORD_FAILURE
+Enum 26 -- ErrorCode PASSWORD_FAILURE
+ENDITEM
+
+ITEM ErrorCode READ_ACCESS_DENIED
+Enum 27 -- ErrorCode READ_ACCESS_DENIED
+ENDITEM
+
+ITEM ErrorCode SECURITY_NOT_SUPPORTED
+Enum 28 -- ErrorCode SECURITY_NOT_SUPPORTED
+ENDITEM
+
+ITEM ErrorCode SERVICE_REQUEST_DENIED
+Enum 29 -- ErrorCode SERVICE_REQUEST_DENIED
+ENDITEM
+
+ITEM ErrorCode TIMEOUT
+Enum 30 -- ErrorCode TIMEOUT
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_OBJECT
+Enum 31 -- ErrorCode UNKNOWN_OBJECT
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_PROPERTY
+Enum 32 -- ErrorCode UNKNOWN_PROPERTY
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_SERVICE
+Enum 33 -- ErrorCode UNKNOWN_SERVICE removed in 135-2004
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_VT_CLASS
+Enum 34 -- ErrorCode UNKNOWN_VT_CLASS
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_VT_SESSION
+Enum 35 -- ErrorCode UNKNOWN_VT_SESSION
+ENDITEM
+
+ITEM ErrorCode UNSUPPORTED_OBJECT_TYPE
+Enum 36 -- ErrorCode UNSUPPORTED_OBJECT_TYPE
+ENDITEM
+
+ITEM ErrorCode VALUE_OUT_OF_RANGE
+Enum 37 -- ErrorCode VALUE_OUT_OF_RANGE
+ENDITEM
+
+ITEM ErrorCode VT_SESSION_ALREADY_CLOSED
+Enum 38 -- ErrorCode VT_SESSION_ALREADY_CLOSED
+ENDITEM
+
+ITEM ErrorCode VT_SESSION_TERMINATION_FAIL
+Enum 39 -- ErrorCode VT_SESSION_TERMINATION_FAIL
+ENDITEM
+
+ITEM ErrorCode WRITE_ACCESS_DENIED
+Enum 40 -- ErrorCode WRITE_ACCESS_DENIED
+ENDITEM
+
+ITEM ErrorCode CHAR_SET_NOT_SUPPORTED
+Enum 41 -- ErrorCode CHAR_SET_NOT_SUPPORTED
+ENDITEM
+
+ITEM ErrorCode INVALID_ARRAY_INDEX
+Enum 42 -- ErrorCode INVALID_ARRAY_INDEX
+ENDITEM
+
+ITEM ErrorCode COV_SUBSCRIPTION_FAILED
+Enum 43 -- ErrorCode COV_SUBSCRIPTION_FAILED
+ENDITEM
+
+ITEM ErrorCode NOT_COV_PROPERTY
+Enum 44 -- ErrorCode NOT_COV_PROPERTY
+ENDITEM
+
+ITEM ErrorCode OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED
+Enum 45 -- ErrorCode OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED
+ENDITEM
+
+ITEM ErrorCode INVALID_CONFIGURATION_DATA
+Enum 46 -- ErrorCode INVALID_CONFIGURATION_DATA
+ENDITEM
+
+ITEM ErrorCode DATATYPE_NOT_SUPPORTED
+Enum 47 -- ErrorCode DATATYPE_NOT_SUPPORTED
+ENDITEM
+
+ITEM ErrorCode DUPLICATE_NAME
+Enum 48 -- ErrorCode DUPLICATE_NAME
+ENDITEM
+
+ITEM ErrorCode DUPLICATE_OBJECT_ID
+Enum 49 -- ErrorCode DUPLICATE_OBJECT_ID
+ENDITEM
+
+ITEM ErrorCode PROPERTY_IS_NOT_AN_ARRAY
+Enum 50 -- ErrorCode PROPERTY_IS_NOT_AN_ARRAY
+ENDITEM
+
+ITEM ErrorCode ABORT_BUFFER_OVERFLOW
+Enum 51 -- ITEM ErrorCode ABORT_BUFFER_OVERFLOW
+ENDITEM
+
+ITEM ErrorCode ABORT_INVALID_APDU_IN_THIS_STATE
+Enum 52 -- ErrorCode ABORT_INVALID_APDU_IN_THIS_STATE
+ENDITEM
+
+ITEM ErrorCode ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK
+Enum 53 -- ErrorCode ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK
+ENDITEM
+
+ITEM ErrorCode ABORT_SEGMENTATION_NOT_SUPPORTED
+Enum 54 -- ErrorCode ABORT_SEGMENTATION_NOT_SUPPORTED
+ENDITEM
+
+ITEM ErrorCode ABORT_PROPRIETARY
+Enum 55 -- ErrorCode ABORT_PROPRIETARY
+ENDITEM
+
+ITEM ErrorCode ABORT_OTHER
+Enum 56 -- ErrorCode ABORT_OTHER
+ENDITEM
+
+ITEM ErrorCode INVALID_TAG
+Enum 57 -- ErrorCode INVALID_TAG
+ENDITEM
+
+ITEM ErrorCode NETWORK_DOWN
+Enum 58 -- ErrorCode NETWORK_DOWN
+ENDITEM
+
+ITEM ErrorCode REJECT_BUFFER_OVERFLOW
+Enum 59 -- ErrorCode REJECT_BUFFER_OVERFLOW
+ENDITEM
+
+ITEM ErrorCode REJECT_INCONSISTENT_PARAMETERS
+Enum 60 -- ErrorCode REJECT_INCONSISTENT_PARAMETERS
+ENDITEM
+
+ITEM ErrorCode REJECT_INVALID_PARAMETER_DATA_TYPE
+Enum 61 -- ErrorCode REJECT_INVALID_PARAMETER_DATA_TYPE
+ENDITEM
+
+ITEM ErrorCode REJECT_INVALID_TAG
+Enum 62 -- ErrorCode REJECT_INVALID_TAG
+ENDITEM
+
+ITEM ErrorCode REJECT_MISSING_REQUIRED_PARAMETER
+Enum 63 -- ErrorCode REJECT_MISSING_REQUIRED_PARAMETER
+ENDITEM
+
+ITEM ErrorCode REJECT_PARAMETER_OUT_OF_RANGE
+Enum 64 -- ErrorCode REJECT_PARAMETER_OUT_OF_RANGE
+ENDITEM
+
+ITEM ErrorCode REJECT_TOO_MANY_ARGUMENTS
+Enum 65 -- ErrorCode REJECT_TOO_MANY_ARGUMENTS
+ENDITEM
+
+ITEM ErrorCode REJECT_UNDEFINED_ENUMERATION
+Enum 66 -- ErrorCode REJECT_UNDEFINED_ENUMERATION
+ENDITEM
+
+ITEM ErrorCode REJECT_UNRECOGNIZED_SERVICE
+Enum 67 -- ErrorCode REJECT_UNRECOGNIZED_SERVICE
+ENDITEM
+
+ITEM ErrorCode REJECT_PROPRIETARY
+Enum 68 -- ErrorCode REJECT_PROPRIETARY
+ENDITEM
+
+ITEM ErrorCode REJECT_OTHER
+Enum 69 -- ErrorCode REJECT_OTHER
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_DEVICE
+Enum 70 -- ErrorCode UNKNOWN_DEVICE
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_ROUTE
+Enum 71 -- ErrorCode UNKNOWN_ROUTE
+ENDITEM
+
+ITEM ErrorCode VALUE_NOT_INITIALIZED
+Enum 72 -- ErrorCode VALUE_NOT_INITIALIZED
+ENDITEM
+
+ITEM ErrorCode INVALID_EVENT_STATE
+Enum 73 -- ErrorCode INVALID_EVENT_STATE
+ENDITEM
+
+ITEM ErrorCode NO_ALARM_CONFIGURED
+Enum 74 -- ErrorCode NO_ALARM_CONFIGURED
+ENDITEM
+
+ITEM ErrorCode LOG_BUFFER_FULL
+Enum 75 -- ErrorCode LOG_BUFFER_FULL
+ENDITEM
+
+ITEM ErrorCode LOGGED_VALUE_PURGED
+Enum 76 -- ErrorCode LOGGED_VALUE_PURGED
+ENDITEM
+
+ITEM ErrorCode NO_PROPERTY_SPECIFIED
+Enum 77 -- ErrorCode NO_PROPERTY_SPECIFIED
+ENDITEM
+
+ITEM ErrorCode NOT_CONFIGURED_FOR_TRIGGERED_LOGGING
+Enum 78 -- ErrorCode NOT_CONFIGURED_FOR_TRIGGERED_LOGGING
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_SUBSCRIPTION
+Enum 79 -- ErrorCode UNKNOWN_SUBSCRIPTION
+ENDITEM
+
+ITEM ErrorCode PARAMETER_OUT_OF_RANGE
+Enum 80 -- ErrorCode PARAMETER_OUT_OF_RANGE
+ENDITEM
+
+ITEM ErrorCode LIST_ELEMENT_NOT_FOUND
+Enum 81 -- ErrorCode LIST_ELEMENT_NOT_FOUND
+ENDITEM
+
+ITEM ErrorCode BUSY
+Enum 82 -- ErrorCode BUSY
+ENDITEM
+
+ITEM ErrorCode COMMUNICATION_DISABLED
+Enum 83 -- ErrorCode COMMUNICATION_DISABLED
+ENDITEM
+
+ITEM ErrorCode SUCCESS
+Enum 84 -- ErrorCode SUCCESS
+ENDITEM
+
+ITEM ErrorCode EC_ACCESS_DENIED
+Enum 85 -- ErrorCode EC_ACCESS_DENIED
+ENDITEM
+
+ITEM ErrorCode BAD_DESTINATION_ADDRESS
+Enum 86 -- ErrorCode BAD_DESTINATION_ADDRESS
+ENDITEM
+
+ITEM ErrorCode BAD_DESTINATION_DEVICE_ID
+Enum 87 -- ErrorCode BAD_DESTINATION_DEVICE_ID
+ENDITEM
+
+ITEM ErrorCode BAD_SIGNATURE
+Enum 88 -- ErrorCode BAD_SIGNATURE
+ENDITEM
+
+ITEM ErrorCode BAD_SOURCE_ADDRESS
+Enum 89 -- ErrorCode BAD_SOURCE_ADDRESS
+ENDITEM
+
+ITEM ErrorCode BAD_TIMESTAMP
+Enum 90 -- ErrorCode BAD_TIMESTAMP
+ENDITEM
+
+ITEM ErrorCode CANNOT_USE_KEY
+Enum 91 -- ErrorCode CANNOT_USE_KEY
+ENDITEM
+
+ITEM ErrorCode CANNOT_VERIFY_MESSAGE_ID
+Enum 92 -- ErrorCode CANNOT_VERIFY_MESSAGE_ID
+ENDITEM
+
+ITEM ErrorCode CORRECT_KEY_REVISION
+Enum 93 -- ErrorCode CORRECT_KEY_REVISION
+ENDITEM
+
+ITEM ErrorCode DESTINATION_DEVICE_ID_REQUIRED
+Enum 94 -- ErrorCode DESTINATION_DEVICE_ID_REQUIRED
+ENDITEM
+
+ITEM ErrorCode DUPLICATE_MESSAGE
+Enum 95 -- ErrorCode DUPLICATE_MESSAGE
+ENDITEM
+
+ITEM ErrorCode ENCRYPTION_NOT_CONFIGURED
+Enum 96 -- ErrorCode ENCRYPTION_NOT_CONFIGURED
+ENDITEM
+
+ITEM ErrorCode ENCRYPTION_REQUIRED
+Enum 97 -- ErrorCode ENCRYPTION_REQUIRED
+ENDITEM
+
+ITEM ErrorCode INCORRECT_KEY
+Enum 98 -- ErrorCode INCORRECT_KEY
+ENDITEM
+
+ITEM ErrorCode INVALID_KEY_DATA
+Enum 99 -- ErrorCode INVALID_KEY_DATA
+ENDITEM
+
+ITEM ErrorCode KEY_UPDATE_IN_PROGRESS
+Enum 100 -- ErrorCode KEY_UPDATE_IN_PROGRESS
+ENDITEM
+
+ITEM ErrorCode MALFORMED_MESSAGE
+Enum 101 -- ErrorCode MALFORMED_MESSAGE
+ENDITEM
+
+ITEM ErrorCode NOT_KEY_SERVER
+Enum 102 -- ErrorCode NOT_KEY_SERVER
+ENDITEM
+
+ITEM ErrorCode SECURITY_NOT_CONFIGURED
+Enum 103 -- ErrorCode SECURITY_NOT_CONFIGURED
+ENDITEM
+
+ITEM ErrorCode SOURCE_SECURITY_REQUIRED
+Enum 104 -- ErrorCode SOURCE_SECURITY_REQUIRED
+ENDITEM
+
+ITEM ErrorCode TOO_MANY_KEYS
+Enum 105 -- ErrorCode TOO_MANY_KEYS
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_AUTHENTICATION_TYPE
+Enum 106 -- ErrorCode UNKNOWN_AUTHENTICATION_TYPE
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_KEY
+Enum 107 -- ErrorCode UNKNOWN_KEY
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_KEY_REVISION
+Enum 108 -- ErrorCode UNKNOWN_KEY_REVISION
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_SOURCE_MESSAGE
+Enum 109 -- ErrorCode UNKNOWN_SOURCE_MESSAGE
+ENDITEM
+
+ITEM ErrorCode NOT_ROUTER_TO_DNET
+Enum 110 -- ErrorCode NOT_ROUTER_TO_DNET
+ENDITEM
+
+ITEM ErrorCode ROUTER_BUSY
+Enum 111 -- ErrorCode ROUTER_BUSY
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_NETWORK_MESSAGE
+Enum 112 -- ErrorCode UNKNOWN_NETWORK_MESSAGE
+ENDITEM
+
+ITEM ErrorCode MESSAGE_TOO_LONG
+Enum 113 -- ErrorCode MESSAGE_TOO_LONG
+ENDITEM
+
+ITEM ErrorCode SECURITY_ERROR
+Enum 114 -- ErrorCode SECURITY_ERROR
+ENDITEM
+
+ITEM ErrorCode ADDRESSING_ERROR
+Enum 115 -- ErrorCode ADDRESSING_ERROR
+ENDITEM
+
+ITEM ErrorCode WRITE_BDT_FAILED
+Enum 116 -- ErrorCode WRITE_BDT_FAILED
+ENDITEM
+
+ITEM ErrorCode READ_BDT_FAILED
+Enum 117 -- ErrorCode READ_BDT_FAILED
+ENDITEM
+
+ITEM ErrorCode REGISTER_FOREIGN_DEVICE_FAILED
+Enum 118 -- ErrorCode REGISTER_FOREIGN_DEVICE_FAILED
+ENDITEM
+
+ITEM ErrorCode READ_FDT_FAILED
+Enum 119 -- ErrorCode READ_FDT_FAILED
+ENDITEM
+
+ITEM ErrorCode DELETE_FDT_ENTRY_FAILED
+Enum 120 -- ErrorCode DELETE_FDT_ENTRY_FAILED
+ENDITEM
+
+ITEM ErrorCode DISTRIBUTE_BROADCAST_FAILED
+Enum 121 -- ErrorCode DISTRIBUTE_BROADCAST_FAILED
+ENDITEM
+
+ITEM ErrorCode UNKNOWN_FILE_SIZE
+Enum 122 -- ErrorCode UNKNOWN_FILE_SIZE
+ENDITEM
+
+ITEM ErrorCode ABORT_APDU_TOO_LONG
+Enum 123 -- ErrorCode ABORT_APDU_TOO_LONG
+ENDITEM
+
+ITEM ErrorCode ABORT_APPLICATION_EXCEEDED_REPLY_TIME
+Enum 124 -- ErrorCode ABORT_APPLICATION_EXCEEDED_REPLY_TIME
+ENDITEM
+
+ITEM ErrorCode ABORT_OUT_OF_RESOURCES
+Enum 125 -- ErrorCode ABORT_OUT_OF_RESOURCES
+ENDITEM
+
+ITEM ErrorCode ABORT_TSM_TIMEOUT
+Enum 126 -- ErrorCode ABORT_TSM_TIMEOUT
+ENDITEM
+
+ITEM ErrorCode ABORT_WINDOW_SIZE_OUT_OF_RANGE
+Enum 127 -- ErrorCode ABORT_WINDOW_SIZE_OUT_OF_RANGE
+ENDITEM
+
+ITEM ErrorCode FILE_FULL
+Enum 128 -- ErrorCode FILE_FULL
+ENDITEM
+
+ITEM ErrorCode INCONSISTENT_CONFIGURATION
+Enum 129 -- ErrorCode INCONSISTENT_CONFIGURATION
+ENDITEM
+
+ITEM ErrorCode INCONSISTENT_OBJECT_TYPE
+Enum 130 -- ErrorCode INCONSISTENT_OBJECT_TYPE
+ENDITEM
+
+ITEM ErrorCode INTERNAL_ERROR
+Enum 131 -- ErrorCode INTERNAL_ERROR
+ENDITEM
+
+ITEM ErrorCode NOT_CONFIGURED
+Enum 132 -- ErrorCode NOT_CONFIGURED
+ENDITEM
+
+ITEM ErrorCode OUT_OF_MEMORY
+Enum 133 -- ErrorCode OUT_OF_MEMORY
+ENDITEM
+
+ITEM ErrorCode VALUE_TOO_LONG
+Enum 134 -- ErrorCode VALUE_TOO_LONG
+ENDITEM
+
+ITEM ErrorCode ABORT_INSUFFICIENT_SECURITY
+Enum 135 -- ErrorCode ABORT_INSUFFICIENT_SECURITY
+ENDITEM
+
+ITEM ErrorCode ABORT_SECURITY_ERROR
+Enum 136 -- ErrorCode ABORT_SECURITY_ERROR
+ENDITEM
+
+;===============================================================================
+;===============================================================================
+SECTION Reject and Abort Reason enumeration values
+
+ITEM RejectReason OTHER
+Reject-Reason 0 -- OTHER
+ENDITEM
+
+ITEM RejectReason BUFFER_OVERFLOW
+Reject-Reason 1 -- BUFFER_OVERFLOW
+ENDITEM
+
+ITEM RejectReason INCONSISTENT_PARAMETERS
+Reject-Reason 2 -- INCONSISTENT_PARAMETERS
+ENDITEM
+
+ITEM RejectReason INVALID_PARAMETER_DATA_TYPE
+Reject-Reason 3 -- INVALID_PARAMETER_DATA_TYPE
+ENDITEM
+
+ITEM RejectReason INVALID_TAG
+Reject-Reason 4 -- INVALID_TAG
+ENDITEM
+
+ITEM RejectReason MISSING_REQUIRED_PARAMETER
+Reject-Reason 5 -- MISSING_REQUIRED_PARAMETER
+ENDITEM
+
+ITEM RejectReason PARAMETER_OUT_OF_RANGE
+Reject-Reason 6 -- PARAMETER_OUT_OF_RANGE
+ENDITEM
+
+ITEM RejectReason TOO_MANY_ARGUMENTS
+Reject-Reason 7 -- TOO_MANY_ARGUMENTS
+ENDITEM
+
+ITEM RejectReason UNDEFINED_ENUMERATION
+Reject-Reason 8 -- UNDEFINED_ENUMERATION
+ENDITEM
+
+ITEM RejectReason UNRECOGNIZED_SERVICE
+Reject-Reason 9 -- UNRECOGNIZED_SERVICE
+ENDITEM
+
+ITEM AbortReason OTHER
+Abort-Reason 0 -- OTHER
+ENDITEM
+
+ITEM AbortReason BUFFER_OVERFLOW
+Abort-Reason 1 -- BUFFER_OVERFLOW
+ENDITEM
+
+ITEM AbortReason INVALID_APDU_IN_THIS_STATE
+Abort-Reason 2 -- INVALID_APDU_IN_THIS_STATE
+ENDITEM
+
+ITEM AbortReason PREEMPTED_BY_HIGHER_PRIOR
+Abort-Reason 3 -- PREEMPTED_BY_HIGHER_PRIOR
+ENDITEM
+
+ITEM AbortReason SEGMENTATION_NOT_SUPPORTED
+Abort-Reason 4 -- SEGMENTATION_NOT_SUPPORTED
+ENDITEM
+
+ITEM AbortReason WINDOW_SIZE_OUT_OF_RANGE
+Abort-Reason 7 -- WINDOW_SIZE_OUT_OF_RANGE
+ENDITEM
+
+ITEM AbortReason APPLICATION_EXCEEDED_REPLY_TIMEOUT
+Abort-Reason 8 -- APPLICATION_EXCEEDED_REPLY_TIMEOUT
+ENDITEM
+
+ITEM AbortReason OUT_OF_RESOURCES
+Abort-Reason 9 -- OUT_OF_RESOURCES
+ENDITEM
+
+ITEM AbortReason TSM_TIMEOUT
+Abort-Reason 10 -- TSM_TIMEOUT
+ENDITEM
+
+ITEM AbortReason APDU_TOO_LONG
+Abort-Reason 11 -- APDU_TOO_LONG
+ENDITEM

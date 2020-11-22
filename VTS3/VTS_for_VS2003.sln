@@ -1,0 +1,56 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HashForKeyword", "HashForKeyword\HashForKeyword.vcproj", "{D8C2905A-3EDC-48C1-A00E-7F64FDCBE32F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PTP", "macdll\PTP\PTP.vcproj", "{0DE6EEF3-E380-4203-B8C1-8430F7918F61}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8416ADB8-E03E-4FDC-8CC3-9D6EF5BBAED1} = {8416ADB8-E03E-4FDC-8CC3-9D6EF5BBAED1}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VendorIdTable", "VendorIdTable\VendorId
+Table.vcproj", "{6E0082B5-D259-4DBB-A310-EF98BC2E7E1F}"
+      ProjectSection(ProjectDependencies) = postProject
+      EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VTS", "VTS.vcproj", "{A769B5F4-3D4A-420D-AE7D-4540519C1DC3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0DE6EEF3-E380-4203-B8C1-8430F7918F61} = {0DE6EEF3-E380-4203-B8C1-8430F7918F61}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sjack", "macdll\sjack\sjack.vcproj", "{8416ADB8-E03E-4FDC-8CC3-9D6EF5BBAED1}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{D8C2905A-3EDC-48C1-A00E-7F64FDCBE32F}.Debug.ActiveCfg = Debug|Win32
+		{D8C2905A-3EDC-48C1-A00E-7F64FDCBE32F}.Debug.Build.0 = Debug|Win32
+		{D8C2905A-3EDC-48C1-A00E-7F64FDCBE32F}.Release.ActiveCfg = Release|Win32
+		{D8C2905A-3EDC-48C1-A00E-7F64FDCBE32F}.Release.Build.0 = Release|Win32
+		{0DE6EEF3-E380-4203-B8C1-8430F7918F61}.Debug.ActiveCfg = Debug|Win32
+		{0DE6EEF3-E380-4203-B8C1-8430F7918F61}.Debug.Build.0 = Debug|Win32
+		{0DE6EEF3-E380-4203-B8C1-8430F7918F61}.Release.ActiveCfg = Release|Win32
+		{0DE6EEF3-E380-4203-B8C1-8430F7918F61}.Release.Build.0 = Release|Win32
+		{A769B5F4-3D4A-420D-AE7D-4540519C1DC3}.Debug.ActiveCfg = Debug|Win32
+		{A769B5F4-3D4A-420D-AE7D-4540519C1DC3}.Debug.Build.0 = Debug|Win32
+		{A769B5F4-3D4A-420D-AE7D-4540519C1DC3}.Release.ActiveCfg = Release|Win32
+		{A769B5F4-3D4A-420D-AE7D-4540519C1DC3}.Release.Build.0 = Release|Win32
+		{8416ADB8-E03E-4FDC-8CC3-9D6EF5BBAED1}.Debug.ActiveCfg = Debug|Win32
+		{8416ADB8-E03E-4FDC-8CC3-9D6EF5BBAED1}.Debug.Build.0 = Debug|Win32
+		{8416ADB8-E03E-4FDC-8CC3-9D6EF5BBAED1}.Release.ActiveCfg = Release|Win32
+		{8416ADB8-E03E-4FDC-8CC3-9D6EF5BBAED1}.Release.Build.0 = Release|Win32
+		{6E0082B5-D259-4DBB-A310-EF98BC2E7E1F}.Debug.ActiveCfg = Debug|Win32
+		{6E0082B5-D259-4DBB-A310-EF98BC2E7E1F}.Debug.Build.0 = Debug|Win32
+		{6E0082B5-D259-4DBB-A310-EF98BC2E7E1F}.Release.ActiveCfg = Release|Win32
+		{6E0082B5-D259-4DBB-A310-EF98BC2E7E1F}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,33 @@
+--------------------Configuration: nalservnt - Win32 Debug--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\nalservnt\nalservnt\nalservnt.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /G3 /Zp1 /MTd /W3 /Gm /GX /Zi /Od /I "..\..\Includent" /I "..\..\ptp" /I "..\..\mstp" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FAcs /Fa"Debug/" /Fp"Debug/nalservnt.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Debug/nalserv32.res" /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/nalserv32.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib libcmt.lib oldnames.lib ..\..\bacprim32\debug\bacprim32.lib "..\..\packet32 for NT\debug\packet32.lib" ..\..\ptp\debug\ptp.lib ..\..\mstp\debug\mstp.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/nalserv32.pdb" /debug /machine:I386 /nodefaultlib:"libcmt" /nodefaultlib /def:".\nalservnt.def" /out:"Debug/nalserv32.dll" /implib:"Debug/nalserv32.lib" /pdbtype:sept /libpath:"..\packet32 for NT\debug" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSPC6.tmp" with contents </nologo /G3 /Zp1 /MTd /W3 /Gm /GX /Zi /Od /I "..\..\Includent" /I "..\..\ptp" /I "..\..\mstp" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FAcs /Fa"Debug/" /Fp"Debug/nalservnt.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\nalservnt\nalservnt\nalservnt.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSPC6.tmp" 
+Creating temp file "C:\TEMP\RSPC7.tmp" with contents <kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib libcmt.lib oldnames.lib ..\..\bacprim32\debug\bacprim32.lib "..\..\packet32 for NT\debug\packet32.lib" ..\..\ptp\debug\ptp.lib ..\..\mstp\debug\mstp.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/nalserv32.pdb" /debug /machine:I386 /nodefaultlib:"libcmt" /nodefaultlib /def:".\nalservnt.def" /out:"Debug/nalserv32.dll" /implib:"Debug/nalserv32.lib" /pdbtype:sept /libpath:"..\packet32 for NT\debug" 
+".\Debug\nalservnt.obj"
+".\Debug\nalserv32.res"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Bacprim32\Debug\Bacprim32.lib"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\mstp\Debug\mstp.lib"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\ptp\Debug\ptp.lib"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Packet32 for NT\Debug\packet32.lib">
+Creating command line "link.exe @C:\TEMP\RSPC7.tmp" 
+Compiling...
+nalservnt.c
+Linking...
+   Creating library Debug/nalserv32.lib and object Debug/nalserv32.exp
+
+
+
+nalserv32.dll - 0 error(s), 0 warning(s)

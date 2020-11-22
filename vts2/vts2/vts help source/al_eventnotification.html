@@ -1,0 +1,364 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>BACnet Unconfirmed/ConfirmedEventNotification-Request</title>
+</head>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="application layer">
+	<param name="Keyword" value="request">
+	<param name="Keyword" value="ConfirmedEventNotification">
+	<param name="Keyword" value="UnconfirmedEventNotification">
+	<param name="Keyword" value="BACnetEventType">
+	<param name="Keyword" value="CHANGE_OF_BITSTRING">
+	<param name="Keyword" value="CHANGE_OF_STATE">
+	<param name="Keyword" value="CHANGE_OF_VALUE">
+	<param name="Keyword" value="CHANGED_BITS">
+	<param name="Keyword" value="CHANGED_VALUE">
+	<param name="Keyword" value="COMMAND_FAILURE">
+	<param name="Keyword" value="FLOATING_LIMIT">
+	<param name="Keyword" value="OUT_OF_RANGE">
+	<param name="Keyword" value="Notify Type">
+	<param name="Keyword" value="BACnetNotifyType">
+	<param name="Keyword" value="ACK_NOTIFICATION">
+	<param name="Keyword" value="ALARM">
+	<param name="Keyword" value="EVENT">
+	<param name="Keyword" value="Process Identifier">
+	<param name="Keyword" value="Priority">
+	<param name="Keyword" value="Initiatiating Device Identifier">
+	<param name="Keyword" value="Event Object Identifier">
+	<param name="Keyword" value="Time Stamp">
+	<param name="Keyword" value="dateTime">
+	<param name="Keyword" value="BACnetTimeStamp">
+	<param name="Keyword" value="time">
+	<param name="Keyword" value="sequenceNumber">
+	<param name="Keyword" value="Notification Class">
+	<param name="Keyword" value="messageText">
+	<param name="Keyword" value="acknowledgement">
+	<param name="Keyword" value="Message Text">
+	<param name="Keyword" value="BACnetEventState">
+	<param name="Keyword" value="To State">
+	<param name="Keyword" value="From State">
+	<param name="Keyword" value="Status_Flags">
+	<param name="Keyword" value="New_State">
+	<param name="Keyword" value="BACnetPropertyState">
+	<param name="Keyword" value="New_Value">
+	<param name="Keyword" value="BACnetNotificationParameters">
+	<param name="Keyword" value="Event Values">
+	<param name="Keyword" value="CHANGED_VALUE">
+	<param name="Keyword" value="Command_Value">
+	<param name="Keyword" value="Feedback_Value">
+	<param name="Keyword" value="Referenced_Value">
+	<param name="Keyword" value="Setpoint_Value">
+	<param name="Keyword" value="Error_Limit">
+	<param name="Keyword" value="Exceeding_Limit">
+	<param name="Keyword" value="Deadband">
+	<param name="Keyword" value="Exceeded_Limit">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>BACnet Unconfirmed/ConfirmedEventNotification-Request</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="3" align="right">
+	<a href="al.html"><img src="prev.gif" border="0" width="20" height="20" alt="previous"></a><a href="home.html"><img src="home.gif" border="0" width="20" height="20" alt="home"></a>
+	</td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	 <a href="#standard">Unconfirmed/ConfirmedEventNotification-Request</a><br>
+	 <a href="#alarm-event">Additional Parameters for ALARMS/EVENTS</a><br>
+	 <a href="#bitstring">CHANGE_OF_BITSTRING 'Event Type'</a><br>
+	 <a href="#state">CHANGE_OF_STATE 'Event Type'</a><br>
+	 <a href="#value-bit">CHANGE_OF_VALUE/CHANGED_BITS 'Event Type'</a><br>
+	 <a href="#value-value">CHANGE_OF_VALUE/CHANGED_VALUE 'Event Type'</a><br>
+	 <a href="#failure">COMMAND_FAILURE 'Event Type'</a><br>
+	 <a href="#floating">FLOATING_LIMIT 'Event Type'</a><br>
+	 <a href="#range">OUT_OF_RANGE 'Event Type'</a><br>
+	 <a href="target.html">Selecting a Target Device</a><br>
+	 <p>
+	 <a name="standard"></a><b>Unconfirmed/ConfirmedEventNotification-Request</b><br>
+	 The following is a step-by-step procedure for making a standard 
+	 Unconfirmed/ConfirmedEventNotification-Request.
+	 </p>
+	 <p>
+	 <img src="al_eventnotification1.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol>
+	 <li>If you want to send a confirmed request, check the "Confirmed?" checkbox. 
+	 If you want to send an unconfirmed request, do <b>not</b> check the 
+	 "Confirmed?" checkbox.
+	 <li>Select the 'Notify Type' from the drop-down list.
+	 </ol>
+	 </p>
+	 <p>
+	 If you select either an ALARM or EVENT BACnetNotifyType, the resulting dialog is shown below.
+	 </p>
+	 <p>
+	 <img src="al_eventnotification2.jpg" border="0">
+	 </p>
+	 <p>
+	 If you select an ACK_NOTIFICATION BACnetNotifyType, the resulting dialog is shown below.
+	 </p>
+	 <p>
+	 <img src="al_eventnotification3.jpg" border="0">
+	 </p>
+	 <p>
+	 The dialogs that are shown below are examples of alarm BACnetNotifyTypes. The dialogs 
+	 are identical to event BACnetNotifyTypes and are supersets for the parameters of the ACK_NOTIFICATION 
+	 BACnetNotifyTypes. The point at which the ACK_NOTIFICATION deviates from ALARMS and EVENTS is 
+	 identified at the appropriate point in the description.
+	 <p>
+	 <img src="al_eventnotification4.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start="3">
+	 <li>Type the decimal value of the 'Process Identifier'.
+	 <li>Type the decimal value of the 'Priority'. 
+	 <li>Type the decimal value of the Device Instance for the 'Initiatiating Device Identifier'.
+ 	 <li>Select a standard BACnet Object_Type for the 'Event Object Identifier' from the drop-down list.
+	 <li>Enter a decimal Instance for the Object_Type. VTS automatically calculates the 
+	 'Event Object Identifier'.
+	 </ol>
+	 </p>
+	 <p>
+	 If the 'Time Stamp' is a dateTime choice for the BACnetTimeStamp:
+	 </p>
+	 <p>
+	 <img src="al_eventnotification5.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=8>
+	 <li>Select the "time/date" radio button.
+	 <li>Select the day, month and weekday from the drop-down lists. Type the year 
+	 and time. As you type, invalid entries are shown in 
+	 <font face="arial, helvetica" color="#FF0000">red</font>, 
+	 while valid entries are shown in 
+	 <font face="arial, helvetica" color="#00FF00">green</font>.
+	 </ol>
+	 </p>
+	 <p>
+	 If the 'Time Stamp' is a time choice for the BACnetTimeStamp:
+	 </p>
+	 <p>
+	 <img src="al_eventnotification6.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=8>
+	 <li>Select the "time" radio button.
+	 <li>Type the time. As you type, invalid entries are shown in 
+	 <font face="arial, helvetica" color="#FF0000">red</font>, 
+	 while valid entries are shown in 
+	 <font face="arial, helvetica" color="#00FF00">green</font>.
+	 </ol>
+	 </p>
+	 <p>
+	 If the 'Time Stamp' is a sequenceNumber choice for the BACnetTimeStamp:
+	 </p>
+	 <p>
+	 <img src="al_eventnotification7.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=8>
+	 <li>Select the "sequence" radio button.
+	 <li>Type the sequenceNumber. As you type, invalid entries are shown in 
+	 <font face="arial, helvetica" color="#FF0000">red</font>, 
+	 while valid entries are shown in 
+	 <font face="arial, helvetica" color="#00FF00">green</font>.
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_eventnotification8.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=10>
+     <li>Type the decimal value of the 'NotificationClass'.
+	 <li>If you want to include an optional 'Message Text', type the text into 
+	 the 'Message Text' edit box.
+	 <li>Select the 'Event Type' from the drop-down list.
+	 </ol>
+	 </p>
+	 <p>
+	 If you are sending an ACK_NOTIFICATION request, no further parameters are required. 
+	 The dialog will look similar to the one displayed below. You can go to step 
+	 20 to complete the request.
+	 </p>
+	 <p>
+	 <img src="al_eventnotification9.jpg" border="0">
+	 </p>
+	 <p>
+	 <a name="alarm-event"></a>
+	 If you are sending an ALARM or EVENT request, additional parameters are required.
+	 </p>
+	 <p>
+	 <img src="al_eventnotification10.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=13>
+     <li>If you want acknowledgement of the alarm/event check the 
+	 "ACK required?" checkbox. If you do not want acknowledgement, do <b>not</b> 
+	 check the "ACK required?" checkbox.
+	 <li>Select the BACnetEventState for the 'From State' from the drop-down list.
+	 <li>Select the BACnetEventState for the 'To State' from the drop-down list.
+	 <li>Check the appropriate Status_Flags to be included with the 
+	 BACnetNotificationParameters.
+	 </ol>
+	 </p>
+	 <p>
+	 <a name="bitstring"></a>
+	 If the 'Event Type' you selected is a CHANGE_OF_BITSTRING BACnetEventType:
+	 </p>
+	 <p>
+	 <img src="al_eventnotification11.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=17>
+     <li>Type the referenced-bitstring for the BACnetNotificationParameters 
+     in binary with the most-significant digit first and the number of 
+	 digits typed equal to the number of bits used for the primative value. 
+	 This means leading zeroes are required. The corresponding encoding in 
+	 a transmitted packet for this example is shown below for reference.
+	 </ol>
+	 Go to step 20.
+	 </p>
+	 <p>
+	 <img src="al_eventnotification20.jpg" border="0">
+	 </p>
+	 <p>
+	 <a name="state"></a>
+	 If the 'Event Type' you selected is a CHANGE_OF_STATE BACnetEventType:
+	 </p>
+	 <p>
+	 <img src="al_eventnotification12.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=17>
+	 <li>Select the BACnetPropertyState from the drop-down list. The corresponding 
+	 New_States for the selected BACnetPropertyState will be displayed in its 
+	 drop-down list. 
+     <li>Select the New_State from the drop-down list.
+     </ol>
+	 Go to step 20.
+	 </p>
+	 <p>
+	 <a name="value-bit"></a>
+	 If the 'Event Type' you selected is a CHANGE_OF_VALUE BACnetEventType and the New_Value is 
+	 a changed-bit type:
+	 </p>
+	 <p>
+	 <img src="al_eventnotification14.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=17>
+	 <li>Select the "bits" radio button. 
+     <li>Type the CHANGED_BITS for the BACnetNotificationParameters 
+     in binary with the most-significant digit first and the number of 
+	 digits typed equal to the number of bits used for the primative value. 
+	 This means leading zeroes are required. The corresponding encoding in 
+	 a transmitted packet for this example is shown below for reference.
+	 </ol>
+	 Go to step 20.
+	 </p>
+	 <p>
+	 <img src="al_eventnotification15.jpg" border="0">
+	 </p>
+	 <p>
+	 <a name="value-value"></a>
+	 If the 'Event Type' you selected is a CHANGE_OF_VALUE BACnetEventType and the New_Value is 
+	 a CHANGED_VALUE type:
+	 </p>
+	 <p>
+	 <img src="al_eventnotification13.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=17>
+	 <li>Select the "value" radio button. 
+     <li>Type the CHANGED_VALUE for the BACnetNotificationParameters 
+     in REAL number format.
+     </ol>
+	 Go to step 20.
+	 </p>
+	 <p>
+	 <a name="failure"></a>
+	 If the 'Event Type' you selected is a COMMAND_FAILURE BACnetEventType:
+	 </p>
+	 <p>
+	 <img src="al_eventnotification16.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=17>
+     <li>Type the Command_Value for the BACnetNotificationParameters.
+     <li>Type the Feedback_Value for the BACnetNotificationParameters.
+     </ol>
+	 Go to step 20.
+	 </p>
+	 <p>
+	 <a name="floating"></a>
+	 If the 'Event Type' you selected is a FLOATING_LIMIT BACnetEventType:
+	 </p>
+	 <p>
+	 <img src="al_eventnotification17.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=17>
+     <li>Type the Referenced_Value for the BACnetNotificationParameters 
+     in REAL number format.
+     <li>Type the Setpoint_Value for the BACnetNotificationParameters 
+     in REAL number format.
+     <li>Type the Error_Limit for the BACnetNotificationParameters 
+     in REAL number format.
+     </ol>
+	 Go to step 20.
+	 </p>
+	 <p>
+	 <a name="range"></a>
+	 If the 'Event Type' you selected is an OUT_OF_RANGE BACnetEventType:
+	 </p>
+	 <p>
+	 <img src="al_eventnotification18.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=17>
+     <li>Type the Exceeding_Limit for the BACnetNotificationParameters 
+     in REAL number format.
+     <li>Type the Deadband for the BACnetNotificationParameters 
+     in REAL number format.
+     <li>Type the Exceeded_Limit for the BACnetNotificationParameters 
+     in REAL number format.
+     </ol>
+	 Go to step 20.
+	 </p>
+	 <p>
+	 <img src="al_eventnotification19.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=20>
+	 <li>Make sure you have selected a <a href="target.html">target device</a>.
+	 <li>Click the "Send" button. 
+	 </ol>
+	 </p>
+	 <p>
+ 	 <a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	 <a href="al.html">Go to the <b>Previous</b> VTS Help Topic.</a><br>
+	 </p>
+	 </font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

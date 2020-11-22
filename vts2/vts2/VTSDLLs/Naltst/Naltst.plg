@@ -1,0 +1,33 @@
+--------------------Configuration: Naltst - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Naltst\Naltst.dsp", at root.
+Active configuration is Win32 (x86) Application (based on Win32 (x86) Application)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /ML /W3 /GX /O2 /I "..\includent" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FR"Release/" /Fp"Release/Naltst.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Release/Naltst.res" /d "NDEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Release/Naltst.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib naldum.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/Naltst.pdb" /machine:I386 /def:".\Naltst.def" /out:"Release/Naltst.exe" /libpath:"..\naldum\debug" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP48.tmp" with contents </nologo /ML /W3 /GX /O2 /I "..\includent" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FR"Release/" /Fp"Release/Naltst.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Naltst\Naltst.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP48.tmp" 
+Creating temp file "C:\TEMP\RSP49.tmp" with contents <kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib naldum.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/Naltst.pdb" /machine:I386 /def:".\Naltst.def" /out:"Release/Naltst.exe" /libpath:"..\naldum\debug" 
+".\Release\Naltst.obj"
+".\Release\Naltst.res">
+Creating command line "link.exe @C:\TEMP\RSP49.tmp" 
+Compiling...
+Naltst.c
+Linking...
+.\Naltst.def : warning LNK4017: CODE statement not supported for the target platform; ignored
+.\Naltst.def : warning LNK4017: DATA statement not supported for the target platform; ignored
+   Creating library Release/Naltst.lib and object Release/Naltst.exp
+Creating command line "bscmake.exe /nologo /o"Release/Naltst.bsc"  ".\Release\Naltst.sbr"" 
+Creating browse info file...
+
+
+
+Naltst.exe - 0 error(s), 2 warning(s)

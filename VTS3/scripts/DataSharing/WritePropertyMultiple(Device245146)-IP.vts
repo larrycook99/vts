@@ -1,0 +1,192 @@
+  ;-------------------------------------------------------------------------------
+  ;   WriteProperty Service Executeion Tests
+  ;  The purpose of this test group is to verify correct execution of those properties
+  ;  that can't be written in Old Virtual Device(Device 1967),while can be Written in
+  ;  new Device(Device245146)
+
+  ;  In the REFERENCE section "B" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;--------------------------------------------------------------------------------
+
+  SETUP Add Scripts for Device245146
+  INCLUDE "..\config.vts"
+
+  ;--------------------------------------------------------------------------------
+   OBJECT2 = ANALOG-VALUE, 1
+   OBJECT3 = BINARY-VALUE,1
+   OBJECT4 = NOTIFICATION-CLASS,1
+
+   INITVAL1 = "VTS HUST GROUP"
+   TESTVAL1 ="Now Let's Test"
+
+   INITVAL2 = 300
+   TESTVAL2 = -10
+  ;--------------------------------------------------------------------------------
+
+   SECTION Properties COV execute tests
+  ;--------------------------------------------------------------------------------
+
+Test 1 write property of Dev_Obj
+
+  DEPENDENCIES None
+
+  REFERENCE (B) WritePropertyMultiple Service and (T) Writing variable Data Values
+--  Write property and change the Values of Properties including"Location,UTC-Offset"
+
+ ;Step 1: Read Properties Initial Values from EPICS
+
+    SEND (
+      Da = IUT_ADDR
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, IUT_DEVICE_OBJECT
+      OpenTag 1
+         Property = 0, Location
+         Property = 0, UTC-Offset
+      CloseTag 1
+
+    )
+
+    EXPECT (
+      Sa = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, IUT_DEVICE_OBJECT
+      OpenTag 1
+         Property = 2, Location
+         OpenTag 4
+           CHARACTERSTRING = INITVAL1
+         CloseTag 4
+         Property = 2, UTC-Offset
+         OpenTag 4
+           AL = {UTC-Offset}
+--         Integer AL = -360
+         CloseTag 4
+
+      CloseTag 1
+    )
+
+ ;Step 2: Write Test Values to those Property
+
+  Send (
+      DA = IUT_ADDR
+      PDU = Confirmed-Request
+      Service = WritePropertyMultiple
+      Object = 0, IUT_DEVICE_OBJECT
+      OpenTag 1
+        Property = 0, Location
+        OpenTag 2
+           CharacterString = TESTVAL1       ; Write new value to P1 using WPM service
+        CloseTag 2
+        Property = 0,UTC-Offset
+        OpenTag 2
+           Integer = TESTVAL2       ; Write new value to P1 using WPM service
+        CloseTag 2
+      CloseTag 1
+       )
+
+  EXPECT(
+      SA = IUT_ADDR
+      PDU = SIMPLEACK
+      SERVICE = WritePropertyMultiple
+       )
+
+
+ ;Step 3: Read those Properties and Verified those new test values
+
+    SEND (
+      Da = IUT_ADDR
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, IUT_DEVICE_OBJECT
+      OpenTag 1
+         Property = 0, Location
+         Property = 0, UTC-Offset
+      CloseTag 1
+
+    )
+
+    EXPECT (
+      Sa = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, IUT_DEVICE_OBJECT
+      OpenTag 1
+         Property = 2, Location
+         OpenTag 4
+            CharacterString = TESTVAL1
+         CloseTag 4
+         Property = 2, UTC-Offset
+         OpenTag 4
+          Integer = TESTVAL2
+         CloseTag 4
+
+      CloseTag 1
+    )
+
+ ;Step 4: Write initial Values back to those Properties
+
+  Send (
+      DA = IUT_ADDR
+      PDU = Confirmed-Request
+      Service = WritePropertyMultiple
+      Object = 0, IUT_DEVICE_OBJECT
+      OpenTag 1
+        Property = 0, Location
+        OpenTag 2
+           CharacterString = INITVAL1       ; Write new value to P1 using WPM service
+        CloseTag 2
+        Property = 0,UTC-Offset
+        OpenTag 2
+           Integer = TESTVAL2       ; Write new value to P1 using WPM service
+        CloseTag 2
+
+      CloseTag 1
+
+       )
+
+  EXPECT(
+      SA = IUT_ADDR
+      PDU = SIMPLEACK
+      SERVICE = WRITEPROPERTYMULTIPLE
+       )
+
+---------------------------------------------------------------------------
+Test 2 Write Property of Local-Time
+
+--Step1: Write new value to property
+  Send(
+      DA = IUT_ADDR
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, IUT_DEVICE_OBJECT
+      Property = 1, Local-Time
+      OpenTag 3
+       Time = 12:34:56.78
+      CloseTag 3
+     )
+    EXPECT (
+      SA = IUT_ADDR
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+--Step2:Read the property and verified the last test
+  Send(
+      DA = IUT_ADDR
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, IUT_DEVICE_OBJECT
+      Property = 1, Local-Time
+    )
+
+    EXPECT (
+      SA = IUT_ADDR
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, IUT_DEVICE_OBJECT
+      Property = 1, Local-Time
+      OpenTag 3
+       Time = 12:34:?.?           ;RRT(Round Trip Time) is 2 second or so
+      CloseTag 3
+    )

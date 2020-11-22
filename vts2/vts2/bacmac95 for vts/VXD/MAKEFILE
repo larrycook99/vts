@@ -1,0 +1,34 @@
+##################################################################
+#
+#       Microsoft Confidential
+#       Copyright (C) Microsoft Corporation 1993-95
+#       All Rights Reserved.
+#
+#	This document is provided for informational purposes only and Microsoft 
+#	Corporation makes no warranties, either expressed or implied, in this document.
+#	Information in this document may be substantially changed without notice in
+#	subsequent versions of windows and does not represent a commitment on the 
+#	part of Microsoft Corporation. This information is for internal use only for 
+#	development purposes.
+#
+#       INPUT:
+#               BIN: Where to put the stuff (bin or retail)
+#               DEB: Flags to control debug level
+#
+#
+##################################################################
+
+DEVICE=BACMAC95
+
+BIN = retail
+
+OBJS=\
+$(BIN)\openclos.obj\
+$(BIN)\bacmac95.obj\
+$(BIN)\request.obj\
+$(BIN)\read.obj\
+$(BIN)\write.obj\
+$(BIN)\lock.obj\
+$(BIN)\ndisdev.obj\
+
+!include ndis.mk

@@ -1,0 +1,1328 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Device Object Creation & Deletion Service Execution Tests
+  ;  "DRAFT COPY--- DO NOT DISTRIBUTE"
+  ;  OCD yymmdd.vts
+  ;
+  ;  Ver 1.0   10/09/01           BradSp	Initial version
+  ;  Ver 1.1   10/17/01           BradSp        Added variable section and explanations on how to test with this script 
+  ;  
+  ;  
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Device Object Creation & Deletion Service Execution Tests
+
+  ;------------------------------------------------------------------------------------- 
+  ; Notes on Hardcoding and other changes needing to be made outside of the setup section including hard coded objects and properties 
+  ; Items marked and found with *** are hardcoded or the error messages must be manually verified in the trace. 
+  ; Items Marked with MANUAL must be manually verified or sent.
+  ;
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG   All objects and properties are listed here including notes on there use
+  ;
+	
+  TD_IP = 10.10.10.2
+	
+  
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  
+  IUT_IP = 208.6.162.35			; Address of IUT
+
+ -- Global variables
+          PASSW = ANSI,"aaa"       ; Password if needed
+          OBJECT1 = Device, 245146 	; Specify the device object
+          OBJTYPE = 0                   ; 0 = ANALOG-INPUT (SEE BACNET STANDARD PG 374 BIT STRING - BACNETOBJECTTYPESSUPPORTED)
+ ;---------------------  
+ -- TEST #1  9.13.1.1 Creating Objects by Specifying the Object Type with no Initial Values 
+                      -- MANUAL SEND AND RECEIVE (MANUALLY VIEW THE RECEIVED OBJECT-LIST AND OBJECT-IDENTIFIER IN THE VTS TRACE - MAKE SURE THE NEW OBJECT IS LISTED)
+		      -- BODY CHANGE  (NONE)		      
+          TEST1OBJTYPE = 0              ; 0 = ANALOG-INPUT (SEE BACNET STANDARD PG 374 BIT STRING - BACNETOBJECTTYPESSUPPORTED)
+
+ ;---------------------
+ -- TEST #2 9.13.1.2 Creating Objects by Specifying the Object Identifier with no Initial Values
+                      -- MANUAL SEND AND RECEIVE (NONE)
+		      -- BODY CHANGE  (NONE)
+	  TEST2OBJ = analog-input, 91   ; SPECIFY THE OBJECT AND OBJECT IDENTIFIER
+                      
+ ;---------------------
+ -- TEST #3  9.13.1.3 Creating Objects by Specifying the Object Type and Providing Initial Values 
+                      -- MANUAL *** THE SEND AND RECEIVE READ-PROPERTY  MUST BE MANUALLY VERIFIED FOR BOTH PROPERTIES SPECIFIED
+		      -- BODY CHANGE *** The body of this test may need changes if the analog-input object is not used. See *** MANUAL in the body of Test #3 for details
+          TEST3OBJTYPE = 0              ; 0 = ANALOG-INPUT (SEE BACNET STANDARD PG 374 BIT STRING - BACNETOBJECTTYPESSUPPORTED)
+          
+ ;---------------------	  
+ -- TEST #4  9.13.1.3  MANUAL Creating Objects by Specifying the Object ID and Providing Initial Values 
+                      -- MANUAL *** (OBJLIST MUST BE READ MANUALLY)
+		      -- BODY CHANGE *** The body of this test may need changes if the analog-input or similar object is not used. See *** MANUAL in the body of Test #3 for details
+	  TEST4NEWOBJ = analog-OUTPUT, 222
+          TEST4 = ANSI ,"AAA"       ; These are the properties written. 
+          TEST4B = ANSI ,"AAA"
+
+ ;---------------------
+ -- TEST #5n  9.13.2.1 Attempting to Create an Object that does not have a Unique Object Identifier (No further changes needed in the body of this script)
+          TEST5OBJECT = ANALOG-INPUT, 1            ; This object should already exist in the IUT 
+
+ ;---------------------  
+ -- TEST #6n  9.13.2.2 Attempting to Create an Object with an Object Type that is not Creatable by Specifying the Object Type
+          TEST6OBJ = 8   ; 8 indicated the device object. The device object is typically not creatable.            
+		      -- MANUAL SEND AND RECEIVE (NONE)
+		      -- BODY CHANGE  (NONE) 
+
+ ;---------------------  
+ --  TEST #7n   9.13.2.3	Attempting to Create an Object with an Object Type that is not Creatable by Specifying the Object Identifier
+                      -- MANUAL SEND AND RECEIVE (RECEIVE OF THE OBJECT-LIST MUST BE MANUALLY VERIFIED IN THE VTS TRACE WINDOW)
+		      -- BODY CHANGE  (NONE) 
+          TEST7OBJ = DEVICE, 99      ; TYPICALLY THIS SHOULD NOT BE CHANGED
+
+ ;---------------------  
+ -- TEST #8n  9.13.2.4  Attempting to Create an Object with an Object Type Specifier and an Error in the Initial Values 
+                      -- MANUAL SEND AND RECEIVE (NONE)
+		      -- BODY CHANGE  (NONE) 
+          TESTOBJ8 = 0  ; 0 = ANALOG-INPUT (SEE BACNET STANDARD PG 374 BIT STRING - BACNETOBJECTTYPESSUPPORTED)
+
+ ;---------------------  
+ -- TEST #9n  9.13.2.5  Attempting to Create an Object with an Object Identifier and an Error in the Initial Values (UNABLE TO MAKE ERROR IN THE INITIAL VALUE.;)
+                      -- MANUAL SEND AND RECEIVE (RECEIVE OF THE OBJECT-LIST MUST BE MANUALLY VERIFIED IN THE VTS TRACE WINDOW)
+		      -- BODY CHANGE  *** The body of this test may need changes if the analog-input object is not used. See *** MANUAL in the body of Test #3 for details
+          TEST9OBJ = analog-input, 150  
+
+ ;---------------------  
+ -- TEST #10  9.14.1.1  Successful Deletion of an Object
+                      -- MANUAL SEND AND RECEIVE (MANUALLY VERIFY THAT THE OBJECT WAS ACTUALLY DELETED IN THE OBJECT-LIST THAT IS AUTOMATICALLY SHOWN IN THE VTS TRACE)
+		      -- BODY CHANGE  (NONE) 
+          TEST10OBJ = analog-input, 69
+
+ ;---------------------  
+ -- TEST #11  9.14.2.1 Attempting to Delete an Object that is not Deletable
+                      -- MANUAL SEND AND RECEIVE (MANUALLY VERIFY IN VTS TRACE THAT THE OBJECT NAME THAT WAS READ IS THE OBJECT NAME IN THE DEVICE
+		      -- BODY CHANGE  (NONE) 
+          TEST11OBJ = DEVICE, 100      ; THE DEVICE OBJECT IS TYPICALLY NOT DELETABLE - JUST CHANGE THE INSTANCE NUMBER
+
+ ;---------------------  
+ -- TEST #12  9.14.2.2 Attempting to Delete an Object that does not Exist
+                      -- MANUAL SEND AND RECEIVE (MANUALLY VERIFY IN VTS TRACE THAT THE OBJECT NAME THAT WAS READ IS THE OBJECT NAME IN THE DEVICE
+		      -- BODY CHANGE  (NONE) 
+          TEST12OBJ = DEVICE, 99917
+
+  ;-------------------------------------------------------------------------------------
+ 
+   SECTION Device Object Creation & Deletion Service Execution Tests
+
+  
+  ;-------------------------------------------------------------------------------------
+  ;
+  ;  Routing_Config
+  ;  
+
+  -- DNET_MSTP = 20001, MS/TP     ; Sets the DNET of the remote MSTP network (Comment if no routing) ***
+
+  ;-----IUT and TD are on the same Ethernet segment
+  ;   DA = IUT_IP 
+  ;-----IUT is on an MSTP segment and TD is on an Ethernet segment
+  ;   DA = Broadcast
+  ;   DNET = DNET_MSTP
+  ;   DADR = IUT_IP
+  ;---------------------------------------- 
+
+
+
+
+
+;-------------------------------------------------------------------------------------
+  TEST #1  MANUAL 9.13.1.1 Creating Objects by Specifying the Object Type with no Initial Values
+ --     Purpose: This test case verifies the correct execution of the CreateObject service request when an Object Type is used as the   --     object specifier.
+
+ --     Test Steps:
+ 
+ --     1.	TRANSMIT CreateObject-Request,
+ --		'Object Type' = 		(any creatable object type)
+ --     2.	RECEIVE CreateObject-ACK,
+ --		'Object Identifier' =		(any unique object identifier of the specified type)
+ --     3.	VERIFY (the object identifier of the newly created object), 
+ --		(any required property of the specified object) = (any value of the correct datatype for the specified property)
+ --     4.	VERIFY (the IUT's Device object), Object_List = (any object list containing the newly created object)
+
+   
+ -- Step #1: TRANSMIT CreateObject-Request
+
+ SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = CREATEOBJECT
+    	OPENTAG 0
+       		ENUM = 0, TEST1OBJTYPE                     ; BY OBJECT TYPE
+    	CLOSETAG 0
+      )
+
+ -- Step #2: Receive CreateObject-ACK
+
+  EXPECT (
+    	Network = "Untitled"
+    	DA = TD_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+    	DER = FALSE
+    	PDU = COMPLEXACK
+    	Service = CREATEOBJECT 
+    )
+
+ -- Step #3: VERIFY (the object identifier of the newly created object)
+ -- MANUAL *** THE SEND/EXPECT MUST BE MANUALLY VERIFIED SINCE THE OBJECT ID WAS GENERATED BY THE IUT (CHECK THE SNIFF TO FIND OUT THE NEWLY CREATED OBJECT ID
+
+ -- Step #4: VERIFY (the IUT's Device object), Object_List = (any object list containing the newly created object)
+
+   SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, OBJECT-LIST 	; Read entire Object-List array
+    ) 
+   -- EXPECT (  ; MANUAL *** THE EXPECT MUST BE MANUALLY VERIFIED SINCE THE NEW OBJECT-LIST WILL NOT MATCH THE EPICS
+   --   NETWORK = "Untitled"
+   --   PDU = ComplexAck
+   --   DER = FALSE
+   --   Service = ReadProperty
+   --   Object = 0, OBJECT1
+   --   Property = 1, OBJECT-LIST
+   --   OpenTag 3
+   --      AL = {OBJECT-LIST}		; Note: due to a limitation in VTS V2.28
+   --   CloseTag 3			;  this test will fail if proprietary
+   --        )					;  objects are returned in the array
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+
+  TEST #2 9.13.1.2 Creating Objects by Specifying the Object Identifier with no Initial Values
+
+ --     Purpose: This test case verifies the correct execution of the CreateObject service request when an Object Identifier is used as the object specifier.
+
+ --     Test Steps:
+
+ --     1.	TRANSMIT CreateObject-Request,
+ --		'Object Identifier' = 		(any unique object identifier of a type that is creatable )
+ --     2.	RECEIVE CreateObject-ACK,
+ --		'Object Identifier' =		(the object identifier specified in step 1)
+ --     3.	VERIFY (the object identifier of the newly created object), 
+ --		(any required property of the specified object) = (any value of the correct datatype for the specified property)
+ --     4.	VERIFY (the IUT's Device object), Object_List = (any object list containing the newly created object)
+
+  DEPENDENCIES None
+
+  REFERENCE (B) CreateObject and (T) CreateObject Service Execution Tests
+
+ -- Step #1: TRANSMIT CreateObject-Request
+
+ SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = CREATEOBJECT
+    	OPENTAG 0
+       		Object = 1, TEST2OBJ             ; MANUAL BY OBJECT IDENTIFIER
+    	CLOSETAG 0
+      )
+
+ -- Step #2: Receive CreateObject-ACK
+
+  EXPECT (
+    	Network = "Untitled"
+    	DA = TD_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+    	DER = FALSE
+    	PDU = COMPLEXACK
+    	Service = CREATEOBJECT 
+    )
+
+ -- Step #3: VERIFY (the object identifier of the newly created object)
+
+ SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, TEST2OBJ      ; MANUAL, MATCH THE VALUE SPECIFIED IN THE SEND
+      	Property = 1, Object-Identifier	; Type BACnetObjectIdentifier
+    )
+
+   -- EXPECT (
+   --   NETWORK = "Untitled"
+   --   DER = FALSE
+   --   PDU = ComplexAck
+   --   Service = ReadProperty
+   --   Object = 0, analog-input, 99      ; MANUAL - READ TRACE MATCH AND THE VALUE SPECIFIED IN THE SEND
+   --   Property = 1, Object-Identifier
+   --   OpenTag 3
+         -- AL =  0, TEST2OBJ   ; BOTH FAIL SO THIS MUST BE READ MANUALLY
+         -- AL = {Object-Identifier}
+   --   CloseTag 3
+   -- )
+ -- Step #4: VERIFY (the IUT's Device object), Object_List = (any object list containing the newly created object)
+
+   SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, OBJECT-LIST 	; Read entire Object-List array
+    ) 
+ --   EXPECT (  ; MANUAL *** THE EXPECT MUST BE MANUALLY VERIFIED SINCE THE NEW OBJECT-LIST WILL NOT MATCH THE EPICS
+ --     NETWORK = "Untitled"
+ --     PDU = ComplexAck
+ --     DER = FALSE
+ --     Service = ReadProperty
+ --     Object = 0, OBJECT1
+ --     Property = 1, OBJECT-LIST
+ --     OpenTag 3
+ --       AL = {OBJECT-LIST}		
+ --     CloseTag 3			
+ --          )					
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+
+  TEST #3  9.13.1.3  MANUAL Creating Objects by Specifying the Object Type and Providing Initial Values *** MANUAL (This test must be done manually
+
+ --     Purpose: This test case verifies the correct execution of the CreateObject service request when an Object Type is used as the   
+ --     object specifier and a list of initial property values is provided.
+
+ --     Test Steps:
+
+ --     1.	TRANSMIT CreateObject-Request,
+ --		'Object Type' = 		(any creatable object type),
+ --		'List Of Initial Values' =	(a list of one or more properties and their initial values)
+ --     2.	RECEIVE CreateObject-ACK,
+ --		'Object Identifier' =		(any unique object identifier of the specified type)
+ --     3.	REPEAT X = (properties initialized in the CreateObject-Request) DO {
+ --		VERIFY (the object identifier for the newly created object), 
+ --			X = (the value specified in the 'List Of Initial Values' parameter of the CreateObject-Request)
+ --	                }
+ --     4.	VERIFY (the IUT's Device object), Object_List = (any object list containing the newly created object)
+
+  DEPENDENCIES None
+
+  REFERENCE (B) CreateObject and (T) CreateObject Service Execution Tests
+
+ -- Step #1: TRANSMIT CreateObject-Request
+ SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = CREATEOBJECT
+    	OPENTAG 0
+     		ENUM = 0, TEST3OBJTYPE                       ; MANUAL BY OBJECT TYPE
+    	CLOSETAG 0
+      
+    	OPENTAG 1
+        	
+        	ENUMERATED =  0, 77          ; MANUAL *** REQUIRED PROPERTY OF SPECIFIED TEST3OBJTYPE IS ENUMERATED HERE
+        	
+        	OPENTAG 2 
+          		CHARSTRING = "TEST3"       ; MANUAL *** THIS DECLARATION AND VALUE MUST CHANGE TO MATCH THE PROPERTY BEING USED
+        	CLOSETAG 2
+
+		ENUMERATED =  0, 28          ; MANUAL *** REQUIRED PROPERTY OF SPECIFIED TEST3OBJTYPE IS ENUMERATED HERE
+		
+		OPENTAG 2 
+          		CHARSTRING = "TEST3B"      ; MANUAL *** THIS DECLARATION AND VALUE MUST CHANGE TO MATCH THE PROPERTY BEING USED
+        	CLOSETAG 2
+
+    	CLOSETAG 1
+      )
+
+-- Step #2: Receive CreateObject-ACK
+
+  EXPECT (
+    	Network = "Untitled"
+    	DA = TD_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+    	DER = FALSE
+    	PDU = COMPLEXACK
+    	Service = CREATEOBJECT 
+    )
+ -- Step #3: REPEAT X = (properties initialized in the CreateObject-Request) DO { ; MANUAL *** THE SEND AND RECEIVE OF MUST BE MANUALLY VERIFIED FOR BOTH PROPERTIES SPECIFIED
+ --		VERIFY (the object identifier for the newly created object), 
+ --			X = (the value specified in the 'List Of Initial Values' parameter of the CreateObject-Request)
+ --	                }
+ 
+ -- SEND (                                       
+ --     NETWORK = "Untitled"
+ --     DA = IUT_IP
+ --     DER = TRUE
+ --     PDU = Confirmed-Request
+ --     Service = ReadProperty
+ --     Object = 0, TEST3NEWOBJ
+ --     Property = 1, OBJECT-NAME		
+ --   )
+
+ --   EXPECT (
+ --     NETWORK = "Untitled"
+ --     DER = FALSE
+ --     PDU = ComplexAck
+ --     Service = ReadProperty
+ --     Object = 0, TEST3NEWOBJ
+ --     Property = 1, OBJECT-NAME
+ --     OpenTag 3
+ --       CHARSTRING = TEST3
+ --     CloseTag 3                                   
+ --   )
+
+
+ -- Step #4: VERIFY (the IUT's Device object), Object_List = (any object list containing the newly created object)
+  SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, OBJECT-LIST 	; Read entire Object-List array
+    ) 
+-- EXPECT (  ; MANUAL *** THE EXPECT MUST BE MANUALLY VERIFIED SINCE THE NEW OBJECT-LIST WILL NOT MATCH THE EPICS
+   --   NETWORK = "Untitled"
+   --   PDU = ComplexAck
+   --   DER = FALSE
+   --   Service = ReadProperty
+   --   Object = 0, OBJECT1
+   --   Property = 1, OBJECT-LIST
+   --   OpenTag 3
+   --      AL = {OBJECT-LIST}		
+   --   CloseTag 3			
+   --        )				
+ 
+ -- MANUAL SEND AND RECEIVE THE READ PROPERTY TO THE CREATED OBJECT AND VERIFY THE THE TWO PROPERTIES
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+
+  TEST #4  9.13.1.4	MANAUL Creating Objects by Specifying the Object Identifier and Providing Initial Values *** MANUAL NEEDS DEBUG
+ 
+ --     Purpose: This test case verifies the correct execution of the CreateObject service request when an Object Identifier is used as the object specifier and a list of initial property values is provided. 
+
+ --     Test Steps:
+
+ --     1.	TRANSMIT CreateObject-Request,
+ --		'Object Identifier' = 			(any unique object identifier of a type that is creatable )
+ --		'List Of Initial Values' =		(a list of two or more properties and their initial values)
+ --     2.	RECEIVE CreateObject-ACK,
+ --		'Object Identifier' =			(the object identifier specified in step 1)
+ --     3.	REPEAT X = (properties initialized in the CreateObject-Request) DO {
+ --		VERIFY (the object identifier for the newly created object), 
+ --			X = (the value specified in the 'List Of Initial Values' parameter of the CreateObject-Request)
+ --              	}
+ --     4.	VERIFY (the IUT's Device object), Object_List = (any object list containing the newly created object)
+
+  DEPENDENCIES None
+
+  REFERENCE (B) CreateObject and (T) CreateObject Service Execution Tests
+	
+-- Step #1: TRANSMIT CreateObject-Request
+ SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = CREATEOBJECT
+    	OPENTAG 0
+      		Object = 1, TEST4NEWOBJ             ; MANUAL BY OBJECT IDENTIFIER
+    	CLOSETAG 0
+      
+    	OPENTAG 1
+        	
+        	ENUMERATED =  0, 77               ; MANUAL *** REQUIRED PROPERTY OF SPECIFIED TEST4NEWOBJ IS ENUMERATED HERE
+        	
+        	OPENTAG 2 
+          		CHARSTRING = TEST4            ; MANUAL *** THIS DECLARATION AND VALUE MUST CHANGE TO MATCH THE PROPERTY BEING USED
+        	CLOSETAG 2
+
+		ENUMERATED =  0, 28               ; MANUAL *** REQUIRED PROPERTY OF SPECIFIED TEST4NEWOBJ IS ENUMERATED HERE
+		
+		OPENTAG 2 
+          		CHARSTRING = TEST4B           ; MANUAL *** THIS DECLARATION AND VALUE MUST CHANGE TO MATCH THE PROPERTY BEING USED
+        	CLOSETAG 2
+
+    	CLOSETAG 1
+      )
+
+-- Step #2: Receive CreateObject-ACK
+
+  EXPECT (
+    	Network = "Untitled"
+    	DA = TD_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+    	DER = FALSE
+    	PDU = COMPLEXACK
+    	Service = CREATEOBJECT 
+    )
+ -- Step #3: REPEAT X = (properties initialized in the CreateObject-Request) DO {
+ --		VERIFY (the object identifier for the newly created object), 
+ --			X = (the value specified in the 'List Of Initial Values' parameter of the CreateObject-Request)
+ --	                }
+ 
+ SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, TEST4NEWOBJ
+      	Property = 1, OBJECT-NAME		; Vendor-Name is of type CharacterString
+    )
+
+    EXPECT (
+     	 NETWORK = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, TEST4NEWOBJ
+      	Property = 1, OBJECT-NAME
+      	OpenTag 3
+        	CHARSTRING = TEST4
+      	CloseTag 3                                   
+    )
+
+SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, TEST4NEWOBJ
+      	Property = 1, OBJECT-NAME		; Vendor-Name is of type CharacterString
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, TEST4NEWOBJ
+      	Property = 1, OBJECT-NAME
+      	OpenTag 3
+        	CHARSTRING = TEST4
+      	CloseTag 3                                   
+    )
+
+ -- Step #4: VERIFY (the IUT's Device object), Object_List = (any object list containing the newly created object)
+SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, OBJECT-LIST 	; Read entire Object-List array
+    ) 
+-- EXPECT (  ; MANUAL *** THE EXPECT MUST BE MANUALLY VERIFIED SINCE THE NEW OBJECT-LIST WILL NOT MATCH THE EPICS
+   --   NETWORK = "Untitled"
+   --   PDU = ComplexAck
+   --   DER = FALSE
+   --   Service = ReadProperty
+   --   Object = 0, OBJECT1
+   --   Property = 1, OBJECT-LIST
+   --   OpenTag 3
+   --      AL = {OBJECT-LIST}		
+   --   CloseTag 3			
+   --        )				
+ 
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+
+  TEST #5n  9.13.2.1 Attempting to Create an Object that does not have a Unique Object Identifier
+ 
+ --     Purpose: This test case verifies the correct execution of the CreateObject service request when the 'Object Specifier'  
+ --     parameter conveys an object identifier that already exists in the IUT.
+
+ --     Test Steps:
+
+ --     1.	TRANSMIT CreateObject-Request,
+ --		'Object Identifier' = 			(any object identifier representing an object that already exists having an
+ --		 object type for which dynamic creation is supported)
+ --     2.	RECEIVE CreateObject-Error,
+ --		Error Class = 			OBJECT,
+ --		Error Code = 			OBJECT_IDENTIFIER_ALREADY_EXISTS
+ --		'First Failed Element Number' =	0
+ 
+  DEPENDENCIES NONE
+
+  REFERENCE (B) CreateObject and (T) CreateObject Service Execution Tests
+
+ -- Step #1: TRANSMIT CreateObject-Request
+
+ SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = CREATEOBJECT
+    	OPENTAG 0
+       		Object = 1, TEST5OBJECT            
+    	CLOSETAG 0
+      )
+
+ -- Step #2: RECEIVE CreateObject-Error
+
+EXPECT (
+  	NETWORK     = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+  	DER         = FALSE
+  	PDU         = ERROR
+  	ERROR-CHoice = createObject
+  	ENUMERATED = 5                       ;  5  = error class OBJECT  pg 363 in the bacnet standard
+  	ENUMERATED = 24	               ;  24 = OBJECT_IDENTIFIER_ALREADY_EXISTS 
+  	UNSIGNED = 0
+ )
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+
+
+  TEST #6n  9.13.2.2 Attempting to Create an Object with an Object Type that is not Creatable by Specifying the Object Type
+
+ --      Purpose: This test case verifies the correct execution of the CreateObject service request when the 'Object Specifier' parameter conveys an object type that is not dynamically creatable in the IUT.
+
+ --      Test Steps:
+
+ --      1.	TRANSMIT CreateObject-Request,
+ --		'Object Type' = 			(any object type for which dynamic	creation is not supported)
+ --      2.	RECEIVE CreateObject-Error,
+ --		Error Class = 			OBJECT,
+ --		Error Code = 			DYNAMIC_CREATION_NOT_SUPPORTED
+ --		'First Failed Element Number' =	0	
+
+  DEPENDENCIES None
+
+  REFERENCE (B) CreateObject and (T) CreateObject Service Execution Tests
+
+ -- Step #1: TRANSMIT CreateObject-Request
+
+SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = CREATEOBJECT
+    	OPENTAG 0
+       		ENUM = 0, TEST6OBJ              ; MANUAL BY OBJECT TYPE (THE DEVICE (8) OBJECT IS TYPICALLY NOT CREATABLE)
+    	CLOSETAG 0
+      )
+
+ -- Step #2: RECEIVE CreateObject-Error
+
+ EXPECT (
+  	NETWORK     = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+  	DER         = FALSE
+  	PDU         = ERROR
+  	ERROR-CHoice = createObject
+  	ENUMERATED = 5                       ;  5  = error class OBJECT  pg 363 in the bacnet standard
+  	ENUMERATED = 4	               ;  4  = DYNAMIC_CREATION_NOT_SUPPORTED 
+  	UNSIGNED = 0
+ )
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+	
+  TEST #7n   9.13.2.3	Attempting to Create an Object with an Object Type that is not Creatable by Specifying the Object Identifier
+ 
+ --      Purpose: This test case verifies the correct execution of the CreateObject service request when the 'Object Specifier' parameter conveys an object identifier for an object type that is not dynamically creatable in the IUT.
+
+ --      Test Steps:
+
+ --      1.	TRANSMIT CreateObject-Request,
+ --		'Object Identifier' = 			(any object identifier having a supported object type for which dynamic	creation is not supported)
+ --      2.	RECEIVE CreateObject-Error,
+ --		Error Class = 			OBJECT,
+ --		Error Code = 			DYNAMIC_CREATION_NOT_SUPPORTED
+ --		'First Failed Element Number' =	0
+ --      4.	VERIFY (the IUT's Device object), 
+ --		Object_List = 			(any object list that does not contain the object specified in step 1)	
+  
+  DEPENDENCIES None
+
+  REFERENCE (B) CreateObject and (T) CreateObject Service Execution Tests
+
+ -- Step #1: TRANSMIT CreateObject-Request
+
+SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = CREATEOBJECT
+    	OPENTAG 0
+       		Object = 1, TEST7OBJ              ; MANUAL BY OBJECT IDENTIFIER (THE DEVICE OBJECT IS TYPICALLY NOT CREATABLE) DEVICE, 99
+    	CLOSETAG 0
+      )
+
+ -- Step #2: RECEIVE CreateObject-Error
+
+ EXPECT (
+  	NETWORK     = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+  	DER         = FALSE
+  	PDU         = ERROR
+  	ERROR-CHoice = createObject
+  	ENUMERATED = 5                       ;  5  = error class OBJECT  pg 363 in the bacnet standard
+  	ENUMERATED = 4	               ;  4  = DYNAMIC_CREATION_NOT_SUPPORTED 
+  	UNSIGNED = 0
+ )
+
+ -- STEP 4:  VERIFY (X), Object_List = (any object list that does not contain X)
+
+ SEND (                                 ; MANUAL - VERIFY THAT THE NEW OBJECT DOES NOT EXIST IN THE OBJECT LIST USING THE VTS TRACE WINDOW
+      	NETWORK = "Untitled"
+     	DA = IUT_IP
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, OBJECT-LIST	; Read entire Object-List array
+    )
+
+  --  EXPECT (                         ; MANUAL - THE OBJECT-LIST HAS CHANGED FROM PREVIOUS TESTS SO THE DEVICES OBJ LIST IS NOT CONSISTANT WITH THE EPICS
+  --    NETWORK = "Untitled"
+  --    PDU = ComplexAck
+  --    DER = FALSE
+  --    Service = ReadProperty
+  --    Object = 0, OBJECT1
+  --    Property = 1, OBJECT-LIST
+  --    OpenTag 3
+  --       AL = {OBJECT-LIST}		
+  --    CloseTag 3			
+  --  )					
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+
+TEST #8n  9.13.2.4  Attempting to Create an Object with an Object Type Specifier and an Error in the Initial Values ;  (UNABLE TO MAKE ERROR IN THE INITIAL VALUE.;)
+
+ --    Purpose: This test case verifies the correct execution of the CreateObject service request when an object type is used as the object specifier and a list of initial property values containing an invalid value is provided.
+
+ --    Test Steps:
+
+ --    1.	TRANSMIT CreateObject-Request,
+ --		'Object Type' = 			(any creatable object type),
+ --		'List Of Initial Values' =		(a list of two or more properties and their initial values with one of the values being out of range or an inappropriate datatype)
+ --    2.	RECEIVE CreateObject-Error,
+ --		Error Class = 			PROPERTY,
+ --		Error Code = 			INVALID_DATATYPE | VALUE_OUT_OF_RANGE
+ --		'First Failed Element Number' =	(the position in the 'List Of Initial Values' with the offending value)	
+
+  DEPENDENCIES None
+
+  REFERENCE (B) CreateObject and (T) CreateObject Service Execution Tests
+
+ -- Step #1: TRANSMIT CreateObject-Request
+
+SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = CREATEOBJECT
+    	OPENTAG 0
+        	ENUM = 0, TESTOBJ8                     ; BY OBJECT TYPE
+    	CLOSETAG 0
+      
+   	OPENTAG 1
+        	ENUMERATED =  0, 77   ; THIS IS THE BAD PROPERTY 
+        	
+        	OPENTAG 2 
+          		INTEGER = 22        ; THIS IS THE INVALID DATATYPE IT SHOULD NOT MATCH THE DATATYPE OF THE SENT PROPERTY
+        	CLOSETAG 2
+
+		ENUMERATED =  0, 28   ; THIS IS THE VALID PROPERTY
+	
+		OPENTAG 2 
+          		CHARSTRING = "GGG"
+        	CLOSETAG 2
+    CLOSETAG 1
+     )
+
+ -- Step #2: RECEIVE CreateObject-Error
+
+ EXPECT (
+  	NETWORK     = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+  	DER         = FALSE
+  	PDU         = ERROR
+  	ERROR-CHoice = createObject
+  	ENUMERATED = 2                       ;  2  = PROPERTY  pg 363 in the bacnet standard
+  	ENUMERATED = 9	               ;  9 = INVALID_DATATYPE
+  	UNSIGNED = 0
+ )
+
+OR(
+  	NETWORK     = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+  	DER         = FALSE
+  	PDU         = ERROR
+  	ERROR-CHoice = createObject
+  	ENUMERATED = 2                       ;  2  = PROPERTY  pg 363 in the bacnet standard
+  	ENUMERATED = 37	               ;  37 = VALUE_OUT_OF_RANGE
+  	UNSIGNED = 0
+ )
+
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+
+TEST #9n  9.13.2.5  Attempting to Create an Object with an Object Identifier and an Error in the Initial Values (UNABLE TO MAKE ERROR IN THE INITIAL VALUE.;)
+
+ --     Purpose: This test case verifies the correct execution of  the CreateObject service request when an object identifier is used as the object specifier and a list of  initial property values containing an invalid value is provided.
+
+ --    Test Steps:
+
+ --    1.	TRANSMIT CreateObject-Request,
+ --		'Object Identifier' = 			(any unique object identifier of a type that is creatable )
+ --		'List Of Initial Values' =		(a list of two or more properties and their initial values with one of the 
+ --					values being out of range or an inappropriate datatype)
+ --    2.	RECEIVE CreateObject-Error,
+ --		Error Class = 			PROPERTY,
+ --		Error Code = 			INVALID_DATATYPE | VALUE_OUT_OF_RANGE
+ --		'First Failed Element Number' =	(the position in the 'List Of Initial Values' with the offending value)
+ --    3.	VERIFY (the IUT's Device object),
+ --		Object_List = 			(any object list that does not contain the object specified in step 1)
+
+  DEPENDENCIES None
+
+  REFERENCE (B) CreateObject and (T) CreateObject Service Execution Tests
+
+ -- Step #1: TRANSMIT CreateObject-Request
+
+SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = CREATEOBJECT
+    	OPENTAG 0
+      		Object = 1, TEST9OBJ             ; tHIS SI THER SENT PROPERTY
+    	CLOSETAG 0
+      
+    	OPENTAG 1
+        	ENUMERATED =  0, 77   ; THIS IS THE BAD PROPERTY 
+        	
+        	OPENTAG 2 
+          		INTEGER = 22        ; THIS IS THE INVALID DATATYPE IT SHOULD NOT MATCH THE DATATYPE OF THE SENT PROPERTY
+        	CLOSETAG 2
+
+		ENUMERATED =  0, 28   ; THIS IS THE VALID PROPERTY
+	
+		OPENTAG 2 
+          		CHARSTRING = "GGG"
+        	CLOSETAG 2
+	CLOSETAG 1
+      )
+
+ -- Step #2: RECEIVE CreateObject-Error
+
+ EXPECT (
+  	NETWORK     = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+  	DER         = FALSE
+  	PDU         = ERROR
+  	ERROR-CHoice = createObject
+  	ENUMERATED = 2                       ;  2  = PROPERTY  pg 363 in the bacnet standard
+  	ENUMERATED = 9	               ;  9 = INVALID_DATATYPE
+  	UNSIGNED = 0
+ )
+
+OR(
+  	NETWORK     = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+  	DER         = FALSE
+  	PDU         = ERROR
+  	ERROR-CHoice = createObject
+  	ENUMERATED = 2                       ;  2  = PROPERTY  pg 363 in the bacnet standard
+  	ENUMERATED = 37	               ;  37 = VALUE_OUT_OF_RANGE
+  	UNSIGNED = 0
+ )
+
+ -- Step #3: VERIFY (X), Object_List = (any object list that does not contain X)
+
+ SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, OBJECT-LIST	; Read entire Object-List array
+    )
+
+--    EXPECT (                        ; MANAUL - THE NEW OBJECT IS NOT IN THE EPICS. SEE TRACE
+--      NETWORK = "Untitled"
+--      PDU = ComplexAck
+--      DER = FALSE
+--      Service = ReadProperty
+--      Object = 0, OBJECT1
+--      Property = 1, OBJECT-LIST
+--      OpenTag 3
+--         AL = {OBJECT-LIST}		; 
+--      CloseTag 3			;  
+--    )					;  
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+TEST #10  9.14.1.1  Successful Deletion of an Object
+
+ 
+ --   Purpose: This test case verifies the ability to successfully delete an object. 
+
+ --   Configuration Requirements: The IUT shall be configured with an object X that can be deleted.
+
+ --   Test Steps:
+
+ --   1.	VERIFY (X), Object_Name = (the Object_Name specified in the EPICS)
+ --   2.	TRANSMIT DeleteObject-Request,
+ --		'Object Identifier' =		(X)
+ --   3.	RECEIVE BACnet-Simple-ACK-PDU
+ --   4.	TRANSMIT ReadProperty-Request,
+ --		'Object Identifier' =		(X),
+ --		'Property Identifier' =		Object_Name
+ --   5.	RECEIVE BACnet-Error-PDU,
+ --		Error Class =			OBJECT,
+ --		Error Code =			UNKNOWN_OBJECT
+ --   6.	VERIFY (X), Object_List = 		(any object list that does not contain X)
+
+  DEPENDENCIES None
+
+  REFERENCE (B) CreateObject and (T) CreateObject Service Execution Tests
+
+
+ -- TEST SETUP NOT PART OF THE TEST STEPS IN TEST 10
+
+SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = CREATEOBJECT
+    	OPENTAG 0
+       		Object = 1, TEST10OBJ                ; MANUAL BY OBJECT IDENTIFIER
+    	CLOSETAG 0
+      )
+
+ -- TEST SETUP NOT PART OF THE TEST STEPS IN TEST 10
+
+  EXPECT (
+    	Network = "Untitled"
+    	DA = TD_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+    	DER = FALSE
+    	PDU = COMPLEXACK
+    	Service = CREATEOBJECT 
+    )
+
+ -- Step #1: VERIFY (X), Object_Name = (the Object_Name specified in the EPICS)
+
+ SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, TEST10OBJ                   ; MANUAL, MATCH THE VALUE SPECIFIED IN THE SEND
+      	Property = 1, Object-Identifier	; Type BACnetObjectIdentifier
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+      	DER = FALSE
+      	PDU = ComplexAck
+      	Service = ReadProperty
+      	Object = 0, TEST10OBJ                   ; MANUAL - READ TRACE MATCH AND THE VALUE SPECIFIED IN THE SEND
+      	Property = 1, Object-Identifier
+      	OpenTag 3
+         	OBJECTIDENTIFIER = TEST10OBJ         ;AL = {Object-Identifier}
+      	CloseTag 3
+    )
+
+ -- Step #2: TRANSMIT DeleteObject-Request,
+
+SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = DELETEOBJECT
+    	OBJECTIDENTIFIER = TEST10OBJ
+     )
+
+ -- Step #3: RECEIVE BACnet-Simple-ACK-PDU
+
+  EXPECT (
+    	Network = "Untitled"
+    	DA = TD_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+    	DER = FALSE
+    	PDU = SIMPLEACK
+    	Service = DELETEOBJECT 
+    )
+
+
+ -- Step #4: VERIFY (X), Object_Name = (the Object_Name specified in the EPICS)
+
+ SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, TEST10OBJ      ; MANUAL, MATCH THE VALUE SPECIFIED IN THE SEND
+      	Property = 1, Object-Identifier	; Type BACnetObjectIdentifier
+    )
+ 
+ -- Step #5: RECEIVE BACnet-Error-PDU
+
+ EXPECT (
+  	NETWORK     = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+  	DER         = False
+  	PDU         = Error
+  	ERROR-Choice = ReadProperty 
+  	ENUMERATED = 1                      ; 1 = object error class 
+  	ENUMERATED = 31		      ; 31 = unknown object
+  )
+
+-- Step #6: VERIFY (X), Object_List = (any object list that does not contain X)
+
+ SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, OBJECT-LIST	; Read entire Object-List array
+    )
+
+--    EXPECT (                        ; MANAUL - THE NEW OBJECT IS NOT IN THE EPICS. SEE TRACE
+--      NETWORK = "Untitled"
+--      PDU = ComplexAck
+--      DER = FALSE
+--      Service = ReadProperty
+--      Object = 0, OBJECT1
+--      Property = 1, OBJECT-LIST
+--      OpenTag 3
+--         AL = {OBJECT-LIST}		; 
+--      CloseTag 3			;  
+--    )					;  
+
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+
+TEST #11  9.14.2.1 Attempting to Delete an Object that is not Deletable
+
+ --    Purpose: This test case verifies the correct response to an attempt to delete an object that is not deletable.
+
+ --    Configuration Requirements: The IUT shall be configured with an object X that can not be deleted.
+
+ --    Test Steps:
+
+ --    1.	TRANSMIT DeleteObject-Request,
+ --		'Object Identifier' =		(X)
+ --    2.	RECEIVE BACnet-Error-PDU,
+ --		Error Class =			OBJECT,
+ --		Error Code =			OBJECT_DELETION_NOT_PERMITTED
+ --    3.	VERIFY (X), Object_Name = 		(the Object_Name specified in the EPICS)
+ --    4.	VERIFY (X), Object_List =		(any object list that contains X)
+
+  DEPENDENCIES NONE
+
+  REFERENCE (B) CreateObject and (T) CreateObject Service Execution Test
+
+ -- Step #1 TRANSMIT DeleteObject-Request
+ 
+
+ 
+SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = DELETEOBJECT
+    	OBJECTIDENTIFIER = TEST11OBJ
+     )
+
+ -- Step #2 RECEIVE BACnet-Error-PDU
+
+   EXPECT (
+   	NETWORK     = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+   	DER         = False
+   	PDU         = Error
+   	ERROR-Choice = DELETEOBJECT 
+   	ENUMERATED = 1                      ; 1 = object error class 
+   	ENUMERATED = 31		      ; 23 = OBJECT DELETION NOT PERMITTED
+   )
+
+ -- Step #3 VERIFY (X), Object_Name = (the Object_Name specified in the EPICS)
+
+  SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, TEST11OBJ
+      	Property = 1, OBJECT-NAME       ; Vendor-Name is of type CharacterString
+    )
+
+    -- EXPECT (
+    --  NETWORK = "Untitled"
+    --  DER = FALSE
+    --  PDU = ComplexAck
+    --  Service = ReadProperty
+    --  Object = 0, OBJECT1
+    -- Property = 1, OBJECT-NAME
+    --  OpenTag 3
+    --    OBJECTIDENTIFIER = TEST11OBJ      ; AL = {OBJECT-NAME}
+    --  CloseTag 3                                   
+    -- )
+
+ -- Step #4 VERIFY (X), Object_List = (any object list that contains X)
+
+ SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, OBJECT-LIST	; Read entire Object-List array
+    )
+
+  --  EXPECT (
+  --    NETWORK = "Untitled"
+  --    PDU = ComplexAck
+  --    DER = FALSE
+  --    Service = ReadProperty
+  --    Object = 0, OBJECT1
+  --    Property = 1, OBJECT-LIST
+  --    OpenTag 3
+  --       AL = {OBJECT-LIST}		; Note: due to a limitation in VTS V2.28
+  --    CloseTag 3			;  this test will fail if proprietary
+  --  )					;  objects are returned in the array
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+TEST #12  9.14.2.2 Attempting to Delete an Object that does not Exist
+
+  DEPENDENCIES None
+
+  REFERENCE (B) CreateObject and (T) CreateObject Service Execution Tests
+
+
+ --     Purpose: This test case verifies the correct response to an attempt to delete an object that does not exist.
+
+ --     Test Steps:
+
+ --     1.	TRANSMIT DeleteObject-Request,
+ -- 		'Object Identifier' =		X
+ --     2.	RECEIVE BACnet-Error-PDU,
+ --		Error Class =			OBJECT,
+ --		Error Code =			UNKNOWN_OBJECT
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+ -- Step #1 TRANSMIT DeleteObject-Request
+
+ SEND (
+    	NETWORK = "Untitled"
+    	DA = IUT_IP
+    	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+    	Service = DELETEOBJECT
+    	OBJECTIDENTIFIER = TEST12OBJ          ; Assuming that this object does not exist
+    
+      )
+
+ -- Step #2 RECEIVE BACnet-Error-PDU
+
+ EXPECT (
+  	NETWORK     = "Untitled"
+    	bvlci =ORIGINAL-UNICAST-NPDU
+	SA = IUT_IP
+  	DER         = False
+  	PDU         = Error
+  	ERROR-Choice = DELETEOBJECT 
+  	ENUMERATED = 1                           ; 1 = object error class 
+  	ENUMERATED = 31		           ; 31 = Unknown Object
+  )

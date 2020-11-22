@@ -1,0 +1,1026 @@
+<html>
+<head>
+<title>BACnet VTS Scripting</title>
+<style type="text/css">
+  td { font-family: monospace; font-size: 10pt; }
+</style>
+</head>
+<body>
+</body>
+
+<h1>VTS Scripting</h1>
+
+<hr>
+
+<ul>
+<li><a href="#overview">Overview</a>
+<li><a href="#nochange">What Hasn't Changed</a>
+<li><a href="#atomic">Atomic Values</a>
+<li><a href="#timing">Timing Options</a>
+<li><a href="#required">Required Packet Parameters</a>
+<ul>
+<li><a href="#ll">Link Layer</a>
+<li><a href="#vll">Virtual Link Layer</a>
+<li><a href="#nl">Network Layer</a>
+<li><a href="#alh">Application Layer Header</a>
+<ul>
+<li><a href="#CONFIRMED-REQUEST">CONFIRMED-REQUEST</a>
+<li><a href="#UNCONFIRMED-REQUEST">UNCONFIRMED-REQUEST</a>
+<li><a href="#SIMPLEACK">SIMPLEACK</a>
+<li><a href="#COMPLEXACK">COMPLEXACK</a>
+<li><a href="#SEGMENTACK">SEGMENTACK</a>
+<li><a href="#ERROR">ERROR</a>
+<li><a href="#REJECT">REJECT</a>
+<li><a href="#ABORT">ABORT</a>
+</ul>
+<li><a href="#ald">Application Layer Data</a>
+<ul>
+<li><a href="#NULL">NULL</a>
+<li><a href="#BOOLEAN">BOOLEAN</a>
+<li><a href="#UNSIGNED">UNSIGNED</a>
+<li><a href="#INTEGER">INTEGER</a>
+<li><a href="#REAL">REAL</a>
+<li><a href="#DOUBLE">DOUBLE</a>
+<li><a href="#OCTETSTRING">OCTETSTRING</a>
+<li><a href="#CHARACTERSTRING">CHARACTERSTRING</a>
+<li><a href="#BITSTRING">BITSTRING</a>
+<li><a href="#ENUMERATED">ENUMERATED</a>
+<li><a href="#DATE">DATE</a>
+<li><a href="#TIME">TIME</a>
+<li><a href="#OBJECTIDENTIFIER">OBJECTIDENTIFIER</a>
+<li><a href="#DEVICEIDENTIFIER">DEVICEIDENTIFIER</a>
+<li><a href="#PROPERTYIDENTIFIER">PROPERTYIDENTIFIER</a>
+<li><a href="#TAG">OPENINGTAG, CLOSINGTAG</a>
+<li><a href="#ANY">ANY</a>
+</ul>
+</ul>
+<li><a href="#alp">Application Layer Packets</a>
+<li><a href="#sc">Severity Codes in Tests</a>
+</ul>
+
+<hr>
+
+<p>Scripts in VTS are written to automate sending packets to a BACnet device and checking the response for 
+some behavior.  Scripts are simple ASCII text files with a VTS file extension.  This document describes the 
+VTS3 scripts and highlights the differences with VTS2.<p>
+
+<h2><a name="overview">Overview</a></h2>
+
+<p>The differences between VTS2 and VTS3 fall into the following categories: atomic value notation, timing options, 
+required packet parameters, and parameter value format.</p>
+
+<p><b>Atomic values</b> are simple booleans, integers, strings, dates, and times that are expressed in a script.</p>
+
+<p><b>Timing options</b> which are new to VTS3 specify how long to wait before sending a packet or expecting 
+a response.  Different timing values can be specified on a packet-by-packet basis.</p>
+
+<p>There are <b>required packet parameters</b> that must be specified in VTS3 that were not required in VTS2.  In 
+general, every required parameter in a packet must be specified in a <code>SEND</code> statment.  There are exceptions 
+where default values are available.</p>
+
+<p>The <code>EXPECT</code> statement processing is also very different.  In VTS2 a packet was built using the parameters in the 
+script, then incoming packets were compaired against this sample.  In VTS3 only those parameters that are specified 
+in the script are actually checked.  In addition, the comparison operators that were specified in the original 
+scripting language description but never implemented in VTS2 are available in VTS3.</p>
+
+<p>The <b>parameter value format</b> in some cases may have changed.  This document describes the parameter values 
+and options that are available in VTS3.</p>
+
+<h2><a name="nochange">What Hasn't Changed</a></h2>
+
+<p>There are a variety of script basics that have <b>not</b> changed from VTS2 to VTS3.  The basic script format is 
+still a sequence of one or more <code>SECTION</code>s, which are composed of <code>TEST</code>s.  Each section and 
+test may be preceeded by <code>SETUP</code> section which defines variables and values to use in a script.</p>
+
+<p>General and 'describing' comments are still available.  Text following a semicolon ';' is ignored, text following 
+two dashes '--' or the keyword <code>COMMENT</code> is associated with the variable being defined.</p>
+
+<p>Parameter values are still comma separated lists of boolean, integers, floating point values, strings, times, or 
+dates.  While parameters may be specified in any order, they are usually provided in the order that the are encoded 
+in the PDU, beginning with the lowest layer and proceding to the higher layers.</p>
+
+<h2><a name="atomic">Atomic Values</a></h2>
+
+<p>The basic format for most atomic values have not changed.</p>
+
+<p><b>Boolean</b> values may be the keywords <code>T</code>, <code>TRUE</code>, <code>Y</code>, <code>YES</code>, 
+<code>F</code>, <code>FALSE</code>, <code>N</code>, and <code>NO</code>.</p>
+
+<p><b>Integer</b> values may be specified using decimal, hex, octal, or binary encoding.  For example: 15, 0x0E, &amp;x0E,
+x'E', o'16', &amp;o16, 0o16, &amp;b1110, 0b1110, and b'1110'.  Integer values may be preceeded by a minus sign '-' for 
+negative values.</p>
+
+<p><b>Floating point</b> values may have a number of common forms with an optional fractional part and exponent part.
+For example: 10.0, 10e5, 1.4e2, 3.6e-2, -50.4, -6.2e-5.</p>
+
+<p><b>Character strings</b> may be enclosed in matching single or double quotes.  The blackslash '\' is used to escape 
+an embedded quote.  For example, the following two strings are identical:</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>'He said &quot;Hi!&quot;'</td></tr>
+<tr><td>&quot;He said \&quot;Hi!\&quot;&quot;</td></tr>
+</table></blockquote>
+
+<p><b>Octet strings</b> may be specified as hex, decimal, or octal strings.  Hex strings require a sequence of pairs 
+of hex characters, each pair is associated with a octet.  For example:</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>X'001A03FA'</td></tr>
+</table></blockquote>
+
+<p>Octal encoded strings must be a sequence of triples of octal characters in the range 000-377, and decimal encoding also 
+uses triples in the range 000-255.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFDDDD">
+<tr><td>NOTE: In some cases, most noteably in MAC address values, VTS2 implicitly recognized a sequence of digits as octal 
+encoded.  VTS3 requires one of the octet string notations for those values.</td></tr>
+</table></blockquote>
+
+<p><b>IP addresses</b> are a new atomic value introduced in VTS3.  They are specified as a sequence of four decimal 
+numbers in the range 0-255 separated by period characters, also known as the 'dotted decimal' notation.  It is 
+optionally followed by a colon ':' and a decmal or hex encoded port number in the range 0-65535.  When the port 
+number is omitted, 0xBAC0 (47808) is provided as the default.  For example:</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>128.253.245.68</td></tr>
+<tr><td>130.203.212.27:47808</td></tr>
+</table></blockquote>
+
+<p>For those cases that also require a network mask to be given, the host portion may be followed by a slash '/' and
+a decimal number describing the number of bits in the network portion of the subnet.  For example, this specifies a 
+subnet mask with the 24 highest order bits set, or 255.255.255.0 in dotted decimal notation:</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>128.253.245.68/24:47808</td></tr>
+</table></blockquote>
+
+<p>See the <code>TIME</code> and <code>DATE</code> parameters below for special encoding of date and time parameters.  
+While dates and times are primative BACnet types, they are not included in most PDU parameters, only in the variable 
+encoded portion of an APDU.</p>
+
+<h2><a name="timing">Timing Options</a></h2>
+
+<p>VTS3 introduced a variation on the <code>SEND</code> and <code>EXPECT</code> statements to control the timing on 
+individual packets.  The <code>SEND</code> keyword can be followed by <code>AFTER</code>, followed by a delay in 
+milliseconds.  For example:</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND AFTER 100 (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>VTS will wait 100ms before sending the packet.  If the delay is omitted VTS will send the packet immediately.</p>
+
+<p>Similarly, the <code>EXPECT</code> keyword may be followed by <code>BEFORE</code> and a delay in milliseconds.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>EXPECT BEFORE 200 (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>In this case VTS will require that a packet arrives that matches all of the specified parameters before 200ms 
+has elapsed.</p>
+
+<p>The <code>AND</code> and <code>OR</code> statements that extend <code>SEND</code> and <code>EXPECT</code> to 
+multiple packets in a sequence also may have a delay specified.  In all cases the VTS internal timer begins with 
+the <code>SEND</code> or <code>EXPECT</code>.</p>
+
+<h2><a name="required">Required Packet Parameters</a></h2>
+
+<p>There are four basic layers to a packet and a series of packet parameters for each layer: the link layer, the 
+virtual link layer, the network layer, and the application layer.  Some layers are optional, and not all 
+parameters are required for each layer.</p>
+
+<p>The parameter value discussion will use a <code>SEND</code> statement, where all of the necessary parameters 
+must be provided, but the same parameters are available for an <code>EXPECT</code> statement.  All of the 
+parameters use this form:</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;PARAMETER &lt;op&gt; &lt;value&gt;</td></tr>
+</table></blockquote>
+
+<p>For the <code>SEND</code> statement, the operator must be the equals sign '=' or be omitted.</p>
+
+<p>For the <code>EXPECT</code> statement, the operator must be equals '=' or '==', less than '&lt;', greater than '&gt;',
+less that or equals '&lt=', greater than or equals '&gt=', or not equals '!=' or '&lt;&gt;'.  If the operator is omitted,
+equals is assumed.</p>
+
+<h3><a name="ll">Link Layer</a></h3>
+
+<p>The link layer specifies the network or port, source and/or destination addresses.
+See also <a href="#alp">Application Layer Packets</a> for an explanation of how
+most of these parameters can be omitted.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;NETWORK = net</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DA = addr</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SA = addr</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DER = der</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;PRIORITY = priority</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p><b><code>NETWORK</code></b> specifies the port that will be used to send the packet, or expect the packet to 
+arrive.  <b>net</b> is a character string that matches a port name defined in an open session.  If there is only one active 
+port then this parameter may be omitted.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFDDDD">
+<tr><td>NOTE: The VTS2 network parameter uses three comma separated values.  VTS3 replaces this with the port name
+as a character string and all of the port characteristics are defined in the session.</td></tr>
+</table></blockquote>
+
+<p><b><code>DA</code></b> is short for Destination Address.  <b>addr</b> may be the keyword <code>BROADCAST</code>, 
+<code>LOCALBROADCAST</code>, a character string, or an octet string.  If a character string is given, there must 
+be a matching name defined in the session for the port that will be used.  If a match is found, the associated address 
+will be used, which may be an octet string or local broadcast.</p>
+
+<p>For a <code>SEND</code> statement, if there is a name in the session called 'IUT' then this parameter may be 
+omitted and VTS will use the associated address.</p>
+
+<p><b><code>SA</code></b> is short for Source Address. <b>addr</b> must be an octet string, or a character string 
+matching a name in the session.
+
+For a <code>SEND</code> statement, the source address may be omitted and the station address associated with the 
+port will be used.  Spoofing, or using an address other than the default defined in the port, is not available 
+for IP ports.</p>
+
+<p><b><code>DER</code></b> stands for Data Expecting Reply and is only required for MS/TP networks, which are not 
+currently implemented.  For other network types, this parameter is omitted.</p>
+
+<p><b><code>PRIORITY</code></b> is the packet priority given to the port for ordering packets.  VTS3 does not 
+prioritize outgoing packets, it is strictly first come, first serve.  The parameter must be in the range 0-3.
+This parameter may be omitted and defaults to one (1).</p>
+
+<h3><a name="vll">Virtual Link Layer</a></h3>
+
+<p>These are specific BVLCI parameters for BACnet/IP.  If this layer is specified, there is one BVLCI parameter 
+that must have one of the following forms.  For non-IP ports this layer is usually omitted, and it is also omitted 
+for IP messages between Annex-H tunneling routers.  For BVLCI specific messages (such as Register-Foreign-Device), there 
+are no other parameters in the packet, but for others (such as Original-Broadcast), the BVLL is a wrapper around 
+the rest of the packet.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = BVLC-RESULT, rslt</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>BVLC-RESULT messages are sent in response to a simple request.  <b>rslt</b> is an integer in the range 0-65535
+and is typically 0, which means no error.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = WRITE-BROADCAST-DISTRIBUTION-TABLE <b>[</b> ,host/net:port <b>]*</b></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>This message modifies the BDT for a BBMD.  It is followed by a list of host, network and port specifications.  The 
+keyword <code>WRITE-BDT</code> may also be used.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = READ-BROADCAST-DISTRIBUTION-TABLE</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>There are no parameters for reading the broadcast distribution table from a BBMD.  The keyword <code>READ-BDT</code> 
+may also be used.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = READ-BROADCAST-DISTRIBUTION-TABLE-ACK <b>[</b> ,host/net:port <b>]*</b></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>This message is returned as a request of requesting its content.  The keyword <code>READ-BDT-ACK</code> may 
+also be used.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = FORWARDED-NPDU, host:port</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>This message is a wrapper for messages between peer BBMD's or between a BBMD and a foreign device.  It must be 
+followed by the B/IP address.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = REGISTER-FOREIGN-DEVICE, ttl</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>This is used to register a foreign device.  The <b>ttl</b> time-to-live paramter is required, and is an integer 
+in seconds.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = READ-FOREIGN-DEVICE-TABLE</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>There are no parameters to this request.  The keyword <code>READ-FDT</code> may also be used.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = READ-FOREIGN-DEVICE-TABLE-ACK <b>[</b> ,host:port,ttl,tr <b>]*</b></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>This is a reply from a BBMD with a list of the registered foreign devices.  In addition to the host and port, the 
+<b>ttl</b> time-to-live and <b>tr</b> time-remaining values are also provided.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFDDDD">
+<tr><td>NOTE: At the present time there is no provision to allow a wildcard '*' character or other qualifier for 
+time-remaining, which may be a problem during testing, depending on the accuracy of the TD and IUT timers.</td></tr>
+</table></blockquote>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = DELETE-FOREIGN-DEVICE-TABLE-ENTRY</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>There are no additional parameters for deleting a foreign device table entry.  The keyword <code>DELETE-FDT-ENTRY</code>
+may also be used.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = DISTRIBUTE-BROADCAST-TO-NETWORK</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>There are no additional parameters.  This must be followed by a network layer message, which may also be an application 
+layer message.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = ORIGINAL-UNICAST-NPDU</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>There are no additional parameters.  This must be followed by a network layer message, which may also be an application 
+layer message.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = ORIGINAL-BROADCAST-NPDU</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>There are no additional parameters.  This must be followed by a network layer message, which may also be an application 
+layer message.</p>
+
+<h3><a name="nl">Network Layer</a></h3>
+
+<p>The network layer provides NPCI parameters.
+See also <a href="#alp">Application Layer Packets</a> for an explanation of how
+most of these parameters can be omitted.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;VERSION = ver</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DNET = dnet</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DADR = dadr</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;HOPCOUNT = hop</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SNET = snet</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SADR = sadr</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p><b><code>VERSION</code></b> is the BACnet version number.  It may be omitted, and defaults to one (1).</p>
+
+<p>If <b><code>DNET</code></b> or <b><code>DADR</code></b> (or both) are provided, the correct bit is set in the NPCI.  <b>dnet</b> is an integer, 
+and if it is 65535 (global broadcast) the DADR cannot be specified, otherwise they both must be specified.  <b>dadr</b> 
+is an octet string.</p>
+
+<p>If <b><code>HOPCOUNT</code></b> is not specified and is required (because the DNET and/or DADR was specified) then the hop count 
+defaults to 255.</p>
+
+<p>If <b><code>SNET</code></b> or <b><code>SADR</code></b> are specified, they both must be specified.  The appropriate bit will be set in the 
+NPCI.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFDDDD">
+<tr><td>NOTE: The link layer <b><code>PRIORITY</code></b> parameter will be used in the appropriate field in the NPCI.</td></tr>
+</table></blockquote>
+
+<p>The network header parameters may be followed by a network layer message, which have the same form as VTS2.  The 
+<code>MESSAGE</code> parameter must take one of the following forms:</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE = WHO-IS-ROUTER-TO-NETWORK <b>[</b> ,dnet <b>]</b></td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE = I-AM-ROUTER-TO-NETWORK <b>[</b> ,dnet <b>]*</b></td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE = I-COULD-BE-ROUTER-TO-NETWORK, dnet, perf</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE = REJECT-MESSAGE-TO-NETWORK, code, dnet</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE = ROUTER-BUSY-TO-NETWORK <b>[</b> ,dnet <b>]*</b></td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE = ROUTER-AVAILABLE-TO-NETWORK <b>[</b> ,dnet <b>]*</b></td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE = INITIALIZE-ROUTING-TABLE <b>[</b> ,dnet,port,string <b>]*</b></</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE = INITIALIZE-ROUTING-TABLE-ACK <b>[</b> ,dnet,port,string <b>]*</b></</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE = ESTABLISH-CONNECTION-TO-NETWORK, dnet, term</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE = DISCONNECT-CONNECTION-TO-NETWORK, dnet</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>There are the following abbreviations for commands:</p>
+
+<blockquote><table>
+<tr><td>WHO-IS-ROUTER-TO-NETWORK</td><td>WHOS-RTN</td></tr>
+<tr><td>I-AM-ROUTER-TO-NETWORK</td><td>IM-RTN</td></tr>
+<tr><td>I-COULD-BE-ROUTER-TO-NETWORK</td><td>I-CLD-BE-RTN</td></tr>
+<tr><td>REJECT-MESSAGE-TO-NETWORK</td><td>REJ-MTN</td></tr>
+<tr><td>ROUTER-BUSY-TO-NETWORK</td><td>RBTN</td></tr>
+<tr><td>ROUTER-AVAILABLE-TO-NETWORK</td><td>RATN</td></tr>
+<tr><td>INITIALIZE-ROUTING-TABLE</td><td>IRT</td></tr>
+<tr><td>INITIALIZE-ROUTING-TABLE-ACK</td><td>IRT-ACK</td></tr>
+<tr><td>ESTABLISH-CONNECTION-TO-NETWORK</td><td>ECTN</td></tr>
+<tr><td>DISCONNECT-CONNECTION-TO-NETWORK&nbsp;&nbsp;&nbsp;&nbsp;</td><td>DCTN</td></tr>
+</table></blockquote>
+
+<p>The <b>dnet</b> parameters are integers in the range 0-65534, <b>string</b> is an ASCII encoded string.</p>
+
+<p>The network layer message may be followed by any octet string by providing the <code>NLDATA</code> (or <code>NL</code>)
+parameter which will be appended to the NPCI:</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;NLDATA = octetstring</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>If a network layer message is not being constructed, it is followed by application layer parameters.</p>
+
+<h3><a name="alh">Application Layer Header</a></h3>
+
+<p>The application layer parameters begin with the <code>PDU</code> parameter, which must be one of the following:</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;PDU = CONFIRMED-REQUEST</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;PDU = UNCONFIRMED-REQUEST</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;PDU = SIMPLEACK</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;PDU = COMPLEXACK</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;PDU = SEGMENTACK</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;PDU = ERROR</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;PDU = REJECT</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;PDU = ABORT</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>Each of these are followed by a sequence of optional and required parameters.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFDDDD">
+<tr><td>NOTE: At the present time all of the parameters that follow the PDU parameter are required, even those 
+that were optional and/or had default data in VTS2.  For information about sending out requests without 
+specifying this level of detail, see <a href="#alp">Application Layer Packets</a>.</td></tr>
+</table></blockquote>
+
+<p>The application layer message may be followed by any octet string by providing the <code>ALDATA</code> (or <code>AL</code>)
+parameter which will be appended to the APCI:</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;ALDATA = octetstring</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<h4><a name="CONFIRMED-REQUEST">CONFIRMED-REQUEST</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;PDU = CONFIRMED-REQUEST</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SEGMSG = bool</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MOREFOLLOWS = bool</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SEGRESP = bool</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MAXRESP = maxresp</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;INVOKEID = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SEQUENCENR = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;WINDOWSIZE = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SERVICE = service</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>The maximum response size is specified as an integer value, which is translated into the 
+correct small integer.</p>
+
+<p>The <code>SEQUENCENR</code> and <code>WINDOWSIZE</code> are used for segmented messages.</p>
+
+<p>See <a href="#alp">Application Layer Packets</a> for an explanation of how
+most of the parameters above can be omitted.</p>
+
+<p>The <code>SERVICE</code> parameter is required, and <b>service</b> must be one of the following keywords: 
+ACKNOWLEDGEALARM, CONFIRMEDCOVNOTIFICATION, 
+CONFIRMEDEVENTNOTIFICATION, GETALARMSUMMARY, GETENROLLMENTSUMMARY, SUBSCRIBECOV, ATOMICREADFILE, 
+ATOMICWRITEFILE, ADDLISTELEMENT, REMOVELISTELEMENT, CREATEOBJECT, DELETEOBJECT, READPROPERTY, 
+READPROPERTYCONDITIONAL, READPROPERTYMULTIPLE, WRITEPROPERTY, WRITEPROPERTYMULTIPLE, 
+DEVICECOMMUNICATIONCONTROL, CONFIRMEDPRIVATETRANSFER, CONFIRMEDTEXTMESSAGE, REINITIALIZEDEVICE, 
+VTOPEN, VTCLOSE, VTDATA, AUTHENTICATE, REQUESTKEY.</p>
+
+<h4><a name="UNCONFIRMED-REQUEST">UNCONFIRMED-REQUEST</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;PDU = UNCONFIRMED-REQUEST</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SERVICE = service</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>The <code>SERVICE</code> parameter is required and the <b>service</b> must be one of the following keywords:
+I-AM, I-HAVE, UNCONFIRMEDCOVNOTIFICATION, UNCONFIRMEDEVENTNOTIFICATION, UNCONFIRMEDPRIVATETRANSFER, 
+UNCONFIRMEDTEXTMESSAGE, TIMESYNCHRONIZATION, WHO-HAS, WHO-IS.</p>
+
+<h4><a name="SIMPLEACK">SIMPLEACK</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;PDU = SIMPLEACK</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;INVOKEID = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SERVICE = service</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<h4><a name="COMPLEXACK">COMPLEXACK</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;PDU = COMPLEXACK</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SEGMSG = bool</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;MOREFOLLOWS = bool</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;INVOKEID = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SEQUENCENR = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;WINDOWSIZE = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SERVICE = service</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<h4><a name="SEGMENTACK">SEGMENTACK</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;PDU = SEGMENTACK</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;NEGATIVE-ACK = bool</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SERVER = bool</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;INVOKEID = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SEQUENCENR = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;WINDOWSIZE = int</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<h4><a name="ERROR">ERROR</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;PDU = ERROR</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;INVOKEID = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SERVICE = service</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<h4><a name="REJECT">REJECT</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;PDU = REJECT</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;INVOKEID = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;REJECTREASON = int <b>|</b> keyword</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<h4><a name="ABORT">ABORT</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;PDU = ABORT</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;SERVER = bool</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;INVOKEID = int</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;ABORTREASON = int <b>|</b> keyword</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<h3><a name="ald">Application Layer Data</a></h3>
+
+<p>Application layer data is specified as a sequence of keywords, each keyword is a different atomic type.
+Each parameter is a keyword, a comparison operator, followed by one or two parameters.</p>
+
+<p>The <b>op</b> is a comparison operator: equals '=' or '==', not equals '!=' or '&lt;&gt;', less than '&lt;',
+greater then '&gt;', less than or equal to '&lt=', or greater then or equal to '&gt='.  If the operator is 
+omitted, it defaults to equals.</p>
+
+<p>If the <b>tag</b> is omitted, then the value is encoded using application encoding.  If it is present, then 
+it is the context used for context encoding.</p>
+
+<p>In places where a value is expected, a 'refernce' may refer to data that is part of the EPICS.  The reference
+is a left curley brace <b>{</b>, a property name, and a right curlet brace <b>}</b>.</p>
+
+<h4><a name="NULL">NULL</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;NULL <b>[</b> op <b>]</b> <b>[</b> tag <b>]</b></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>The <b>op</b> operator is ignored.</p>
+
+<h4><a name="BOOLEAN">BOOLEAN</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BOOLEAN <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> bool</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>Boolean values may be the keywords <code>T</code>, <code>TRUE</code>, <code>Y</code>, <code>YES</code>, 
+<code>F</code>, <code>FALSE</code>, <code>N</code>, and <code>NO</code>.</p>
+
+<h4><a name="UNSIGNED">UNSIGNED</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;UNSIGNED <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> int</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>Unsigned values may be specified using decimal, hex, octal, or binary encoding.  For example: 15, 0x0E, &amp;x0E,
+x'E', o'16', &amp;o16, 0o16, &amp;b1110, 0b1110, and b'1110'.</p>
+
+<h4><a name="INTEGER">INTEGER</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;INTEGER <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> int</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>Integer values may be specified using decimal, hex, octal, or binary encoding.  For example: 15, 0x0E, &amp;x0E,
+x'E', o'16', &amp;o16, 0o16, &amp;b1110, 0b1110, and b'1110'.  The value may be preceeded by a minus sign '-' 
+for negative values.</p>
+
+<h4><a name="REAL">REAL</h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;REAL <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> float</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>Floating point values may have a number of common forms with an optional fractional part and exponent part.
+For example: 10.0, 10e5, 1.4e2, 3.6e-2, -50.4, -6.2e-5.</p>
+<p>The special values NaN (Not a Number), inf or +inf (positive infinity) and -inf (negative infinity)
+are also allowed.</p>
+
+<h4><a name="DOUBLE">DOUBLE</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DOUBLE <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> float</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>Floating point values may have a number of common forms with an optional fractional part and exponent part.
+For example: 10.0, 10e5, 1.4e2, 3.6e-2, -50.4, -6.2e-5.</p>
+<p>The special values NaN (Not a Number), inf or +inf (positive infinity) and -inf (negative infinity)
+are also allowed.</p>
+
+<h4><a name="OCTETSTRING">OCTETSTRING</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;OCTETSTRING <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> str</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>Octet strings may be specified as hex, decimal, or octal strings.  Hex strings are the most common representation
+and are a sequence of pairs of hex characters, each pair is associated with a octet.  For example, X'123456'</p>
+
+<h4><a name="CHARACTERSTRING">CHARACTERSTRING</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;CHARACTERSTRING <b>[</b> op <b>]</b> cstring</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;CHARACTERSTRING <b>[</b> op <b>]</b> ostring</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;CHARACTERSTRING <b>[</b> op <b>]</b> { ref }</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;CHARACTERSTRING <b>[</b> op <b>]</b> char-set, <b>(</b> cstring <b>|</b> ostring <b>)</b></td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;CHARACTERSTRING <b>[</b> op <b>]</b> tag, char-set, <b>(</b> cstring <b>|</b> ostring <b>)</b></td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;CHARACTERSTRING <b>[</b> op <b>]</b> tag, { ref }</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>Character strings values are enclosed in matching single or double quotes.  The blackslash '\' is used to escape 
+an embedded quote.</p>
+
+<p><b>cstring</b> refers to a chracter string and <b>ostring</b> refers to an octet string.  <b>char-set</b> is one of 
+the following: IBM, MICROSOFT, DBCS, IBM-MICROSOFT-DBCS, JIS, JIS-C-6226, UCS-4, ISO-10646-UCS-4, UCS-2, 
+ISO-10646-UCS-2, ISO-8859-1.  There is not automatic translation from ASCII to one of the other character sets when 
+an alternate encoding is specified, translate the string to the alternate character set and include it as an 
+octet string.</p>
+
+<h4><a name="BITSTRING">BITSTRING</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;BITSTRING <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> blist</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>The <b>blist</b> may be specified as a binary encoded list B'1011...', or a list of true/false values 
+enclosed in both square and curly brackets: [{T, F, T, T...}]</p>
+
+<h4><a name="ENUMERATED">ENUMERATED</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;ENUMERATED <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> int</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>There is no mechanism to specify a table of keywords and enumeration values, the enumeration value must be specified 
+as an integer.</p>
+
+<h4><a name="DATE">DATE</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DATE <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> dow <b>[</b> , <b>]</b> mon / day / year</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>The <b>dow</b> value is one of the following keywords: SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, 
+SATURDAY, or '*' for dont-care.  The <b>mon</b>, <b>day</b>, and <b>year</b> are integers, or '*' for dont-care.
+The entire date string must be enclosed in both square and curly brackets: [(FRIDAY,1/29/2010)]</p>
+
+<h4><a name="TIME">TIME</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DATE <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> hour:min:sec.hund</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>The parameters are small unsigned integers or '*' for dont-care.
+The entire time string must be enclosed in square brackets: [8:36:12.*]</p>
+
+<h4><a name="OBJECTIDENTIFIER">OBJECTIDENTIFIER</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;OBJECTIDENTIFIER <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> type, inst</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>The <b>type</b> must be a standard object type or an integer proprietary type.  The <b>inst</b> is the instance number</p>
+
+<p>There are the following abbreviations for object types:</p>
+
+<blockquote><table>
+<tr><td>ANALOG-INPUT</td><td>AI</td></tr>
+<tr><td>ANALOG-OUTPUT</td><td>AO</td></tr>
+<tr><td>ANALOG-VALUE</td><td>AV</td></tr>
+<tr><td>BINARY-INPUT</td><td>BI</td></tr>
+<tr><td>BINARY-OUTPUT</td><td>BO</td></tr>
+<tr><td>BINARY-VALUE</td><td>BV</td></tr>
+<tr><td>CALENDAR</td><td>CAL</td></tr>
+<tr><td>COMMAND</td><td>COM</td></tr>
+<tr><td>DEVICE</td><td>DEV</td></tr>
+<tr><td>EVENT-ENROLLMENT</td><td>EVE</td></tr>
+<tr><td>FILE</td><td>&nbsp;</td></tr>
+<tr><td>GROUP</td><td>&nbsp;</td></tr>
+<tr><td>LOOP</td><td>&nbsp;</td></tr>
+<tr><td>MULTI-STATE-INPUT</td><td>MI</td></tr>
+<tr><td>MULTI-STATE-OUTPUT</td><td>MO</td></tr>
+<tr><td>NOTIFICATION-CLASS&nbsp;&nbsp;&nbsp;&nbsp;</td><td>NC</td></tr>
+<tr><td>PROGRAM</td><td>PRO</td></tr>
+<tr><td>SCHEDULE</td><td>SCH</td></tr>
+<tr><td>AVERAGING</td><td>AVG</td></tr>
+<tr><td>MULTI-STATE-VALUE</td><td>MSV</td></tr>
+<tr><td>TRENDLOG</td><td>TR</td></tr>
+</table></blockquote>
+
+<h4><a name="DEVICEIDENTIFIER">DEVICEIDENTIFIER</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DEVICEIDENTIFIER <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> inst</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>The device identifier is an object identifie.</p>
+
+<h4><a name="PROPERTYIDENTIFIER">PROPERTYIDENTIFIER</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;PROPERTYINEDTIFIER <b>[</b> op <b>]</b> <b>[</b> tag, <b>]</b> prop</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>The <b>prop</b> must be one of the standard names for a property.
+
+<h4><a name="TAG">OPENINGTAG, CLOSINGTAG</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;OPENINGTAG <b>[</b> op <b>]</b> context</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;CLOSINGTAG <b>[</b> op <b>]</b> context</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>The <b>context</b> is a required integer value.  The <b>op</b> operator is ignored.</p>
+
+<h4><a name="ANY">ANY</a></h4>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>EXPECT (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;OPENINGTAG <b>[</b> op <b>]</b> context</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;ANY</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;CLOSINGTAG <b>[</b> op <b>]</b> context</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>ANY is used in EXPECT clauses to decode and discard arbitrary tagged data.
+Decoding stops when it reaches the end of the APDU, or an unmatched closing tag, 
+whichever occurs first.  ANY will typically be used to deal with lists of
+unknown length and complex datatypes that do not need to be compared by the
+script.  For primitive data, you can use the "?" value instead of ANY.</p>
+
+<p>Prior to VTS version 3.6.5, ANY took no parameters, and required at least one tagged item.
+But this meant that ANY could not be used to ignore, save, or compare optional items
+or empty lists.  Starting in VTS version 3.6.5, ANY will accept zero or more tagged items,
+stopping when it reaches the end of the APDU, or an unmatched closing tag, 
+whichever occurs first. Comparison and assigned parameters are now allowed. Thus:</p>
+
+<dl>
+<dt><code>ANY</code></dt><dd><p>Decodes and ignores zero or more tagged items.</p></dd>
+<dt><code>ANY >> FOO</code></dt><dd><p>Decodes zero or more tagged items, and assigns the
+result as an octet string to script variable FOO.</p></dd>
+<dt><code>ANY != X''</code></dt><dd><p>Decodes zero or more tagged items, and verifies that
+at least one item was decoded (that is, that the result is not an empty octet string.
+This achieves the effect of "ANY" alone in VTS versions prior to 3.6.5.</p></dd>
+</dl>
+
+
+<h2><a name="alp">Application Layer Packets</a></h2>
+
+<p>VTS3 may be configured with a device object which can be used as a context for sending and receiving data.  When 
+<code>SEND</code> and <code>EXPECT</code> do not have any network or virtual network parameters but does have the 
+PDU parameter, then the message will be sent in the context of the device object.</p>
+
+<p>For example, here is a Who-Is request where all of the network parameters have been specified.  In this case 
+the port &quot;IPPort&quot; is an IP port that has been configured to be registered as a foreign device with a 
+BBMD.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;NETWORK = &quot;IPPort&quot;</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;DA = 128.253.245.68</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;BVLCI = DISTRIBUTE-BROADCAST-TO-NETWORK</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;DNET = 65535</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;PDU = UNCONFIRMED-REQUEST</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;SERVICE = WHO-IS</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>Here is the same request sent by the built-in device object.  Note the port information is defined in the session 
+along with the device object, so there is no port information in the statement.</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;DA = GLOBALBROADCAST</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;PDU = UNCONFIRMED-REQUEST</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;SERVICE = WHO-IS</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p>While this is not much of a simplifcation for unconfirmed services, the advantages is for confirmed services.  None 
+of these service parameters are specified: SEGMSG, MOREFOLLOWS, SEGRESP, MAXRESP, INVOKEID, SEQUENCENR, WINDOWSIZE.
+Segmentation is supported by the device object directly, and it has a built-in invoke identifier that will be 
+unique for each request.</p>
+
+<p>There are also more options to describe the destination of a packet.  Where a <code>NETWORK</code> is specified, the 
+only <code>DA</code> options are a specific station address and local broadcast.  But when <code>NETWORK</code> is 
+not specified, the <code>DA</code> can take any of the following forms:</p>
+
+<blockquote><table width="80%" cellpadding="0" cellspacing="0" border="0" bgcolor="#DDFFDD">
+<tr><td>SEND (</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DA = name</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DA = <b>[</b> BROADCAST <b>|</b> LOCALBROADCAST <b>]</b></td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DA = <b>[</b> GLOBAL_BROADCAST <b>|</b> GLOBALBROADCAST <b>]</b></td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DA = REMOTE_BROADCAST, dnet</td></tr>
+<tr><td bgcolor="#AAFFAA">&nbsp;&nbsp;&nbsp;&nbsp;DA = dnet, addr</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;...</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;)</td></tr>
+</table></blockquote>
+
+<p><b>name</b> is a character string that matches a name defined in the session.  Unlike names used for <code>DA</code> 
+when <code>NETWORK</code> is specified, the name may refer to a remote station, remote broadcast, or global broadcast.
+If there is a name called 'IUT' defined then this parameter may be omitted.</p>
+
+<p><b>dnet</b> is a destination network number in the range 0-65534.</p>
+
+<p><b>addr</b> is an octet string.</p>
+
+<p>After the <code>PDU</code> is provided, the packet contents are formed (and checked) as above.</p>
+
+<h2><a name="sc">Severity Codes in Tests</a></h2>
+
+<p>Messages from the script interpreter are generated during script execution.  These messages have a 
+'severity code' that is visible in the detail view of a message.  These codes are designed to allow future 
+versions of VTS to color code the summary window according to 'severity' and be available when display 
+filters are implemented.</p>
+
+<p>There are currently three severity codes:</p>
+
+<blockquote>
+<p><b>1</b> This code is used when the script interpreter starts or stops a test.  A test may be started 
+by selecting a test in the script edit window and running a single test, or by running all tests.  A 
+test may stop because it passes, fails (a SEND or EXPECT statement fails), or is halted by the user.<p>
+
+<p><b>2</b> This code is used when the user manually controls the script execution.  Each step, step/pass,
+and step/fail as signaled by the user is recorded.  These are recorded because the user may skip some 
+portion of the test that would otherwise cause the test to fail.<p>
+
+<p><b>3</b> This code is used when the interpreter cannot execute a statement.  A failing condition might 
+be that some timer has expired or the packet doesn't contain the expected contents.</p>
+
+A failing statement may not necessarily fail the test.  For example, the form <code>EXPECT () OR ()</code> 
+has two different packets that are accepted.  If the first one fails then that will be logged, but if the 
+second succeeds, the the test might succeed.<p>
+</blockquote>
+
+</body>
+</html>

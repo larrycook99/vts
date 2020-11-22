@@ -1,0 +1,626 @@
+  ;-------------------------------------------------------------------------------------
+  ;  7.3.1.9	Binary Object Elapsed Active Time Tests Service Execution Tests
+  ;  Round 1.b Ready
+  ;  7.3.1.9yymmdd.vts
+  ;
+  ;	Ver 1.0	    10/25/01	BradSp	    Initial Version
+  ;	Ver 1.1     04/03/2002  BradSP      Marked easier
+  ;  
+  ;  Purpose: This test case verifies that the properties of binary objects that collectively track active time function properly. 
+  ;  If the Elapsed_Active_Time and Time_Of_Active_Time_Reset properties are not supported then this test shall be omitted. This 
+  ;  test applies to Binary Input, Binary Output, and Binary Value objects.
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and "(T)" refers 
+  ;	to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Positive OBJECT FUNCT
+
+; -------------------------------------------------------------------------------------
+; MAC Address Setup
+; -------------------------------------------------------------------------------------
+ 
+ IUT_IP = 208.6.162.35
+ TD_IP = 10.10.10.36
+   
+	;IUT_MAC = <mac address of device>	   ; --- Place the MAC Address of the device you are testing here. Replace mac address of device" with the devices mac
+	;MY_MAC = <mac address of VTS machine>      ;  ---Place the MAC Address of your VTS test machine below. Replace mac address of VTS machine" with the VTS mac
+
+	;NET_1 =  1, ETHERNET, 0	; Net 1, type Ethernet, Port 0  ; Do not change
+
+
+; -------------------------------------------------------------------------------------
+; Routing Setup   by default IUT and TD are on the same Ethernet segment
+ --------------------------------------------------------------------------------------  
+	-- DNET_MSTP = "DNET", MS/TP     ; Sets the DNET of the remote MSTP network (Comment if no routing by placing "--" before this line)
+;                                           Replace "DNET" with the destination network number
+;
+;
+;
+; Every SEND block within the script must contain either Option 1: or Option 2: (See Script Customization help for more inforamtion)
+;
+;    Option 1:  Both the Device being tested and the VTS machine are on the same segment
+;             DESTINATION = IUT_MAC        
+;
+;   
+;    Option 2:  Device being tested is on an MSTP segment and the VTS machine is on an Ethernet segment
+;             DA = Broadcast
+;             DNET = DNET_MSTP
+;             DADR = IUT_MAC
+;------------------------------------------------------------------------------------ 
+
+
+;-----------------------------------------------------------------------------------
+; Variable Setup 
+;-----------------------------------------------------------------------------------
+;      
+; Each object and instance below must match the object or property in the EPICS. These variables are referenced within the body of this script.
+
+  ;OBJECT1 = <Binary-OUTPUT>, <9>		 ; Object which is the subject of the Binary Object Change tests
+  ;DEVOBJ  = <0>, <DEVICE>, <100>                 ; Device object
+
+  OBJECT1 = Binary-Value,1
+  DEVOBJ = 0,DEVICE,245146
+    
+                    
+--------------------------SECTION (A) Set PV to inactive and verify elapsed time--------
+-- steps 1-3 run here
+-- Manually Check VTS trace for elapsed active time (THIS TIME WILL BE USED LATER for a comparison)
+
+                               
+
+--------------------------Section (B)Wait 5 seconds ----------------------------------------------
+-- step 4 doesn't need to be run
+-- Wait 5 seconds - proceed to section (c)
+
+
+
+--------------------------Section (C )Read & compare----------------------------------------------
+-- Test steps 5 and 6 run here
+-- Manually read in VTS trace Elapsed_Active_Time and compare with previously sent Elapsed_Active_Time (They must be the same)
+
+
+--------------------------Section (D)sets the present value to active------------------------------
+-- Test Step 7 runs here and sets the present value to active AND THE ELAPSED ACTIVE TIME STARTS RUNNING
+
+
+
+--------------------------Section (E)Wait 30 seconds ----------------------------------------------
+-- Step 8 DOESNT NEED TO BE RUN JUST WAIT 30 SECONDS
+-- Wait 30 seconds - proceed to section (f)
+                              
+
+                                
+--------------------------Section (f)READ Elapsed_Active_Time---------------------------------------
+-- step 9 - 10 runs here
+-- Manually read in VTS trace Elapsed_Active_Time (T such that (TELAPSED + 30) ? T ? (TELAPSED + 30 + Internal Processing Fail Time))
+
+
+--------------------------Section (G) Write to PV and Elapsed_Active_Time----
+-- Steps 11 and 12 run in this section. This section should be run if the PV and Elapsed_Active_Time are writable.
+-- Nothing manual needs to be done here - the test must pass if writable.
+
+--------------------------Section (H) Read datae and time compare with Time_Of_Active_Time_Reset----                                
+-- Steps 13 - 18 are run here.
+-- Manually compare in VTS trace the sent date and time and Time_Of_Active_Time_Reset - They SHOULD be about the same.
+ 
+  
+  SECTION ReadProperty Service Execution Tests
+
+  -- Reference (T) Positive ReadProperty Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD.
+
+
+
+--   7.3.1.9	Binary Object Elapsed Active Time Tests
+
+
+
+-- Purpose: This test case verifies that the properties of binary objects that collectively track active time function properly. 
+-- If the Elapsed_Active_Time and Time_Of_Active_Time_Reset properties are not supported then this test shall be omitted. This 
+-- test applies to Binary Input, Binary Output, and Binary Value objects.
+--
+-- Test Concept: The Present_Value of the binary object being tested is set to INACTIVE. The Elapsed_Active_Time property is checked 
+-- to verify that it does not accumulate time while the object is in an INACTIVE state. The Present_Value is then set to ACTIVE. The 
+-- Elapsed_Active_Time property is checked to verify that it is accumulating time while the object is in an ACTIVE state. 
+-- The Present_Value is then set to INACTIVE and the Elapsed_Active_Time is reset. The Time_Of_Active_Time_Reset property is checked 
+-- to verify that it has been updated.
+--
+-- Configuration Requirements: The object being tested shall be configured such that the Present_Value and Elapsed_Active_Time 
+-- properties are writable or another means of changing these properties shall be provided.
+--
+-- Test Steps:
+--
+-- 1.	IF (Present_Value is writable) THEN
+--		WRITE Present_Value = INACTIVE
+--		VERIFY Present_Value = INACTIVE
+--	ELSE
+--		MAKE (Present_Value = INACTIVE)
+-- 2.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the object being tested),
+--		'Property Identifier' = 	Elapsed_Active_Time
+-- 3.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the object being tested),
+--		'Property Identifier' =	Elapsed_Active_Time,
+--		'Property Value' =	(the elapsed active time, TELAPSED in seconds)
+--------------------------------------------------------------------------
+-- 4.	WAIT (1 minute)
+---------------------------------------------------------------------------
+-- 5.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the object being tested),
+--		'Property Identifier' = 	Elapsed_Active_Time
+-- 6.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the object being tested),
+--		'Property Identifier' =	Elapsed_Active_Time,
+--		'Property Value' =	(the same TELAPSED as step 3)
+---------------------------------------------------------------------------
+-- 7.	IF (Present_Value is writable) THEN
+--		WRITE Present_Value = ACTIVE
+--		VERIFY Present_Value = ACTIVE
+--	ELSE
+--		MAKE (Present_Value = ACTIVE)
+---------------------------------------------------------------------------
+-- 8.	WAIT Internal Processing Fail Time + 30 seconds
+---------------------------------------------------------------------------
+-- 9.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the object being tested),
+--		'Property Identifier' = 	Elapsed_Active_Time
+-- 10.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the object being tested),
+--		'Property Identifier' =	Elapsed_Active_Time,
+--		'Property Value' =	(T such that (TELAPSED + 30) ? T ? (TELAPSED + 30 + Internal Processing Fail Time))
+---------------------------------------------------------------------------
+-- 11.	IF (Present_Value is writable) THEN
+--		WRITE Present_Value = INACTIVE
+--		VERIFY Present_Value = INACTIVE
+--	ELSE
+--		MAKE (Present_Value = INACTIVE)
+-- 12.	IF (Elapsed_Active_Time is writable) THEN
+--		WRITE Elapsed_Active_Time = 0
+--		VERIFY Elapsed_Active_Time  = 0
+--	ELSE
+--		MAKE (Elapsed_Active_Time = 0)
+---------------------------------------------------------------------------
+-- 13.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the IUT's Device object),
+--		'Property Identifier' = 	Local_Date
+-- 14.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the IUT's Device object),
+--		'Property Identifier' =	Local Date,
+--		'Property Value' =	(the current local date, D)
+-- 15.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the IUT's Device object),
+--		'Property Identifier' = 	Local_Time
+-- 16.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the IUT's Device object),
+--		'Property Identifier' =	Local_Time,
+--		'Property Value' =	(the current local time, TLOC)
+-- 17.	TRANSMIT ReadProperty-Request,
+--		'Object Identifier' =	(the object being tested),
+--		'Property Identifier' = 	Time_Of_Active_Time_Reset
+-- 18.	RECEIVE ReadProperty-ACK,
+--		'Object Identifier' = 	(the object being tested),
+--		'Property Identifier' =	Present_Value,
+--		'Property Value' =	(a date and time such that the date = D and the time is approximately TLOC)
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
+
+
+
+---------------------------------------------------------------------------------------- 
+--------------------------SECTION (A) Set PV to inactive and verify elapsed time--------
+---------------------------------------------------------------------------------------- 
+
+ TEST #1 Set PV to inactive and verify elapsed time
+
+Dependencies NONE ; ReadProperty Service Execution Tests  9.15; WriteProperty Service Execution Tests, 9.19
+Reference 12.4.17, 12.4.18, 12.5.17, 12.5.18, 12.6.15, and 12.6.16
+
+-- STEP 1
+
+
+
+   SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = WriteProperty
+      Object = 0, OBJECT1
+      Property = 1, present-value
+      OpenTag 3
+       ENUMERATED = 0
+      CloseTag 3
+      Unsigned = 4, 1 ;priority
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+ SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 2
+      Service = readproperty 
+      Object = 0, OBJECT1
+      Property = 1, ELAPSED-ACTIVE-TIME	
+    )
+EXPECT(
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = COMPLEXACK
+      SERVICE = READPROPERTY
+      OBJECT = 0,OBJECT1
+      PROPERTY = 1,ELAPSED-ACTIVE-TIME
+      OPENTAG 3
+       AL = {ELAPSED-ACTIVE-TIME}  ;Maybe results in problem
+      CLOSETAG 3
+)
+
+
+   
+                             
+---------------------------------------------------------------------------------------- 
+--------------------------Section (B)Wait 5 seconds -----------------------------------
+---------------------------------------------------------------------------------------- 
+-- TEST #2 section (B)Wait 5 seconds
+-- Dependencies ReadProperty Service Execution Tests, 9.15; WriteProperty Service Execution Tests, 9.19
+
+-- Reference  12.4.17, 12.4.18, 12.5.17, 12.5.18, 12.6.15, and 12.6.16
+
+
+
+
+
+
+---------------------------------------------------------------------------------------- 
+--------------------------Section (C )Read & compare------------------------------------
+---------------------------------------------------------------------------------------- 
+
+TEST #C section (C)Read & compare
+
+Dependencies NONE   ; ReadProperty Service Execution Tests  9.15 ; WriteProperty Service Execution Tests, 9.19
+Reference 12.4.17, 12.4.18, 12.5.17, 12.5.18, 12.6.15, and 12.6.16
+
+ SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, ELAPSED-ACTIVE-TIME	 
+    )
+EXPECT(
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = COMPLEXACK
+      SERVICE = READPROPERTY
+      OBJECT = 0,OBJECT1
+      PROPERTY = 1,ELAPSED-ACTIVE-TIME
+      OPENTAG 3
+       AL = {ELAPSED-ACTIVE-TIME}  ;Maybe results in problem
+      CLOSETAG 3
+)
+---------------------------------------------------------------------------------------- 
+--------------------------Section (D)sets the present value to active-------------------
+---------------------------------------------------------------------------------------- 
+
+TEST #D section (D)
+
+Dependencies NONE ; ReadProperty Service Execution Tests 
+Reference 12.4.17, 12.4.18, 12.5.17, 12.5.18, 12.6.15, and 12.6.16
+
+ SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 4
+      Service = WriteProperty
+      Object = 0, OBJECT1
+      Property = 1, PRESENT-VALUE
+      OpenTag 3
+       ENUMERATED = 1
+      CloseTag 3
+      Unsigned = 4, 1 ;priority
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 5
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, present-value	
+    )
+
+
+  EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, present-value
+      OpenTag 3
+       ENUMERATED = 1
+      CloseTag 3                                   
+  )
+
+
+---------------------------------------------------------------------------------------- 
+--------------------------Section (E)Wait 30 seconds -----------------------------------
+---------------------------------------------------------------------------------------- 
+-- Dependencies NONE ; ReadProperty Service Execution Tests  9.15; WriteProperty Service Execution Tests, 9.19
+-- Reference 12.4.17, 12.4.18, 12.5.17, 12.5.18, 12.6.15, and 12.6.16
+
+
+-- Step 8 runs here
+-- Wait 30 seconds - proceed to section (f)
+
+
+---------------------------------------------------------------------------------------- 
+--------------------------Section (f)READ Elapsed_Active_Time---------------------------
+---------------------------------------------------------------------------------------- 
+TEST #F section (F)
+Dependencies NONE ; ReadProperty Service Execution Tests  9.15; WriteProperty Service Execution Tests, 9.19
+Reference 12.4.17, 12.4.18, 12.5.17, 12.5.18, 12.6.15, and 12.6.16
+
+ SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 6
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, ELAPSED-ACTIVE-TIME	; 
+    )
+
+
+EXPECT(
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = COMPLEXACK
+      SERVICE = READPROPERTY
+      OBJECT = 0,OBJECT1
+      PROPERTY = 1,ELAPSED-ACTIVE-TIME
+      OPENTAG 3
+       AL = {ELAPSED-ACTIVE-TIME}  ;Maybe results in problem
+      CLOSETAG 3
+)
+----------------------------------------------------------------------------------------
+--------------------------Section (G) Write to PV and Elapsed_Active_Time---------------
+----------------------------------------------------------------------------------------
+TEST #G section (G)
+Dependencies NONE ; ReadProperty Service Execution Tests  9.15; WriteProperty Service Execution Tests, 9.19
+Reference 12.4.17, 12.4.18, 12.5.17, 12.5.18, 12.6.15, and 12.6.16
+
+ SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 7
+      Service = WriteProperty
+      Object = 0, OBJECT1
+      Property = 1, PRESENT-VALUE
+      OpenTag 3
+       ENUMERATED = 0
+      CloseTag 3
+      Unsigned = 4, 1 ;priority
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 8
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, present-value	
+    )
+
+
+  EXPECT (
+    NETWORK = "Untitled"
+    Sa = IUT_IP
+    Der = FALSE
+    BVLCI = ORIGINAL-UNICAST-NPDU      
+    PDU = ComplexAck
+    Service = ReadProperty
+    Object = 0, OBJECT1
+    Property = 1, present-value
+    OpenTag 3
+       ENUMERATED = 0	
+    CloseTag 3                                   
+  )
+
+ SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 9
+      Service = WriteProperty
+      Object = 0, OBJECT1
+      Property = 1, ELAPSED-ACTIVE-TIME
+      OpenTag 3
+       UNSIGNED = 0
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 10
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, ELAPSED-ACTIVE-TIME	
+    )
+
+
+  EXPECT (
+    NETWORK = "Untitled"
+    Sa = IUT_IP
+    Der = FALSE
+    BVLCI = ORIGINAL-UNICAST-NPDU      
+    PDU = ComplexAck
+    Service = ReadProperty
+    Object = 0, OBJECT1
+    Property = 1, ELAPSED-ACTIVE-TIME
+    OpenTag 3
+       UNSIGNED = 0
+    CloseTag 3                                   
+  )
+
+
+----------------------------------------------------------------------------------------------------
+--------------------------Section (H) Read date and time compare with Time_Of_Active_Time_Reset----   
+----------------------------------------------------------------------------------------------------
+
+test #H
+Dependencies NONE ; ReadProperty Service Execution Tests  9.15; WriteProperty Service Execution Tests, 9.19
+Reference 12.4.17, 12.4.18, 12.5.17, 12.5.18, 12.6.15, and 12.6.16
+
+
+SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 11
+      Service = ReadProperty
+      Object = DEVOBJ
+      Property = 1, Local-Date		; Required property of type Date
+)
+
+SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 12
+      Service = ReadProperty
+      Object = DEVOBJ
+      Property = 1, Local-time		; Required property of type Date
+)
+
+SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 13
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, TIME-OF-ACTIVE-TIME-RESET		; Required property of type Date
+)

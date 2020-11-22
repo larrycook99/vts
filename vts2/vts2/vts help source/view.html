@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>Viewing and Saving Results</title>
+</head>
+<body>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="packet trace">
+	<param name="Keyword" value="VTS packet trace">
+	<param name="Keyword" value="NALSERV32 packet trace">
+	<param name="Keyword" value="PTP packet trace">
+	<param name="Keyword" value="MSTP packet trace">
+	<param name="Keyword" value="PTP Status Window">
+	<param name="Keyword" value="MSTP Status Window">
+	<param name="Keyword" value="PTP Status Window">
+	<param name="Keyword" value="verbose display">
+	<param name="Keyword" value="hex display">
+	<param name="Keyword" value="segmentation">
+	<param name="Keyword" value="save pdu">
+	<param name="Keyword" value="menu">
+	<param name="Keyword" value="application layer">
+	<param name="Keyword" value="network layer">
+	<param name="Keyword" value="datalink layer">
+	<param name="Keyword" value="physical layer">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>Viewing and Saving Results</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="3" align="right">
+	<a href="overview.html"><img src="prev.gif" border="0" width="20" height="20" alt="previous"></a><a href="target.html"><img src="next.gif" border="0" width="20" height="20" alt="next"></a><a href="home.html"><img src="home.gif" border="0" width="20" height="20" alt="home"></a>
+	</td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	 <a href="#vts">VTS Packet Trace</a><br>
+	 <a href="#vtssave">Saving VTS Packet Traces</a><br>
+	 <a href="#nalserv">NALSERV32 Packet Trace</a><br>
+	 <a href="#ptp">PTP Packet Trace</a><br>
+	 <a href="#mstp">MSTP Packet Trace</a><br>
+	 <p>
+	 <a name="vts"></a><b>VTS Packet Trace</b><br>
+	 VTS records a history of the BACnet packets it transmits and receives for you to 
+	 view and/or save at any time. You can display or hide the VTS packet trace window 
+	 at any time by using the View/Target Device Window menu. The packet trace window 
+	 operates in real-time, so as soon as BACnet packets are sent and received they 
+	 are displayed in the packet trace window.
+	 </p>
+	 <p>
+	 <img src="view_withhex.jpg" border="0">
+	 </p>
+	 <p>
+	 Separate panes are displayed for transmitted and received packets. The verbose description 
+	 of the packet and the corresponding hex value are optional and can be turned on and off 
+	 using the View menu. You can choose to display both transmitted and received packets 
+	 or transmitted only or received only packets through the View menu. Each pane can be 
+	 cleared individually using the View menu or by double-clicking on the Rx or Tx label on 
+	 the packet trace window. Segmented BACnet packets appear in the panes totally assembled, 
+	 i.e. as if they were single large unsegmented packets. 
+	 </p>
+	 <p>
+	 <a name="vtssave"></a><b>Saving VTS Packet Traces</b><br>
+	 The VTS packet traces can be saved for later viewing by using the VTS File/Save PDU File 
+	 and File/Open PDU File menus respectively. The transmit and receive panes can be 
+	 saved separately.
+	 </p>
+	 <p>
+	 VTS saves the packet traces in plain-text format, so they can be easily searched and edited 
+	 using any plain-text editor such as Notepad.
+	 </p>
+	 <p>
+	 <a name="nalserv"></a><b>NALSERV32 Packet Trace</b><br>
+	 NALSERV32 maintains its own real-time history of transmitted and received packets always in raw hex 
+	 format. Separate panes are displayed for transmitted and received packets. You can 
+	 choose to display both transmitted and received packets or transmitted only or 
+	 received only using the NALSERV32 View menu. Each pane can be cleared individually 
+	 by clicking on the Rx or Tx label on the NALSERV32 status window. Segmented 
+	 BACnet packets appear in the panes as totally  assembled packets, i.e. as if 
+	 they were single large unsegmented packets. Because NALSERV32 is capable of 
+	 transmitting packets automatically, e.g. periodic Who-Is-Requests and I-Am-Requests, there may not 
+	 be a one-to-one correspondence between the VTS transmit/receive packet history and the 
+	 NALSERV32 transmit/receive packet history.   
+	 </p>
+	 <p>
+	 A sample VTS packet trace and NALSERV32 status window are shown together for 
+	 your comparison. Note that the first octet of a BACnet-Confirmed-Request-PDU, 
+	 in this example the ReadProperty-Request, does not agree between the VTS and 
+	 NALSERV32 packet trace. This is because the SEG, MOR and SA fields of the PDU's 
+	 first octet are added by NALSERV32 as needed after being called by VTS. Click 
+	 <a href="nalserv32.html#using">here</a> for more details about the NALSERV32 
+	 status window.
+	 </p>
+	 <p>
+	 <img src="view_compare.jpg" border="0">
+	 </p>
+	 <p>
+	 <a name="ptp"></a><b>PTP Packet Trace</b><br>
+	 PTP maintains its own real-time history of transmitted and received PTP frames always in raw hex 
+	 format. Separate panes are displayed for transmitted and received frames. Each 
+	 pane can be cleared individually using the PTP View menu. The PTP packet trace shows all 
+	 PTP frames including PTP Heartbeat, Connect and Disconnect, which do not appear 
+	 in the VTS trace window because they are handled directly in the PTP module.   
+	 </p>
+	 <p>
+	 A sample VTS packet trace and PTP status window are shown together for 
+	 your comparison. Click <a href="ptp.html#using">here</a> for more details 
+	 about the PTP status window.
+	 </p>
+	 <p>
+	 <img src="view_compare_ptp.jpg" border="0">
+	 </p>
+	 <p>
+	 Because <b>all</b> BACnet application layer and network layer packets are passed through 
+	 NALSERV32 regardless of the data link layer and physical layer, the NALSERV32 status window 
+	 also shows those types of packets that are sent to a PTP port. Click 
+	 <a href="nalserv32.html#using">here</a> for more details about the NALSERV32 status window.
+	 </p>
+	 <p>
+	 <img src="view_nalservptp.jpg" border="0">
+	 </p>
+	 <p>
+	 <a name="mstp"></a><b>MSTP Packet Trace</b><br>
+	 MSTP maintains its own real-time history of transmitted and received MS/TP frames always in raw hex 
+	 format. Separate panes are displayed for transmitted and received frames. Each 
+	 pane can be cleared individually using the MSTP View menu. The MSTP packet trace shows all 
+	 MS/TP frames including MS/TP Token (Pass), Poll for Master, Reply to Poll for Master, etc., 
+	 which do not appear in the VTS trace window because they are handled directly in the MSTP module.
+	 </p>
+	 <p>
+	 A sample VTS packet trace and MSTP status window are shown together for 
+	 your comparison.  Click <a href="mstp.html#using">here</a> for more details 
+	 about the MSTP status window.
+	 </p>
+	 <p>
+	 <img src="view_compare_mstp.jpg" border="0">
+	 </p>
+	 <p>
+	 Because <b>all</b> BACnet application layer and network layer packets are passed through 
+	 NALSERV32 regardless of the data link layer and physical layer, the NALSERV32 status window 
+	 also shows those types of packets that are sent to an MS/TP port. Click 
+	 <a href="nalserv32.html#using">here</a> for more details about the NALSERV32 status window.
+	 </p>
+	 <p>
+	 <img src="view_nalservmstp.jpg" border="0">
+	 </p>
+	 <p>
+ 	 <a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	 <a href="target.html">Go to the <b>Next</b> VTS Help Topic.</a><br>
+	 <a href="overview.html">Go to the <b>Previous</b> VTS Help Topic.</a><br>
+	 </p>
+	 </font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

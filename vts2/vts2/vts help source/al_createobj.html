@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>BACnet CreateObject-Request</title>
+</head>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="application layer">
+	<param name="Keyword" value="request">
+	<param name="Keyword" value="CreateObject">
+	<param name="Keyword" value="Object Specifier">
+	<param name="Keyword" value="List of Initial Values">
+	<param name="Keyword" value="Object_Identifier">
+	<param name="Keyword" value="Object_Type">
+	<param name="Keyword" value="Property Identifier">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>BACnet CreateObject-Request</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="3" align="right">
+	<a href="al.html"><img src="prev.gif" border="0" width="20" height="20" alt="previous"></a><a href="home.html"><img src="home.gif" border="0" width="20" height="20" alt="home"></a>
+	</td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	 <a href="#standard">CreateObject-Request</a><br>
+	 <a href="#editing">Editing 'Property Values'</a><br>
+	 <a href="#editinglists">Editing 'Property Values' that are Lists</a><br>
+	 <a href="target.html">Selecting a Target Device</a><br>
+	 <p>
+	 <a name="standard"></a><b>CreateObject-Request</b><br>
+	 The following is a step-by-step procedure for making a standard 
+	 CreateObject-Request.
+	 </p>
+	 <p>
+	 <img src="al_createobj1.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol>
+	 <li>Click the "CreateObject" radio button.
+	 <li>Make sure the 'List of Initial Values' list at the bottom of the dialog is clear.
+	 <li>Select a standard BACnet Object_Type from the drop-down list.
+	 <li>Enter a decimal Instance for the Object_Type. VTS automatically calculates the 
+	 Object_Identifier for the 'Object Specifier'. If you want the 'Object Specifier' to be an 
+	 Object_Type rather than an Object_Identifier, leave the Instance blank.
+	 </p>
+	 <p>
+	 <img src="al_createobj7.jpg" border="0">
+	 </p>
+	 <p> 
+	 <li>If you want to define a 'List of Initial Values' for the properties of the object, click the 
+	 "add" button. If you do <b>not</b> want to define a 'List of Initial Values' for the properties of 
+	 the object proceed to step 12.
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_createobj2.jpg" border="0">
+	 </p>
+	 <p>
+	 In the "Edit Property Value" window:
+	 <ol start=6>
+	 <li>Select a standard 'Property Identifier' from the drop-down list. The property list is automatically 
+	 filled in with the properties appropriate for the selected Object_Type.
+	 <li>Type the initial value for the property into the property value edit box. Note that VTS 
+	 automatically determines the type of value you can enter into the value box based on the 
+	 'Property Identifier' you select and displays the appropriate type of edit box. Click 
+	 <a href="#editing">here</a> for more information about editing individual values and 
+	 <a href="#editinglists">here</a> for more information about editing list values.
+	 <li>Click the "OK" button. 
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_createobj3.jpg" border="0">
+	 </p>
+	 <p>
+	 The "Create/Delete Object" window is redisplayed with the initial value for the 'Property 
+	 Identifier' added to the 'List of Initial Values'.
+	 <ol start=9>
+	 <li>Repeat steps 5-8 as needed to complete the 'List of Initial Values'.
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_createobj4.jpg" border="0">
+	 </p>
+	 <p>
+     If you need to remove values from the list:
+	 </p>
+	 <p>
+	 <img src="al_createobj5.jpg" border="0">
+	 </p>
+   	 <ol start=10>
+	 <li>Select the 'Property Identifier' and initial value to delete in the list box.
+	 <li>Click the "delete" button.
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_createobj6.jpg" border="0">
+	 </p>
+	 <p>
+	 When your listOfInitialValues is complete:
+	 <ol start=12>
+	 <li>If no initial values are required for the object, the 'List of Initial Values' will be 
+	 empty.
+	 <li>Make sure you have selected a <a href="target.html">target device</a>.
+	 <li>Click the "Send" button. 
+	 </ol>
+	 </p>
+	 <p>
+	 <a name="editing"></a><b>Editing 'Property Values'</b><br>
+	 VTS displays a different type of edit box for the 'Property Values' depending on the type of object 
+	 and the 'Property Identifier' you select. The following examples illustrate a sampling of 
+	 the types of edit boxes that VTS uses. It is not all-inclusive, but a representative sampling.
+	 </p>
+	 <p>
+	 The following illustrates the edit box for REAL values. 
+	 </p>
+	 <p>
+	 <img src="al_editval_real.jpg" border="0">
+	 </p>
+	 <p>
+	 The following illustrates the edit box for CharacterString values. 
+	 </p>
+	 <p>
+	 <img src="al_editval_char.jpg" border="0">
+	 </p>
+	 <p>
+	 The following illustrates the edit box for BitString values. Note that a separate 
+	 dialog appears for entering the BitString value. 
+	 </p>
+	 <p>
+	 <img src="al_editval_bits.jpg" border="0">
+	 </p>
+	 <p>
+	 The following illustrates the edit box for BACnetObjectIdentifier values. 
+	 </p>
+	 <p>
+	 <img src="al_editval_objid.jpg" border="0">
+	 </p>
+	 <p>
+	 The following illustrates the edit box for Enumerated values. 
+	 </p>
+	 <p>
+	 <img src="al_editval_enum.jpg" border="0">
+	 </p>
+	 <p>
+	 The following illustrates the edit box for Time values. Note that a separate 
+	 dialog appears for entering the Time value.
+	 </p>
+	 <p>
+	 <img src="al_editval_time.jpg" border="0">
+	 </p>
+	 <p>
+	 The following illustrates the edit box for Date values. Note that a separate 
+	 dialog appears for entering the Date value.
+	 </p>
+	 <p>
+	 <img src="al_editval_date.jpg" border="0">
+	 </p>
+
+	 <p>
+	 <a name="editinglists"></a><b>Editing 'Property Values' that are Lists</b><br>
+	 The following is a step-by-step procedure for editing a typical 'Property Value' that 
+	 is a List.
+	 </p>
+	 <p>
+	 <img src="al_editval_list1.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol>
+	 <li>Select the 'Property Identifier' from the drop-down list.
+	 <li>Click the "add" button when the list box appears. 
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_editval_list2.jpg" border="0">
+	 </p>
+	 <p>
+	 In the "Edit Property Value" window:
+	 <ol start=3>
+	 <li>Enter/select the parameters.
+	 <li>Click the "OK" button. 
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_editval_list3.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=5>
+	 <li>Repeat steps 2-4 as many times as needed to complete the list.
+	 <li>Click the "OK" button. 
+	 </ol>
+	 </p>
+	 <p>
+ 	 <a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	 <a href="al.html">Go to the <b>Previous</b> VTS Help Topic.</a><br>
+	 </p>
+	 </font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

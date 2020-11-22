@@ -1,0 +1,73 @@
+LIBRARY   BACPRIM32
+
+EXPORTS
+	eNULL						@1
+	eBOOL						@2
+	eUINT						@3
+	eINT						@4
+	eREAL						@5
+	eDOUBLE						@6
+	eOCTETSTRING				@7
+	eDWORD						@8
+	eCHARSTRING					@9
+	eBITSTRING					@10
+	eENUM						@11
+	eDATESTRING					@12
+	eTIMESTRING					@13
+	eOBJECTID					@14
+	etagOBJECTID				@15
+	eDeleteObjectService		@16
+	eCreateObjectService		@17
+	eAtomicReadFileService		@18
+	eAtomicWriteFileService		@19
+	eCOVNotificationService		@20
+	eEventNotificationService	@21
+	eSubscribeCOVService		@22
+	eIAmService					@23
+	eWhoIsService				@24
+	eIHaveService				@25
+	eWhoHasService				@26
+	eReadPropService			@27
+	eReadPropMultipleService	@28
+	eWritePropService			@29
+	eWritePropMultipleService	@30
+	eReadPropConditionalService @31
+	eReinitDeviceService		@32
+	eTimeSynchService			@33
+	eDeviceCommControlService	@34
+	eGetAlarmSummaryService		@35
+	eAcknowledgeAlarmService	@36
+	eTextMessageService			@37
+	eVTOpenService				@38
+	eVTDataService				@39
+	eVTCloseService				@40
+	eListElementService			@41
+	ePrivateTransferService		@42
+	eGetEnrollmentSummaryService @43
+	dUINT						@44
+	dENUM						@45
+	dCONTEXT					@46
+	dOBJECTID					@47
+	dINT						@48
+	dNULL						@49
+	dBOOL						@50
+	dREAL						@51
+	dDOUBLE						@52
+	dOCTETSTRING				@53
+	dCHARSTRING					@54
+	dBITSTRING					@55
+	dDATESTRING					@56
+	dTIMESTRING					@57
+	vbDWORD						@58
+	vbREAL						@59
+	vbDOUBLE					@60
+	vbWORD						@61
+	vbLONG						@62
+	vbOBJECTID					@63
+	vbeDOUBLE					@64
+	vbeREAL						@65
+	eSimpleAckPDU				@66
+	eErrorPDU					@67
+
+
+

@@ -1,0 +1,209 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+//#ifdef _WIN32
+//LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+//#pragma code_page(936)
+//#endif //_WIN32
+//MAG chinese stuff commented out 03JAN03
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\PTP.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""l.chs\\afxres.rc""          // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "PTP DLL\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "PTP\0"
+            VALUE "LegalCopyright", "∞Ê»®À˘”– (C) 2002\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "PTP.DLL\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "PTP Dynamic Link Library\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PTPABOUT DIALOGEX 20, 20, 237, 50
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE
+EXSTYLE WS_EX_TOOLWINDOW
+CLASS "PTPABOUTCL"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "BACnet Point-To-Point MAC Layer",IDC_RUNTITLE,52,18,129,
+                    11
+    ICON            IDI_PTP,IDC_STATIC,4,4,20,20
+END
+
+IDD_PTPSTATUS DIALOGEX 0, 0, 357, 177
+STYLE WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "PTP MAC Layer Status"
+MENU IDR_MAINMENU
+CLASS "PTPCL"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDI_PTP,IDC_PTPICON,5,6,20,20
+    LISTBOX         IDC_LOG,35,5,315,55,LBS_NOINTEGRALHEIGHT | LBS_NOSEL | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "RX",IDC_RXLABEL,15,70,15,10,SS_NOTIFY
+    LTEXT           "TX",IDC_TXLABEL,15,126,15,10,SS_NOTIFY
+    LISTBOX         IDC_RX,35,65,315,50,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | 
+                    WS_TABSTOP
+    LISTBOX         IDC_TX,35,121,315,50,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | 
+                    WS_TABSTOP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_REDLED              BITMAP  DISCARDABLE     "res\\REDLED.BMP"
+IDB_HANDSHAKE           BITMAP  DISCARDABLE     "res\\handshak.bmp"
+IDB_NOSHAKE             BITMAP  DISCARDABLE     "res\\noshake.bmp"
+IDB_GREENLED            BITMAP  DISCARDABLE     "res\\GREENLED.BMP"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_PTP                 ICON    DISCARDABLE     "res\\ptp.ICO"
+IDI_PTPTRAY             ICON    DISCARDABLE     "res\\ptptray.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&View"
+    BEGIN
+        MENUITEM "Reset &Log",                  ID_RESET
+        MENUITEM "Reset &RX Trace",             ID_RESETRX
+        MENUITEM "Reset &TX Trace",             ID_RESETTX
+        MENUITEM "Trace &All Messages",         ID_TRACEALL
+    END
+    MENUITEM "&About",                      ID_HELP_ABOUTPTP, HELP
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+//#ifdef _WIN32
+//LANGUAGE 4, 2
+//#pragma code_page(936)
+//#endif //_WIN32
+//MAG chinese stuff commented out 03JAN03
+#include "res\PTP.rc2"  // non-Microsoft Visual C++ edited resources
+#include "l.chs\afxres.rc"          // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

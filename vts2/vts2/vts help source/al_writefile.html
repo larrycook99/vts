@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>BACnet AtomicWriteFile-Request</title>
+</head>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="application layer">
+	<param name="Keyword" value="request">
+	<param name="Keyword" value="AtomicWriteFile">
+	<param name="Keyword" value="Stream Access">
+	<param name="Keyword" value="Record Access">
+	<param name="Keyword" value="File Identifier">
+	<param name="Keyword" value="append">
+	<param name="Keyword" value="File Start Position">
+	<param name="Keyword" value="end of file">
+	<param name="Keyword" value="EOF">
+	<param name="Keyword" value="File Data">
+	<param name="Keyword" value="File Start Record">
+	<param name="Keyword" value="File Record Data">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>BACnet AtomicWriteFile-Request</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="3" align="right">
+	<a href="al.html"><img src="prev.gif" border="0" width="20" height="20" alt="previous"></a><a href="home.html"><img src="home.gif" border="0" width="20" height="20" alt="home"></a>
+	</td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	 <a href="#standardstream">AtomicWriteFile-Request using Stream Access</a><br>
+	 <a href="#standardrecord">AtomicWriteFile-Request using Record Access</a><br>
+	 <a href="target.html">Selecting a Target Device</a><br>
+	 <p>
+	 <a name="standardstream"></a><b>AtomicWriteFile-Request using Stream Access</b><br>
+	 The following is a step-by-step procedure for making a standard 
+	 AtomicWriteFile-Request using Stream Access.
+	 </p>
+	 <p>
+	 <img src="al_writefile1.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol>
+	 <li>Click the "AtomicWriteFile" radio button.
+	 <li>Type the decimal file instance value. VTS automatically calculates the 'File Identifier' 
+	 using the file instance and the FILE Object_Type.
+	 <li>Click the "Stream Access" radio button.
+	 <li>If you do <b>not</b> want to append to the file, make sure the "Append" box is unchecked. 
+	 If you do want to append to the file, make sure the "Append" box is checked.
+	 </p>
+	 <p>
+	 <img src="al_writefile2.jpg" border="0">
+	 </p>
+	 <p>
+	 <li>If you are not appending to the file, type a decimal value for the 'File Start Position'. If 
+	 you are appending to the file, "File Start Position=EOF" will be shown in the File 
+	 Start Position box.
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_writefile3.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=6>
+	 <li>Select either hex or text data by clicking the "Hex" or "Text" button.
+	 <li>Type the 'File Data' in the appropriate format, where hex results in an 
+	 OCTET STRING and text results in a CharacterString. The Octet Count is 
+	 automatically updated as you type.
+	 <li>Make sure you have selected a <a href="target.html">target device</a>.
+	 <li>Click the "Send" button. 
+	 </ol>
+	 </p>
+	 <p>
+	 <a name="standardrecord"></a><b>AtomicWriteFile-Request using Record Access</b><br>
+	 The following is a step-by-step procedure for making a standard 
+	 AtomicWriteFile-Request using Record Access.
+	 </p>
+	 <p>
+	 <img src="al_writefile4.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol>
+	 <li>Click the "AtomicWriteFile" radio button.
+	 <li>Type the decimal file instance value. VTS automatically calculates the 'File Identifier' 
+	 using the file instance and the FILE Object_Type.
+	 <li>Click the "Record Access" radio button.
+	 <li>If you do <b>not</b> want to append to the file, make sure the "Append" box is unchecked. 
+	 If you do want to append to the file, make sure the "Append" box is checked.
+	 </p>
+	 <p>
+	 <img src="al_writefile5.jpg" border="0">
+	 </p>
+	 <p>
+	 <li>If you are not appending to the file, type a decimal value for the 'File Start Record'. If 
+	 you are appending to the file, "File File Record=EOF" will be shown in the File 
+	 Start Record box.
+	 </ol>
+	 </p>
+	 <p>
+     <img src="al_writefile6.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=6>
+	 <li>Select either hex or text data by clicking the "Hex" or "Text" button.
+	 <li>Type the data for a record in the appropriate format, where hex results in an 
+	 OCTET STRING and text results in a CharacterString.
+	 <li>Click the "Add" button. The data for the record is added to the 'File Record Data' 
+	 box and the Record Count is automatically updated.
+	 </ol>  
+	 </p>
+	 <p>
+	 <img src="al_writefile7.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=9>
+	 <li>Repeat Steps 7-8 until the all the data records you want to write have been added 
+	 to the 'File Record Data'.  
+	 </ol>
+	 </p>
+	 <p>
+     If you need to remove data from the 'File Record Data':
+	 </p>
+	 <p>
+	 <img src="al_writefile8.jpg" border="0">
+	 </p>
+	 <p>
+   	 <ol start=10>
+	 <li>Select the record to delete in the 'File Record Data' box.
+	 <li>Click the "Delete" button.
+	 </ol>
+	 </p>
+	 <p>
+	 When your list of file records to write is complete:
+	 </p>
+	 <p>
+	 <img src="al_writefile9.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=12>
+	 <li>Make sure you have selected a <a href="target.html">target device</a>.
+	 <li>Click the "Send" button. 
+	 </ol>
+	 </p>
+	 <p>
+ 	 <a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	 <a href="al.html">Go to the <b>Previous</b> VTS Help Topic.</a><br>
+	 </p>
+	 </font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

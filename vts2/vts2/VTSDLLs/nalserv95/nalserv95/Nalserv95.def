@@ -1,0 +1,32 @@
+LIBRARY   NALSERV32
+SECTIONS
+    BDSHARE READ WRITE SHARED
+EXPORTS
+	MainWndProc			@1
+	About				@2
+	Configure			@3
+	NALSAPIinit			@4
+	NALSAPIdeinit			@5
+	NALSAPIgetstatistics		@6
+	NALSAPIgetlog			@7
+	NALSAPIputlog			@8
+	NALSAPIreceivefilter		@9
+	NALSAPIgetpacket		@10
+	NALSAPIrequest			@11
+	NALSAPItransmit			@12
+	NALSAPIregisterNLserver		@13
+	NALSAPIregisterALserver		@14	
+	NALSAPIgetportlist		@15
+	NALSAPIgetlen			@16
+	NALSAPIcopyrequest		@17
+	NALSAPItransmitIam		@18
+	NALSAPItransmitWhois	@19
+	NALSAPIgetapdu			@20
+	NALSAPIgetaddr			@21
+	NALSAPIgetmaxresponse	@22
+	NALSAPImaxNPDUlength	@23
+	NALSAPIanytobyte		@24
+	NALSAPIbytetoany		@25
+	
+		
+	

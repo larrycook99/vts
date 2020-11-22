@@ -1,0 +1,674 @@
+  ; Testing Support for Executing the BACnet Who-Has Service
+  ;  "DRAFT COPY--- DO NOT DISTRIBUTE"
+  ; whohas.vts	dobmmddyy.vts
+  ; Version 2.0
+  ;
+  ;       written by Steven T. Bushby, 09/13/96
+  ;               updated 10/31/96 DER bit added
+  ;               updated 03/18/98 updated to match current draft test std
+  ;  Ver 2.1    09/17/01        Bradsp          Marked with easy change symbols and Routing sections
+  ; 
+  ;  In the REFERENCE sections "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;
+  ;--------------------------------------------------------------
+
+SETUP BACnet Who-Has Service Execution
+  ;------------------------------------------------------------------------------------- 
+   -- TEST #1a  Object ID version, no device range.
+              -- MANUAL SEND AND RECEIVE   None
+              -- BODY CHANGE  None
+
+  -- TEST #1b Object Name version, no device range.
+              -- MANUAL SEND AND RECEIVE    None
+              -- BODY CHANGE  None
+
+  -- TEST #1c Object ID version, inside device range.
+              -- MANUAL SEND AND RECEIVE   None
+              -- BODY CHANGE  None
+
+  -- TEST #1d Object ID version, outside device range.
+              -- MANUAL SEND AND RECEIVE   None
+              -- BODY CHANGE  None
+
+  -- TEST #1e Object Name version, inside device range.
+              -- MANUAL SEND AND RECEIVE   None
+              -- BODY CHANGE  None
+
+  -- TEST #1f Object Name version, outside device range.
+              -- MANUAL SEND AND RECEIVE   None
+              -- BODY CHANGE  None
+
+  -- TEST #1g Object ID version, device object instance =  device range.high limit
+              -- MANUAL SEND AND RECEIVE   None
+              -- BODY CHANGE  None
+
+  -- TEST #1h Object ID version, device object instance =  device range.low limit
+              -- MANUAL SEND AND RECEIVE   None
+              -- BODY CHANGE  None
+
+  -- TEST #1i
+              -- MANUAL SEND AND RECEIVE   None
+              -- BODY CHANGE  None
+
+  -- TEST #1j
+              -- MANUAL SEND AND RECEIVE   None
+              -- BODY CHANGE  None
+
+  -- TEST #1k
+              -- MANUAL SEND AND RECEIVE   None
+              -- BODY CHANGE  None
+
+  -- TEST #2a
+              -- MANUAL SEND AND RECEIVE   None
+              -- BODY CHANGE  None
+
+  -- TEST #2b
+              -- MANUAL SEND AND RECEIVE   ; if this fails manually verify Receive in the VTS trace window
+              -- BODY CHANGE  None
+
+
+  ;--------------------------------------------------------------
+  ;                           
+	IUT_IP = 10.10.10.100
+	TD_IP = 10.10.10.2
+  
+	DEVICE_ID = Device, 1967          -- Device object instance for IUT.
+	DEVNUM = 1967                     -- The number of the device
+
+	OBJECT_IDENTIFIER = Device, 1967
+
+  	LOW_LIMIT = 1900		; Low limit of a device range that will include the IUT.
+  	HIGH_LIMIT = 2000   	; High limit of a device range that will include the IUT.
+
+  	OUTSIDE_LOW = 1990		; Low limit of a device range that won't include the IUT.
+  	OUTSIDE_HIGH = 2000		; High limit of a device range that won't include the IUT.
+
+	OBJECT_NAME = ANSI,"Simple Remote I/O Device Object"   ; This value must be changed
+
+  ;------------------------------------------------------------------------------------ 
+
+SECTION Testing the execution of the Who-Has service
+
+  ;--------------------------------------------------------------
+  ; Test group 1 verifies correct response to messages originating from
+  ; the local network.
+
+  TEST #1a  Object ID version, no device range.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4,  (T)9.29.1.1
+
+  SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    Object = 2, OBJECT_IDENTIFIER
+    )
+
+  -- The IUT should send a local broadcast I-Have or a global broadcast
+  -- I-Have in response.
+
+  EXPECT (                                  ;local broadcast response
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    SA = IUT_IP
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+     )
+
+  OR (                                      ;global broadcast response
+    Network = "Untitled"
+    DNET = 0xffff
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    SA = IUT_IP
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+    )
+
+TEST #1b Object Name version, no device range.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4, (T)9.27.1.2
+
+SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    CharacterString = 3, OBJECT_NAME
+    )
+
+  --- The IUT should send a local broadcast I-Have or a global broadcast
+  --- I-Have in response.
+
+  EXPECT (                                  ;local broadcast response
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+     )
+
+  OR (                                      ;global broadcast response
+    Network = "Untitled"
+    DNET = 0xffff
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+    )
+
+TEST #1c Object ID version, inside device range.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4, (T)9.27.1.3
+
+  SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    Unsigned = 0, LOW_LIMIT                 ;Device Range low limit
+    Unsigned = 1, HIGH_LIMIT                ;Device Range high limit
+    Object = 2, OBJECT_IDENTIFIER
+    )
+
+  --- The IUT should send a local broadcast I-Have or a global broadcast
+  --- I-Have in response.
+
+  EXPECT (                                  ;local broadcast response
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+     )
+
+  OR (                                      ;global broadcast response
+    Network = "Untitled"
+    DNET = 0xffff
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+    )
+
+TEST #1d Object ID version, outside device range.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4, (T)9.27.1.4
+
+  SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    Unsigned = 0, OUTSIDE_LOW               ;Device Range low limit
+    Unsigned = 1, OUTSIDE_HIGH              ;Device Range high limit
+    Object = 2, OBJECT_IDENTIFIER
+    )
+
+  --- The IUT should not respond.
+
+  EXPECT (                                  
+    Network = "Untitled"
+    SA = IUT_IP
+    bvlci =ORIGINAL-BROADCAST-NPDU
+     )
+
+TEST #1e Object Name version, inside device range.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4, (T)9.27.1.5
+
+  SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    Unsigned = 0, LOW_LIMIT                 ;Device Range low limit
+    Unsigned = 1, HIGH_LIMIT                ;Device Range high limit
+    CharacterString = 3, OBJECT_NAME
+    )
+
+  --- The IUT should send a local broadcast I-Have or a global broadcast
+  --- I-Have in response.
+
+  EXPECT (                                  ;local broadcast response
+    Network = "Untitled"
+    DA = BROADCAST
+    SA = IUT_IP
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+     )
+
+  OR (                                      ;global broadcast response
+    Network = "Untitled"
+    DNET = 0xffff
+    DA = BROADCAST
+    SA = IUT_IP
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+    )
+
+TEST #1f Object Name version, outside device range.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4, (T)9.27.1.6
+
+  SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    Unsigned = 0, OUTSIDE_LOW               ;Device Range low limit
+    Unsigned = 1, OUTSIDE_HIGH              ;Device Range high limit
+    CharacterString = 3, OBJECT_NAME
+    )
+
+  --- The IUT should not respond.
+
+  EXPECT (                               
+    Network = "Untitled"
+    SA = IUT_IP
+    bvlci =ORIGINAL-BROADCAST-NPDU
+     )
+
+TEST #1g Object ID version, device object instance =  device range.high limit
+
+  DEPENDENCIES none
+
+  REFERENCE (B)6.8.1,16.8.2,16.8.4, (T)9.27.1.7
+
+  SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    Unsigned = 0, LOW_LIMIT                 ;Device Range low limit
+    Unsigned = 1, DEVNUM                    ;Device Range high limit using device id
+    Object = 2, OBJECT_IDENTIFIER
+    )
+
+  --- The IUT should send a local broadcast I-Have or a global broadcast
+  --- I-Have in response.
+
+  EXPECT (                                  ;local broadcast response
+    Network = "Untitled"
+    DA = BROADCAST
+    SA = IUT_IP
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+     )
+
+  OR (                                      ;global broadcast response
+    Network = "Untitled"
+    DNET = 0xffff
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+    )
+
+TEST #1h Object ID version, device object instance =  device range.low limit
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4, (T)9.27.1.8
+
+  SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    Unsigned = 0, DEVNUM                 ;Device Range low limit using device id
+    Unsigned = 1, HIGH_LIMIT                ;Device Range high limit
+    Object = 2, OBJECT_IDENTIFIER
+    )
+
+  --- The IUT should send a local broadcast I-Have or a global broadcast
+  --- I-Have in response.
+
+  EXPECT (                                  ;local broadcast response
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+     )
+
+  OR (                                      ;global broadcast response
+    Network = "Untitled"
+    DNET = 0xffff
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+    )
+
+TEST #1i Object Name version, device object instance =  device range.high limit
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4, (T)9.27.1.9
+
+  SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    Unsigned = 0, LOW_LIMIT                 ;Device Range low limit
+    Unsigned = 1, DEVNUM                    ;Device Range high limit using device id
+    CharacterString = 3, OBJECT_NAME
+    )
+
+  --- The IUT should send a local broadcast I-Have or a global broadcast
+  --- I-Have in response.
+
+  EXPECT (                                  ;local broadcast response
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+     )
+
+  OR (                                      ;global broadcast response
+    Network = "Untitled"
+    DNET = 0xffff
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE, DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+    )
+
+TEST #1j Object Name version, device object instance =  device range.low limit
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4, (T)9.27.1.10
+
+  SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    Unsigned = 0, DEVNUM                 ;Device Range low limit using device id
+    Unsigned = 1, HIGH_LIMIT                ;Device Range high limit
+    CharacterString = 3, OBJECT_NAME
+    )
+
+  --- The IUT should send a local broadcast I-Have or a global broadcast
+  --- I-Have in response.
+
+  EXPECT (                                  ;local broadcast response
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+     )
+
+  OR (                                      ;global broadcast response
+    Network = "Untitled"
+    DNET = 0xffff
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+    )
+
+TEST #1k Object Name version, directed to a specific MAC address
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4, (T) 9.27.1.11
+
+  SEND (
+    Network = "Untitled"
+    DA = IUT_IP
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    CharacterString = 3, OBJECT_NAME
+    )
+
+  --- The IUT should send a local broadcast I-Have or a global broadcast
+  --- I-Have in response.
+
+  EXPECT (                                  ;local broadcast response
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+     )
+
+  OR (                                      ;global broadcast response
+    Network = "Untitled"
+    DNET = 0xffff
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+    )
+
+  ;--------------------------------------------------------------
+  ; Test group 2 verifies correct response to messages originating from 
+  ; a remote network.
+
+TEST #2a Object ID version, global broadcast from remote network
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4, (T)9.27.2.1
+
+  SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    Object = 2, OBJECT_IDENTIFIER
+    )
+
+  --- The IUT should send a remote broadcast I-Have or a global broadcast
+  --- I-Have in response.
+
+  EXPECT (                                  ;local broadcast response
+    Network = "Untitled"
+    DA = MY_MAC
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    DNET = NET_X
+    DADR = BROADCAST
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharacterString = OBJECT_NAME
+     )
+
+  OR (                                      ;global broadcast response
+    Network = "Untitled"
+    DNET = 0xffff
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+    )
+
+TEST #2b Object ID version, remote broadcast.
+
+  DEPENDENCIES none
+
+  REFERENCE (B)16.8.1,16.8.2,16.8.4, (T) 9.27.2.2
+
+  SEND (
+    Network = "Untitled"
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    PDU = Unconfirmed-Request
+    Service = Who-Has
+    Object = 2, OBJECT_IDENTIFIER
+    )
+
+  --- The IUT should send a remote broadcast I-Have or a global broadcast
+  --- I-Have in response.
+
+  EXPECT (                                  ;local broadcast response
+    Network = "Untitled"
+    DA = MY_MAC
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    DNET = NET_X
+    DADR = MY_MAC
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+     )
+
+  OR (                                      ;global broadcast response
+    Network = "Untitled"
+    DNET = 0xffff
+    DA = BROADCAST
+    bvlci =ORIGINAL-BROADCAST-NPDU
+    DER = FALSE
+    SA = IUT_IP
+    PDU = Unconfirmed-Request
+    Service = I-Have
+    Object = DEVICE_ID
+    Object = OBJECT_IDENTIFIER
+    CharString = OBJECT_NAME
+    )
+  

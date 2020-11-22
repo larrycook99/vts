@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>Using BACnet PTP with VTS</title>
+</head>
+<body>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="PTP">
+	<param name="Keyword" value="PTP.INI">
+	<param name="Keyword" value="NALSERV32.INI">
+	<param name="Keyword" value="Point-To-Point">
+	<param name="Keyword" value="COM1/COM2">
+	<param name="Keyword" value="ConnectPassword">
+	<param name="Keyword" value="UsePTP">
+	<param name="Keyword" value="PTPsnet">
+	<param name="Keyword" value="PTPslen">
+	<param name="Keyword" value="PTPsadr">
+	<param name="Keyword" value="SNET">
+	<param name="Keyword" value="SLEN">
+	<param name="Keyword" value="SADR">
+	<param name="Keyword" value="configure">
+	<param name="Keyword" value="PTP Status Window">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>Using BACnet PTP</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="3" align="right">
+	<a href="mstp.html"><img src="prev.gif" border="0" width="20" height="20" alt="previous"></a><a href="configure.html"><img src="next.gif" border="0" width="20" height="20" alt="next"></a><a href="home.html"><img src="home.gif" border="0" width="20" height="20" alt="home"></a>
+	</td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	<p>
+	<a href="#overview">VTS Support for PTP</a><br>
+	<a href="#setup">Setting up PTP</a><br>
+    <a href="#ptpini">PTP.INI</a><br>
+    <a href="#nalserv32ini">NALSERV32.INI</a><br>
+    <a href="#using">Using PTP</a><br>
+    </p>
+	<p>
+	<a name="overview"></a><b>VTS Support for PTP</b><br>
+	You can configure VTS to provide a single BACnet Point-To-Point 
+	(PTP) data link protocol port for testing PTP devices. A separate Windows DLL 
+	module (PTP.DLL) manages the PTP data link layer protocol and interacts with 
+	NALSERV32 which in turn interacts with VTS. The details of PTP operation, 
+	connecting, disconnecting, heartbeat exchange, etc. are all managed by the 
+	PTP.DLL and are mostly transparent to the VTS user. Setting up 
+	VTS and NALSERV32 for PTP operation is accomplished in a few steps. 
+	The interface to PTP devices from VTS is a simple matter of directing  
+	BACnet application layer and network layer messages to the PTP port when 
+	the <a href="target.html#ptp">target device</a> is selected.
+	</p>
+	<p>
+	Either of the standard PC serial ports (COM1 or COM2) can be used as a 
+	PTP direct connected port. 
+	</p>
+	<p>
+	<a name="setup"></a><b>Setting up PTP</b><br>
+	Before you can use the PTP feature of VTS and NALSERV32 you must modify two 
+	INI files:
+	<ul>
+	<li>PTP.INI
+	<li>NALSERV32.INI
+	</ul>
+	<p>
+	<a name="ptpini"></a><b>PTP.INI</b><br>
+	In order to define the operating parameters for PTP, you must create a plain-text 
+	file named <b>PTP.INI</b> and place it the <b>\Windows</b> or <b>\WINNT</b> folder. 
+	A sample PTP.INI file with explanation is shown below. Note that any line in PTP.INI 
+	that begins with a semicolon (;) is considered a comment line and is ignored by 
+	PTP.DLL when it reads PTP.INI.
+	</p>
+	<p>
+	<img src="ptp1.jpg" border="0">
+	</p>
+	<p>
+	<ol>
+	<li><b><i>[General]</i></b> is the main section header for the file.
+	<li><b><i>LogFile</i></b> defines an absolute path to a file in which PTP transaction data 
+	is logged for later analysis. Normally you will want to keep this line commented-out by 
+	placing a semicolon(;) as the first character of the line. This feature is normally required 
+	only for diagnosing problems on the PTP network.
+	<li><b><i>Port</i></b> identifies the PTP port on the PC and defines:<br>
+    	<ul>
+    	<li>PC serial port (COM1: or COM2:)
+    	<li>baud rate (2400, 4800, 9600, 19200, 38400, 76800) 
+    	<li>type of parity (always N)
+    	<li>number of data bits (always 8)
+    	<li>number of stop bits (always 1)
+    	</ul>
+    <li><b><i>ConnectPassword</i></b> defines the optional password sent by PTP.DLL when it sends 
+    a PTP Connect Frame. If this line is omitted or commented-out, <b>no</b> password is included 
+    in the Connect Frame. 
+	<li><b><i>PTP Parameters</i></b> define the following PTP parameters and their default values 
+	in case the parameter is omitted or commented-out from PTP.INI:
+    	<ul>
+    	<li><b><i>Nretries</b></i> default=3 tries
+    	<li><b><i>Tconnrqst</b></i> default=15 seconds
+    	<li><b><i>Tconnrsp</b></i> default=15 seconds
+    	<li><b><i>Tframeabort</b></i> default=2 seconds
+    	<li><b><i>Theartbeat</b></i> default=15 seconds
+    	<li><b><i>Tinactivity</b></i> default=60 seconds
+    	<li><b><i>Tresponse</b></i> default=5 seconds
+    	</ul>
+ 	</ol>
+	</p>   
+	<p>
+	<a name="nalserv32ini"></a><b>NALSERV32.INI</b><br>
+	In order to indicate to NALSERV32 that it should initialize and manage the interface to PTP, 
+	you must add several parameter lines to the plain-text file <b>NALSERV32.INI</b>, which normally 
+	is kept in the <b>\Windows</b> or <b>\WINNT</b> folder.	A sample NALSERV32.INI file with 
+	explanation is shown below for PTP operation.
+	</p>
+	<p>
+	<img src="ptp2.jpg" border="0">
+	</p>
+	<p>
+	<ol>
+	<li><b><i>[General]</i></b> is the main section header for the file.
+	<li><b><i>UsePTP</i></b> indicates whether NALSERV32 should initialize 
+	and manage PTP (<i>Yes</i> or <i>No</i>).
+	</ol>
+	Because some PTP devices always require source routing information, the following three parameters are 
+	included for PTP operation. When defined (PTPslen>0), the SNET, SLEN and 
+	SADR are always added to the NPCI of every transmitted PTP frame.  
+	<ol start=3>
+	<li><b><i>PTPsnet</i></b> if included indicates the decimal SNET for source routing.
+	<li><b><i>PTPslen</i></b> if included indicates the decimal SLEN for source routing (0=no source routing).
+	<li><b><i>PTPsadr</i></b> if included indicates the hex SADR for source routing. 
+	</ol>
+	</p>
+	<p>
+	<a name="using"></a><b>Using PTP</b><br>
+	When you start VTS, it initializes NALSERV32, which in turn initializes PTP 
+	if UsePTP=Yes in NALSERV32.INI. Both NALSERV32 and PTP provide their own 
+	status dialogs and are initially minimized as icons in the Windows taskbar in 
+	the bottom right-hand corner of your display screen.
+	</p>
+	<p> 
+	<img src="ptp_toolbar.jpg" border="0">
+    </p>
+	<p>
+	Clicking on the PTP icon restores its status dialog as shown below. 
+	</p>
+	<p>
+	<img src="overview_ptp.jpg" border="0">
+	</p>
+	<p>
+	The PTP dialog is used to indicate protocol activity in the form of raw PTP frames in hex format. 
+	When you close the PTP window, it returns to its iconic form in the Windows taskbar. 
+	The PTP dialog is closed when you exit VTS. The areas of the status dialog are described below:
+	</p>
+	<p>
+	<ul>
+	<li><b><i>Status Log</i></b> indicates critical and diagnostic PTP events including:
+	  <ul>
+	  <li>time of PTP startup
+	  <li>trying to establish a connection indication
+	  <li>receipt of a disconnect request from the application layer
+	  <li>rejection of connection requests
+	  <li>password too long error
+	  <li>connection failure
+	  <li>out of memory errors
+	  <li>request too large error
+	  <li>CRC errors
+	  <li>retry of transmission
+      <li>lost handshake
+	  <li>receipt/transmission of PTP frames including:
+	    <ul>
+		<li>Connect Request
+		<li>Heartbeat
+		<li>DATA
+		<li>Data ACK
+		<li>Data NACK
+		<li>Connect Response
+		<li>Disconnect Request
+		<li>Disconnect Response
+		<li>Sent Connect Request
+		<li>Sent Connect Response
+		<li>Test Request
+		<li>Test Response
+		<li>Transmission of a frame
+		</ul>
+	  </ul>
+	  The time shown is in milliseconds since midnight and is meant for relative timing considerations 
+	  only. 
+	<li><b><i>PTP Frames</i></b> shows raw PTP received and transmitted frames including CRC and 
+	transparency (the X'10' octet) in hex.
+	<li><b><i>PTP HandShake Status</i></b> shows the status of the connection with another PTP device. 
+	The symbol <img src="ptp3.gif" align="absmiddle"> indicates a connection while the symbol 
+	<img src="ptp4.gif" align="absmiddle"> indicates <b>no</b> connection. 
+	</ul>
+	</p>
+	<p>
+ 	<a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	<a href="configure.html">Go to the <b>Next</b> VTS Help Topic.</a><br>
+	<a href="mstp.html">Go to the <b>Previous</b> VTS Help Topic.</a><br>
+	</p>
+	</font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

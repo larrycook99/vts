@@ -1,0 +1,705 @@
+; Comparisons.vts
+;
+; Exercise the various BACnetEncodable Match methods
+;
+; 28 November 2014
+;
+; John Hartman, Trane
+;
+;-------------------------------------------------------------------------------------
+SETUP Verify BTL-detected Defects and their fixes
+;-------------------------------------------------------------------------------------
+
+; Define objects for the tests
+DEVICE_1 = device, 70000          -- Test Device ID
+TEST_OBJ = analog-value, 3
+
+OBJ_NAME = 0
+OBJ_PV = 0
+
+;-------------------------------------------------------------------------------------
+SECTION Solicit routers to networks, in case IUT is routed (assumes VTS IP port name is "MyIP"
+TEST Send Who-Is-Router to all networks
+  SEND (
+    NETWORK = "MyIP"
+    DA = BROADCAST
+    BVLCI = ORIGINAL-BROADCAST-NPDU
+    MESSAGE = WHO-IS-ROUTER-TO-NETWORK
+  )
+  WAIT 1000
+
+SECTION Make an analog value object
+;-------------------------------------------------------------------------------
+TEST Make an analog value object
+SEND (
+   PDU = Confirmed-Request
+   Service = CreateObject
+   OpenTag 0
+      Enum = 0, 2 -- analog-value
+   CloseTag 0
+)
+
+EXPECT (
+   PDU = ComplexAck
+   Service = CreateObject
+   Object >> TEST_OBJ
+)
+
+SECTION Floating point
+;-------------------------------------------------------------------------------
+TEST Set a value
+SEND (
+   PDU = Confirmed-Request
+   Service = WriteProperty
+   Object   = 0, TEST_OBJ
+   Property = 1, present-value
+   OpenTag 3
+      Real = 4.0
+   CloseTag 3
+)
+EXPECT (
+   PDU = SimpleAck
+   Service = WriteProperty
+)
+
+TEST Compare =
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+   OpenTag 3
+      Real = 4.0
+   CloseTag 3
+)
+
+TEST Compare = fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+   OpenTag 3
+      Real = 4.1
+   CloseTag 3
+)
+
+TEST Compare !=
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+   OpenTag 3
+      Real != 4.1
+   CloseTag 3
+)
+
+TEST Compare != fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+   OpenTag 3
+      Real != 4.0
+   CloseTag 3
+)
+
+TEST Compare <
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+   OpenTag 3
+      Real < 4.1
+   CloseTag 3
+)
+
+TEST Compare < fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+   OpenTag 3
+      Real < 3.9
+   CloseTag 3
+)
+
+TEST Compare wrong type (fail)
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, present-value
+   OpenTag 3
+      Integer != 4
+   CloseTag 3
+)
+
+SECTION Character string
+;-------------------------------------------------------------------------------
+TEST Set a value
+SEND (
+   PDU = Confirmed-Request
+   Service = WriteProperty
+   Object   = 0, TEST_OBJ
+   Property = 1, object-name
+   OpenTag 3
+      Characterstring = "abc"
+   CloseTag 3
+)
+EXPECT (
+   PDU = SimpleAck
+   Service = WriteProperty
+)
+
+TEST Compare =
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+   OpenTag 3
+      Characterstring = "abc"
+   CloseTag 3
+)
+
+TEST Compare = fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+   OpenTag 3
+      Characterstring = "ab"
+   CloseTag 3
+)
+
+TEST Compare !=
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+   OpenTag 3
+      Characterstring != "abcd"
+   CloseTag 3
+)
+
+TEST Compare != fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+   OpenTag 3
+      Characterstring != "abc"
+   CloseTag 3
+)
+
+TEST Compare <
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+   OpenTag 3
+      Characterstring < "abcd"
+   CloseTag 3
+)
+
+TEST Compare < fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+   OpenTag 3
+      Characterstring < "abc"
+   CloseTag 3
+)
+
+TEST Compare <=
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+   OpenTag 3
+      Characterstring <= "abc"
+   CloseTag 3
+)
+
+TEST Compare <=
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-name
+   OpenTag 3
+      Characterstring <= "abcd"
+   CloseTag 3
+)
+
+SECTION Boolean
+;-------------------------------------------------------------------------------
+TEST Compare =
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, out-of-service
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, out-of-service
+   OpenTag 3
+      Boolean = true
+   CloseTag 3
+)
+
+TEST Compare = fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, out-of-service
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, out-of-service
+   OpenTag 3
+      Boolean = false
+   CloseTag 3
+)
+
+TEST Compare !=
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, out-of-service
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, out-of-service
+   OpenTag 3
+      Boolean != false
+   CloseTag 3
+)
+
+TEST Compare != fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, out-of-service
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, out-of-service
+   OpenTag 3
+      Boolean != true
+   CloseTag 3
+)
+
+TEST Compare < fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, out-of-service
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, out-of-service
+   OpenTag 3
+      Boolean < true
+   CloseTag 3
+)
+
+SECTION Bit string
+;-------------------------------------------------------------------------------
+TEST Compare =
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, status-flags
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, status-flags
+   OpenTag 3
+      Bitstring = [{F,F,F,T}]
+   CloseTag 3
+)
+
+TEST Compare = fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, status-flags
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, status-flags
+   OpenTag 3
+      Bitstring = [{T,F,F,T}]
+   CloseTag 3
+)
+
+TEST Compare !=
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, status-flags
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, status-flags
+   OpenTag 3
+      Bitstring != [{T,F,F,T}]
+   CloseTag 3
+)
+
+TEST Compare != fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, status-flags
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, status-flags
+   OpenTag 3
+      Bitstring != [{F,F,F,T}]
+   CloseTag 3
+)
+
+TEST Compare < fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, status-flags
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, status-flags
+   OpenTag 3
+      Bitstring < [{F,F,F,T}]
+   CloseTag 3
+)
+
+SECTION Object Identifier
+;-------------------------------------------------------------------------------
+TEST Compare =
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-identifier
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-identifier
+   OpenTag 3
+      ObjectIdentifier = TEST_OBJ
+   CloseTag 3
+)
+
+TEST Compare = fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-identifier
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-identifier
+   OpenTag 3
+      ObjectIdentifier = device, 6
+   CloseTag 3
+)
+
+TEST Compare !=
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-identifier
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-identifier
+   OpenTag 3
+      ObjectIdentifier != analog-input, 1111
+   CloseTag 3
+)
+
+TEST Compare != fail
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-identifier
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-identifier
+   OpenTag 3
+      ObjectIdentifier != TEST_OBJ
+   CloseTag 3
+)
+
+TEST Compare <
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-identifier
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, TEST_OBJ
+   Property = 1, object-identifier
+   OpenTag 3
+      ObjectIdentifier < device, 1111
+   CloseTag 3
+)
+
+SECTION Device Address Binding
+;-------------------------------------------------------------------------------
+TEST Send Change out-of-range so SC will bind to TD
+   SEND (
+      PDU = Confirmed-Request
+      Service = ConfirmedEventNotification
+      Unsigned = 0, 123456 ; processID
+      Object = 1, device, 2666    ; initiatingDeviceID
+      Object = 2, analog-input, 1 ; eventObjectID
+      OpenTag 3
+         ; BACnetTimeStamp CHOICE
+         OpenTag 2
+            date = [(FRIDAY,1/29/2010)]
+            time = [5:36:12.0]
+         CloseTag 2
+      CloseTag 3
+      Unsigned = 4, 5     ; notification class
+      Unsigned = 5, 16    ; priority
+      Enumerated = 6, 5   ; BACnetEventType: out-of-range
+      CharacterString = 7, "I am Out of Range and I can't get up"
+      Enumerated = 8, 0   ; notifyType
+      Boolean = 9, TRUE
+      Enumerated = 10, 0  ; fromstate: BACnetEventState normal
+      Enumerated = 11, 3  ; tostate: BACnetEventState high-limit
+      OpenTag 12
+         ; BACnetNotificationParameters
+         OpenTag 5
+            Real = 0, 123.456       ; exceeded-value
+            Bitstring = 1, B'1000'  ; status-flags
+            Real = 2, 10.0          ; deadbacd
+            Real = 3, 100.0         ; exceede-limit
+         CloseTag 5
+      CloseTag 12
+   )
+   EXPECT (
+     PDU = SimpleAck
+   )
+
+TEST Compare =
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, DEVICE_1
+   Property = 1, device-address-binding
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, DEVICE_1
+   Property = 1, device-address-binding
+   OpenTag 3
+      ObjectIdentifier = device, 2666
+      Unsigned = 1
+      Octetstring = X'C0A80007BAC0'
+   CloseTag 3
+)
+
+TEST Compare != device
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, DEVICE_1
+   Property = 1, device-address-binding
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, DEVICE_1
+   Property = 1, device-address-binding
+   OpenTag 3
+      ObjectIdentifier != device, 2667
+      Unsigned = 1
+      Octetstring = X'C0A80007BAC0'
+   CloseTag 3
+)
+
+TEST Compare != network
+SEND (
+   PDU = Confirmed-Request
+   Service = ReadProperty
+   Object = 0, DEVICE_1
+   Property = 1, device-address-binding
+)
+EXPECT (
+   PDU = ComplexAck
+   Service = ReadProperty
+   Object = 0, DEVICE_1
+   Property = 1, device-address-binding
+   OpenTag 3
+      ObjectIdentifier = device, 2666
+      Unsigned != 0
+      Octetstring = X'C0A80007BAC0'
+   CloseTag 3
+)
+
+SECTION Delete test object
+;-------------------------------------------------------------------------------
+TEST Delete test object
+SEND (
+   PDU = Confirmed-Request
+   Service = DeleteObject
+   Object  = TEST_OBJ
+)
+
+EXPECT (
+   PDU = SimpleAck
+   Service = DeleteObject
+)

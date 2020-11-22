@@ -1,0 +1,840 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\Release\</OutDir>
+    <IntDir>.\Release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\Debug\</OutDir>
+    <IntDir>.\Debug\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>.;.\BACnetLibrary;.\Sniffer;.\DUDAPI;.\FileVersionInfo;.\Statistics;.\ptp;.\winpcap;.\GetMACAddress;.\NBLink;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Release\VTS.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ObjectFileName>.\Release\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release\VTS.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release\VTS.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>.\Release\VTS.exe</OutputFile>
+      <AdditionalDependencies>version.lib;macdll/ptp/release/ptp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>.;.\BACnetLibrary;.\Sniffer;.\DUDAPI;.\FileVersionInfo;.\Statistics;.\ptp;.\winpcap;.\GetMACAddress;.\NBLink;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Debug\VTS.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ObjectFileName>.\Debug\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Debug\VTS.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug\VTS.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <OutputFile>.\Debug\VTS.exe</OutputFile>
+      <AdditionalDependencies>version.lib;macdll/PTP/debug/PTP.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="BACnetLibrary\BACnet.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetAPDU.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetAPDUDecoder.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetAPDUEncoder.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetAPDUSegment.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetBBMD.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetBIPForeign.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetBIPSimple.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetBTR.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetClient.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetClientTSM.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetDevice.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetIP.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetPDU.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetRouter.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetServer.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetServerTSM.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetTask.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetTimer.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetTSM.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetVIPLAN.cpp" />
+    <ClCompile Include="BACnetLibrary\BACnetVLAN.cpp" />
+    <ClCompile Include="DiscoveryExecutor.cpp" />
+    <ClCompile Include="SendNetworkNumberIs.cpp" />
+    <ClCompile Include="SendReceiveExecutor.cpp" />
+    <ClCompile Include="SendWhatIsNetworkNumber.cpp" />
+    <ClCompile Include="Sniffer\BACSN015.cpp" />
+    <ClCompile Include="BakRestoreExecutor.cpp" />
+    <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="ColorSettingDlg.cpp" />
+    <ClCompile Include="DetailTreeCtrl.cpp" />
+    <ClCompile Include="DetailView.cpp" />
+    <ClCompile Include="DockingDetailViewBar.cpp" />
+    <ClCompile Include="DockingEPICSViewBar.cpp" />
+    <ClCompile Include="DockingHexViewbar.cpp" />
+    <ClCompile Include="DUDAPI\dudapi32.cpp" />
+    <ClCompile Include="DUDAPI\DUDTOOL.CPP" />
+    <ClCompile Include="EditResentPktDlg.cpp" />
+    <ClCompile Include="EPICSTreeView.cpp" />
+    <ClCompile Include="EPICSViewInfoPanel.cpp" />
+    <ClCompile Include="EPICSViewNode.cpp" />
+    <ClCompile Include="EPICSViewNodeAppService.cpp" />
+    <ClCompile Include="EPICSViewPropPanel.cpp" />
+    <ClCompile Include="FileVersionInfo\file_ver.cpp" />
+    <ClCompile Include="FrameContext.cpp" />
+    <ClCompile Include="GoToLineDlg.cpp" />
+    <ClCompile Include="HexView.cpp" />
+    <ClCompile Include="InconsistentParsExecutor.cpp" />
+    <ClCompile Include="LineNumCtrl.cpp" />
+    <ClCompile Include="ListSummaryCache.cpp" />
+    <ClCompile Include="ListSummaryView.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="md5.cpp" />
+    <ClCompile Include="MSTP_NBLinkDlg.cpp" />
+    <ClCompile Include="Sniffer\PI.cpp" />
+    <ClCompile Include="ReadAllPropSettingsDlg.cpp" />
+    <ClCompile Include="scbarcf.cpp" />
+    <ClCompile Include="scbarg.cpp" />
+    <ClCompile Include="ScriptBase.cpp" />
+    <ClCompile Include="ScriptCase.cpp" />
+    <ClCompile Include="ScriptCommand.cpp" />
+    <ClCompile Include="ScriptContentTree.cpp" />
+    <ClCompile Include="ScriptDependency.cpp" />
+    <ClCompile Include="ScriptDocument.cpp" />
+    <ClCompile Include="ScriptEdit.cpp" />
+    <ClCompile Include="ScriptEditIncludeDlg.cpp" />
+    <ClCompile Include="ScriptExecMsg.cpp" />
+    <ClCompile Include="ScriptExecutor.cpp">
+      <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">OnlyExplicitInline</InlineFunctionExpansion>
+    </ClCompile>
+    <ClCompile Include="ScriptFrame.cpp" />
+    <ClCompile Include="ScriptIfdefHandler.cpp" />
+    <ClCompile Include="ScriptKeywords.cpp" />
+    <ClCompile Include="ScriptLoadResults.cpp" />
+    <ClCompile Include="ScriptMakeDlg.cpp" />
+    <ClCompile Include="ScriptMsgMake.cpp" />
+    <ClCompile Include="ScriptPacket.cpp" />
+    <ClCompile Include="ScriptParmList.cpp" />
+    <ClCompile Include="ScriptParmUpdate.cpp" />
+    <ClCompile Include="ScriptReference.cpp" />
+    <ClCompile Include="ScriptSection.cpp" />
+    <ClCompile Include="ScriptTest.cpp" />
+    <ClCompile Include="ScrollLineView.cpp" />
+    <ClCompile Include="SelectTemplateDlg.cpp" />
+    <ClCompile Include="Send.cpp" />
+    <ClCompile Include="SendAbort.cpp" />
+    <ClCompile Include="SendAckAlarm.cpp" />
+    <ClCompile Include="SendAddListElement.cpp" />
+    <ClCompile Include="SendBVLCI.cpp" />
+    <ClCompile Include="SendBVLCResult.cpp" />
+    <ClCompile Include="SendChangeListError.cpp" />
+    <ClCompile Include="SendComplexACK.cpp" />
+    <ClCompile Include="SendConfCOVNotification.cpp" />
+    <ClCompile Include="SendConfEventNotification.cpp" />
+    <ClCompile Include="SendConfirmedRequest.cpp" />
+    <ClCompile Include="SendConfTextMsg.cpp" />
+    <ClCompile Include="SendCreateObject.cpp" />
+    <ClCompile Include="SendCreateObjectACK.cpp" />
+    <ClCompile Include="SendCreateObjectError.cpp" />
+    <ClCompile Include="SendDeleteFDTEntry.cpp" />
+    <ClCompile Include="SendDeleteObject.cpp" />
+    <ClCompile Include="SendDevice.cpp" />
+    <ClCompile Include="SendDeviceCommCtrl.cpp" />
+    <ClCompile Include="SendDisconnectCTN.cpp" />
+    <ClCompile Include="SendEnet.cpp" />
+    <ClCompile Include="SendError.cpp" />
+    <ClCompile Include="SendEstablishCTN.cpp" />
+    <ClCompile Include="SendGetAlarmSummary.cpp" />
+    <ClCompile Include="SendGetAlarmSummaryACK.cpp" />
+    <ClCompile Include="SendGetEnrollmentSummary.cpp" />
+    <ClCompile Include="SendGetEnrollmentSummaryACK.cpp" />
+    <ClCompile Include="SendGetEventInfo.cpp" />
+    <ClCompile Include="SendGetEventInfoACK.cpp" />
+    <ClCompile Include="SendIAm.cpp" />
+    <ClCompile Include="SendIAmRTN.cpp" />
+    <ClCompile Include="SendICouldBeRTN.cpp" />
+    <ClCompile Include="SendIHave.cpp" />
+    <ClCompile Include="SendInitRT.cpp" />
+    <ClCompile Include="SendInitRTAck.cpp" />
+    <ClCompile Include="SendIP.cpp" />
+    <ClCompile Include="SendMSTP.cpp" />
+    <ClCompile Include="SendNPCI.cpp" />
+    <ClCompile Include="SendNull.cpp" />
+    <ClCompile Include="SendPage.cpp" />
+    <ClCompile Include="SendRaw.cpp" />
+    <ClCompile Include="SendReadBDT.cpp" />
+    <ClCompile Include="SendReadBDTAck.cpp" />
+    <ClCompile Include="SendReadFDT.cpp" />
+    <ClCompile Include="SendReadFDTAck.cpp" />
+    <ClCompile Include="SendReadFile.cpp" />
+    <ClCompile Include="SendReadFileACK.cpp" />
+    <ClCompile Include="SendReadProp.cpp" />
+    <ClCompile Include="SendReadPropACK.cpp" />
+    <ClCompile Include="SendReadPropMult.cpp" />
+    <ClCompile Include="SendReadPropMultACK.cpp" />
+    <ClCompile Include="SendReadRange.cpp" />
+    <ClCompile Include="SendRegisterFD.cpp" />
+    <ClCompile Include="SendReinitDevice.cpp" />
+    <ClCompile Include="SendReject.cpp" />
+    <ClCompile Include="SendRejectMTN.cpp" />
+    <ClCompile Include="SendRemoveListElement.cpp" />
+    <ClCompile Include="SendRouterAvailable.cpp" />
+    <ClCompile Include="SendRouterBusy.cpp" />
+    <ClCompile Include="SendSegmentACK.cpp" />
+    <ClCompile Include="SendSimpleACK.cpp" />
+    <ClCompile Include="SendSubscribeCOV.cpp" />
+    <ClCompile Include="SendSubscribeCOVProperty.cpp" />
+    <ClCompile Include="SendTest.cpp" />
+    <ClCompile Include="SendTimeSync.cpp" />
+    <ClCompile Include="SendUnconfCOVNotification.cpp" />
+    <ClCompile Include="SendUnconfEventNotification.cpp" />
+    <ClCompile Include="SendUnconfTextMsg.cpp" />
+    <ClCompile Include="SendUTCTimeSync.cpp" />
+    <ClCompile Include="SendVendorNPDU.cpp" />
+    <ClCompile Include="SendVTClose.cpp" />
+    <ClCompile Include="SendVTCloseError.cpp" />
+    <ClCompile Include="SendVTData.cpp" />
+    <ClCompile Include="SendVTDataACK.cpp" />
+    <ClCompile Include="SendVTOpen.cpp" />
+    <ClCompile Include="SendVTOpenACK.cpp" />
+    <ClCompile Include="SendWhoHas.cpp" />
+    <ClCompile Include="SendWhoIs.cpp" />
+    <ClCompile Include="SendWhoIsRTN.cpp" />
+    <ClCompile Include="SendWriteBDT.cpp" />
+    <ClCompile Include="SendWriteFile.cpp" />
+    <ClCompile Include="SendWriteFileACK.cpp" />
+    <ClCompile Include="SendWriteProp.cpp" />
+    <ClCompile Include="SendWritePropMult.cpp" />
+    <ClCompile Include="SendWritePropMultError.cpp" />
+    <ClCompile Include="sizecbar.cpp" />
+    <ClCompile Include="StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Sniffer\StringTables.cpp" />
+    <ClCompile Include="Statistics\supergridctrl.cpp" />
+    <ClCompile Include="Statistics\TreeListCtrl.cpp" />
+    <ClCompile Include="VdbPrint.cpp" />
+    <ClCompile Include="VTS.cpp" />
+    <ClCompile Include="VTSActionCommandDlg.cpp" />
+    <ClCompile Include="VTSActionDlg.cpp" />
+    <ClCompile Include="VTSActionListDlg.cpp" />
+    <ClCompile Include="VTSAddressBindingDlg.cpp" />
+    <ClCompile Include="VTSAny.cpp" />
+    <ClCompile Include="DUDAPI\Vtsapi32.cpp" />
+    <ClCompile Include="VTSBackupRestoreDlg.cpp" />
+    <ClCompile Include="SendReceiveExecutorProgressDlg.cpp" />
+    <ClCompile Include="VTSBACnetTypeGenericPage.cpp" />
+    <ClCompile Include="VTSBinaryPVDlg.cpp" />
+    <ClCompile Include="VTSCalendarEntryDlg.cpp" />
+    <ClCompile Include="VTSClientCOVDlg.cpp" />
+    <ClCompile Include="VTSCOVSubscriptionDlg.cpp" />
+    <ClCompile Include="VTSCtrl.cpp" />
+    <ClCompile Include="VTSDailyScheduleDlg.cpp" />
+    <ClCompile Include="VTSDateRangeDlg.cpp" />
+    <ClCompile Include="VTSDateTimeDlg.cpp" />
+    <ClCompile Include="VTSDaysOfWeekDlg.cpp" />
+    <ClCompile Include="VTSDestinationDlg.cpp" />
+    <ClCompile Include="VTSDeviceObjectPropertyReferenceDlg.cpp" />
+    <ClCompile Include="VTSDeviceObjectReferenceDlg.cpp" />
+    <ClCompile Include="VTSDeviceStatusDlg.cpp" />
+    <ClCompile Include="VTSDevicesTreeDevPage.cpp" />
+    <ClCompile Include="VTSDevicesTreeDlg.cpp" />
+    <ClCompile Include="VTSDevicesTreeObjPage.cpp" />
+    <ClCompile Include="VTSDevicesTreeOptPage.cpp" />
+    <ClCompile Include="VTSDevicesTreePropPage.cpp" />
+    <ClCompile Include="VTSDevicesTreeValuePage.cpp" />
+    <ClCompile Include="VTSDiscoveryDlg.cpp" />
+    <ClCompile Include="VTSDoc.cpp" />
+    <ClCompile Include="VTSEngineeringUnitsDlg.cpp" />
+    <ClCompile Include="VTSEventBitstringDlg.cpp" />
+    <ClCompile Include="VTSEventBufferReadyDlg.cpp" />
+    <ClCompile Include="VTSEventChangeOfStateDlg.cpp" />
+    <ClCompile Include="VTSEventChangeOfValueDlg.cpp" />
+    <ClCompile Include="VTSEventCommandFailureDlg.cpp" />
+    <ClCompile Include="VTSEventFloatLimitDlg.cpp" />
+    <ClCompile Include="VTSEventLifeSafetyDlg.cpp" />
+    <ClCompile Include="VTSEventOutOfRangeDlg.cpp" />
+    <ClCompile Include="VTSEventParameterDlg.cpp" />
+    <ClCompile Include="VTSEventStateDlg.cpp" />
+    <ClCompile Include="VTSEventTransitionBitsDlg.cpp" />
+    <ClCompile Include="VTSEventTypeDlg.cpp" />
+    <ClCompile Include="VTSFileAccessMethodDlg.cpp" />
+    <ClCompile Include="VTSFiltersDlg.cpp" />
+    <ClCompile Include="VTSInconsistentParsDlg.cpp" />
+    <ClCompile Include="VTSLifeSafetyModeDlg.cpp" />
+    <ClCompile Include="VTSLifeSafetyOperationDlg.cpp" />
+    <ClCompile Include="VTSLifeSafetyStateDlg.cpp" />
+    <ClCompile Include="VTSLimitEnable.cpp" />
+    <ClCompile Include="VTSLimitEnableDlg.cpp" />
+    <ClCompile Include="VTSListOfBitstringDlg.cpp" />
+    <ClCompile Include="VTSListOfDestinationDlg.cpp" />
+    <ClCompile Include="VTSListOfLifeSafetyStateDlg.cpp" />
+    <ClCompile Include="VTSListOfPropertyStatesDlg.cpp" />
+    <ClCompile Include="VTSListOfReadAccessResultDlg.cpp" />
+    <ClCompile Include="VTSListOfReadAccessSpecDlg.cpp" />
+    <ClCompile Include="VTSListOfTimeStampDlg.cpp" />
+    <ClCompile Include="VTSListOfUnsignedDlg.cpp" />
+    <ClCompile Include="VTSLogRecordDlg.cpp" />
+    <ClCompile Include="VTSLogStatusDlg.cpp" />
+    <ClCompile Include="VTSMaintenanceDlg.cpp" />
+    <ClCompile Include="VTSNamesDlg.cpp" />
+    <ClCompile Include="VTSNotificationParameters.cpp" />
+    <ClCompile Include="VTSNotifyBitstring.cpp" />
+    <ClCompile Include="VTSNotifyBufferReady.cpp" />
+    <ClCompile Include="VTSNotifyChgLifeSafety.cpp" />
+    <ClCompile Include="VTSNotifyCmdFailure.cpp" />
+    <ClCompile Include="VTSNotifyComplex.cpp" />
+    <ClCompile Include="VTSNotifyExtended.cpp" />
+    <ClCompile Include="VTSNotifyFloatLimit.cpp" />
+    <ClCompile Include="VTSNotifyOutOfRange.cpp" />
+    <ClCompile Include="VTSNotifyPage.cpp" />
+    <ClCompile Include="VTSNotifyState.cpp" />
+    <ClCompile Include="VTSNotifyTypeDlg.cpp" />
+    <ClCompile Include="VTSNotifyUnsignedRange.cpp" />
+    <ClCompile Include="VTSNotifyValue.cpp" />
+    <ClCompile Include="VTSObjectIdentifierDialog.cpp" />
+    <ClCompile Include="VTSObjectPropertyReferenceDlg.cpp" />
+    <ClCompile Include="VTSObjectPropertyValueDlg.cpp" />
+    <ClCompile Include="VTSObjectTypeDlg.cpp" />
+    <ClCompile Include="VTSObjectTypesSupportedDlg.cpp" />
+    <ClCompile Include="VTSPacket.cpp" />
+    <ClCompile Include="VTSPacketDB.cpp" />
+    <ClCompile Include="VTSPolarityDlg.cpp" />
+    <ClCompile Include="VTSPortARCNETDialog.cpp" />
+    <ClCompile Include="VTSPortDlg.cpp" />
+    <ClCompile Include="VTSPortEthernetDialog.cpp" />
+    <ClCompile Include="VTSPortIPDialog.cpp" />
+    <ClCompile Include="VTSPortMSTPDialog.cpp" />
+    <ClCompile Include="ptp\VTSPortPTPDialog.cpp" />
+    <ClCompile Include="VTSPreferences.cpp" />
+    <ClCompile Include="VTSPreferencesDlg.cpp" />
+    <ClCompile Include="VTSPriorityArrayDlg.cpp" />
+    <ClCompile Include="VTSPriorityValueDlg.cpp" />
+    <ClCompile Include="VTSProgramErrorDlg.cpp" />
+    <ClCompile Include="VTSProgramRequestDlg.cpp" />
+    <ClCompile Include="VTSProgramStateDlg.cpp" />
+    <ClCompile Include="VTSPropertyIdentifierDlg.cpp" />
+    <ClCompile Include="VTSPropertyPage.cpp" />
+    <ClCompile Include="VTSPropertyReferenceDlg.cpp" />
+    <ClCompile Include="VTSPropertyStatesDlg.cpp" />
+    <ClCompile Include="VTSPropertyValueDlg.cpp" />
+    <ClCompile Include="VTSPropValue.cpp" />
+    <ClCompile Include="VTSRecipientDlg.cpp" />
+    <ClCompile Include="VTSRecipientProcess.cpp" />
+    <ClCompile Include="VTSReliabilityDlg.cpp" />
+    <ClCompile Include="VTSResultFlasDlg.cpp" />
+    <ClCompile Include="VTSSegmentationDlg.cpp" />
+    <ClCompile Include="VTSServicesSupportedDlg.cpp" />
+    <ClCompile Include="VTSSessionKeyDlg.cpp" />
+    <ClCompile Include="VTSSetPointReferenceDlg.cpp" />
+    <ClCompile Include="VTSSilenceStateDlg.cpp" />
+    <ClCompile Include="VTSSpecialEventDlg.cpp" />
+    <ClCompile Include="Statistics\VTSStatisticsCollector.cpp" />
+    <ClCompile Include="Statistics\VTSStatisticsDlg.cpp" />
+    <ClCompile Include="Statistics\VTSStatisticsOptionsDlg.cpp" />
+    <ClCompile Include="VTSStatusFlagsDlg.cpp" />
+    <ClCompile Include="VTSTimeStamp.cpp" />
+    <ClCompile Include="VTSTimeStampDlg.cpp" />
+    <ClCompile Include="VTSTimeValueDlg.cpp" />
+    <ClCompile Include="VTSVendorPropIDDlg.cpp" />
+    <ClCompile Include="VTSVTClassDlg.cpp" />
+    <ClCompile Include="VTSVTSessionDlg.cpp" />
+    <ClCompile Include="VTSWeekNDayDlg.cpp" />
+    <ClCompile Include="VTSWinMSTPPort.cpp" />
+    <ClCompile Include="ptp\VTSWinPTPPort.cpp" />
+    <ClCompile Include="BACnetLibrary\WinBACnetTaskManager.cpp" />
+    <ClCompile Include="BACnetLibrary\WinIP.cpp" />
+    <ClCompile Include="WinMSTP.cpp" />
+    <ClCompile Include="ptp\WinPTP.cpp" />
+    <ClCompile Include="BACnetLibrary\WinWinPcap.cpp" />
+    <ClCompile Include="WPRPList.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="VTS.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DiscoveryExecutor.h" />
+    <ClInclude Include="SendNetworkNumberIs.h" />
+    <ClInclude Include="SendReceiveExecutor.h" />
+    <ClInclude Include="SendWhatIsNetworkNumber.h" />
+    <ClInclude Include="Sniffer\Bacfuncs.h" />
+    <ClInclude Include="BACnetLibrary\BACnet.hpp" />
+    <ClInclude Include="BACnetLibrary\BACnetBBMD.hpp" />
+    <ClInclude Include="BACnetLibrary\BACnetBIPForeign.hpp" />
+    <ClInclude Include="BACnetLibrary\BACnetBIPSimple.hpp" />
+    <ClInclude Include="BACnetLibrary\BACnetBTR.hpp" />
+    <ClInclude Include="BACnetLibrary\BACnetIP.hpp" />
+    <ClInclude Include="BACnetLibrary\BACnetRouter.hpp" />
+    <ClInclude Include="BACnetLibrary\BACnetTimer.hpp" />
+    <ClInclude Include="BACnetLibrary\BACnetVIPLAN.hpp" />
+    <ClInclude Include="BACnetLibrary\BACnetVLAN.hpp" />
+    <ClInclude Include="DUDAPI\Bacprim.h" />
+    <ClInclude Include="Sniffer\Bacproto.h" />
+    <ClInclude Include="BakRestoreExecutor.h" />
+    <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="ColorSettingDlg.h" />
+    <ClInclude Include="DUDAPI\Db.h" />
+    <ClInclude Include="DetailTreeCtrl.h" />
+    <ClInclude Include="DetailView.h" />
+    <ClInclude Include="DockingDetailViewBar.h" />
+    <ClInclude Include="DockingEPICSViewBar.h" />
+    <ClInclude Include="DockingHexViewbar.h" />
+    <ClInclude Include="DUDAPI\Dudapi.h" />
+    <ClInclude Include="DUDAPI\DUDTOOL.H" />
+    <ClInclude Include="EditResentPktDlg.h" />
+    <ClInclude Include="DUDAPI\EPICSConsCheck.h" />
+    <ClInclude Include="EPICSTreeView.h" />
+    <ClInclude Include="EPICSViewInfoPanel.h" />
+    <ClInclude Include="EPICSViewNode.h" />
+    <ClInclude Include="EPICSViewPropPanel.h" />
+    <ClInclude Include="FileVersionInfo\file_ver.h" />
+    <ClInclude Include="FrameContext.h" />
+    <ClInclude Include="GoToLineDlg.h" />
+    <ClInclude Include="HexView.h" />
+    <ClInclude Include="InconsistentParsExecutor.h" />
+    <ClInclude Include="GetMACAddress\IPExport.h" />
+    <ClInclude Include="GetMACAddress\IPHlpApi.h" />
+    <ClInclude Include="GetMACAddress\IPTypes.h" />
+    <ClInclude Include="LineNumCtrl.h" />
+    <ClInclude Include="ListSummaryCache.h" />
+    <ClInclude Include="ListSummaryView.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="md5.h" />
+    <ClInclude Include="MSTP_NBLinkDlg.h" />
+    <ClInclude Include="NBLink\nbsettings.h" />
+    <ClInclude Include="BACnetLibrary\NTDDNDIS.H" />
+    <ClInclude Include="VTSDiscoveryDlg.h" />
+    <ClInclude Include="WinPcap\PCAP.H" />
+    <ClInclude Include="Sniffer\PI.h" />
+    <ClInclude Include="DUDAPI\Propid.h" />
+    <ClInclude Include="DUDAPI\PROPS.H" />
+    <ClInclude Include="ptp\ptp.h" />
+    <ClInclude Include="ReadAllPropSettingsDlg.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="scbarcf.h" />
+    <ClInclude Include="scbarg.h" />
+    <ClInclude Include="ScriptBase.h" />
+    <ClInclude Include="ScriptCommand.h" />
+    <ClInclude Include="ScriptContentTree.h" />
+    <ClInclude Include="ScriptDocument.h" />
+    <ClInclude Include="ScriptEdit.h" />
+    <ClInclude Include="ScriptEditIncludeDlg.h" />
+    <ClInclude Include="ScriptExecMsg.h" />
+    <ClInclude Include="ScriptExecutor.h" />
+    <ClInclude Include="ScriptFrame.h" />
+    <ClInclude Include="ScriptIfdefHandler.h" />
+    <ClInclude Include="ScriptKeywords.h" />
+    <ClInclude Include="ScriptLoadResults.h" />
+    <ClInclude Include="ScriptMakeDlg.h" />
+    <ClInclude Include="ScriptMsgMake.h" />
+    <ClInclude Include="ScriptPacket.h" />
+    <ClInclude Include="ScriptParmList.h" />
+    <ClInclude Include="ScriptParmUpdate.h" />
+    <ClInclude Include="ScrollLineView.h" />
+    <ClInclude Include="SelectTemplateDlg.h" />
+    <ClInclude Include="Send.h" />
+    <ClInclude Include="SendAbort.h" />
+    <ClInclude Include="SendAckAlarm.h" />
+    <ClInclude Include="SendAddListElement.h" />
+    <ClInclude Include="SendBVLCI.h" />
+    <ClInclude Include="SendBVLCResult.h" />
+    <ClInclude Include="SendChangeListError.h" />
+    <ClInclude Include="SendComplexACK.h" />
+    <ClInclude Include="SendConfCOVNotification.h" />
+    <ClInclude Include="SendConfEventNotification.h" />
+    <ClInclude Include="SendConfirmedRequest.h" />
+    <ClInclude Include="SendConfTextMsg.h" />
+    <ClInclude Include="SendCreateObject.h" />
+    <ClInclude Include="SendCreateObjectACK.h" />
+    <ClInclude Include="SendCreateObjectError.h" />
+    <ClInclude Include="SendDeleteFDTEntry.h" />
+    <ClInclude Include="SendDeleteObject.h" />
+    <ClInclude Include="SendDevice.h" />
+    <ClInclude Include="SendDeviceCommCtrl.h" />
+    <ClInclude Include="SendDisconnectCTN.h" />
+    <ClInclude Include="SendEnet.h" />
+    <ClInclude Include="SendError.h" />
+    <ClInclude Include="SendEstablishCTN.h" />
+    <ClInclude Include="SendGetAlarmSummary.h" />
+    <ClInclude Include="SendGetAlarmSummaryACK.h" />
+    <ClInclude Include="SendGetEnrollmentSummary.h" />
+    <ClInclude Include="SendGetEnrollmentSummaryACK.h" />
+    <ClInclude Include="SendGetEventInfo.h" />
+    <ClInclude Include="SendGetEventInfoACK.h" />
+    <ClInclude Include="SendIAm.h" />
+    <ClInclude Include="SendIAmRTN.h" />
+    <ClInclude Include="SendICouldBeRTN.h" />
+    <ClInclude Include="SendIHave.h" />
+    <ClInclude Include="SendInitRT.h" />
+    <ClInclude Include="SendInitRTAck.h" />
+    <ClInclude Include="SendIP.h" />
+    <ClInclude Include="SendMSTP.h" />
+    <ClInclude Include="SendNPCI.h" />
+    <ClInclude Include="SendNull.h" />
+    <ClInclude Include="SendPage.h" />
+    <ClInclude Include="SendRaw.h" />
+    <ClInclude Include="SendReadBDT.h" />
+    <ClInclude Include="SendReadBDTAck.h" />
+    <ClInclude Include="SendReadFDT.h" />
+    <ClInclude Include="SendReadFDTAck.h" />
+    <ClInclude Include="SendReadFile.h" />
+    <ClInclude Include="SendReadFileACK.h" />
+    <ClInclude Include="SendReadProp.h" />
+    <ClInclude Include="SendReadPropACK.h" />
+    <ClInclude Include="SendReadPropMult.h" />
+    <ClInclude Include="SendReadPropMultACK.h" />
+    <ClInclude Include="SendReadRange.h" />
+    <ClInclude Include="SendRegisterFD.h" />
+    <ClInclude Include="SendReinitDevice.h" />
+    <ClInclude Include="SendReject.h" />
+    <ClInclude Include="SendRejectMTN.h" />
+    <ClInclude Include="SendRemoveListElement.h" />
+    <ClInclude Include="SendRouterAvailable.h" />
+    <ClInclude Include="SendRouterBusy.h" />
+    <ClInclude Include="SendSegmentACK.h" />
+    <ClInclude Include="SendSimpleACK.h" />
+    <ClInclude Include="SendSubscribeCOV.h" />
+    <ClInclude Include="SendSubscribeCOVProperty.h" />
+    <ClInclude Include="SendTest.h" />
+    <ClInclude Include="SendTimeSync.h" />
+    <ClInclude Include="SendUnconfCOVNotification.h" />
+    <ClInclude Include="SendUnconfEventNotification.h" />
+    <ClInclude Include="SendUnconfTextMsg.h" />
+    <ClInclude Include="SendUTCTimeSync.h" />
+    <ClInclude Include="SendVendorNPDU.h" />
+    <ClInclude Include="SendVTClose.h" />
+    <ClInclude Include="SendVTCloseError.h" />
+    <ClInclude Include="SendVTData.h" />
+    <ClInclude Include="SendVTDataACK.h" />
+    <ClInclude Include="SendVTOpen.h" />
+    <ClInclude Include="SendVTOpenACK.h" />
+    <ClInclude Include="SendWhoHas.h" />
+    <ClInclude Include="SendWhoIs.h" />
+    <ClInclude Include="SendWhoIsRTN.h" />
+    <ClInclude Include="SendWriteBDT.h" />
+    <ClInclude Include="SendWriteFile.h" />
+    <ClInclude Include="SendWriteFileACK.h" />
+    <ClInclude Include="SendWriteProp.h" />
+    <ClInclude Include="SendWritePropMult.h" />
+    <ClInclude Include="SendWritePropMultError.h" />
+    <ClInclude Include="DUDAPI\Service.h" />
+    <ClInclude Include="Statistics\ServiceList.h" />
+    <ClInclude Include="sizecbar.h" />
+    <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="DUDAPI\Stdobj.h" />
+    <ClInclude Include="DUDAPI\Stdobjpr.h" />
+    <ClInclude Include="Sniffer\StringTables.h" />
+    <ClInclude Include="Statistics\supergridctrl.h" />
+    <ClInclude Include="Statistics\TreeListCtrl.h" />
+    <ClInclude Include="VdbPrint.h" />
+    <ClInclude Include="VTS.h" />
+    <ClInclude Include="VTSActionCommandDlg.h" />
+    <ClInclude Include="VTSActionDlg.h" />
+    <ClInclude Include="VTSActionListDlg.h" />
+    <ClInclude Include="VTSAddressBindingDlg.h" />
+    <ClInclude Include="VTSAny.h" />
+    <ClInclude Include="DUDAPI\Vtsapi.h" />
+    <ClInclude Include="VTSBackupRestoreDlg.h" />
+    <ClInclude Include="SendReceiveExecutorProgressDlg.h" />
+    <ClInclude Include="VTSBACnetTypeGenericPage.h" />
+    <ClInclude Include="VTSBinaryPVDlg.h" />
+    <ClInclude Include="VTSCalendarEntryDlg.h" />
+    <ClInclude Include="VTSClientCOVDlg.h" />
+    <ClInclude Include="VTSCOVSubscriptionDlg.h" />
+    <ClInclude Include="VTSCtrl.h" />
+    <ClInclude Include="VTSDailyScheduleDlg.h" />
+    <ClInclude Include="VTSDateRangeDlg.h" />
+    <ClInclude Include="VTSDateTimeDlg.h" />
+    <ClInclude Include="VTSDaysOfWeekDlg.h" />
+    <ClInclude Include="VTSDestinationDlg.h" />
+    <ClInclude Include="VTSDeviceObjectPropertyReferenceDlg.h" />
+    <ClInclude Include="VTSDeviceObjectReferenceDlg.h" />
+    <ClInclude Include="VTSDeviceStatusDlg.h" />
+    <ClInclude Include="VTSDevicesTreeDevPage.h" />
+    <ClInclude Include="VTSDevicesTreeDlg.h" />
+    <ClInclude Include="VTSDevicesTreeObjPage.h" />
+    <ClInclude Include="VTSDevicesTreeOptPage.h" />
+    <ClInclude Include="VTSDevicesTreePropPage.h" />
+    <ClInclude Include="VTSDevicesTreeValuePage.h" />
+    <ClInclude Include="VTSDoc.h" />
+    <ClInclude Include="VTSEngineeringUnitsDlg.h" />
+    <ClInclude Include="VTSEventBitstringDlg.h" />
+    <ClInclude Include="VTSEventBufferReadyDlg.h" />
+    <ClInclude Include="VTSEventChangeOfStateDlg.h" />
+    <ClInclude Include="VTSEventChangeOfValueDlg.h" />
+    <ClInclude Include="VTSEventCommandFailureDlg.h" />
+    <ClInclude Include="VTSEventFloatLimitDlg.h" />
+    <ClInclude Include="VTSEventLifeSafetyDlg.h" />
+    <ClInclude Include="VTSEventOutOfRangeDlg.h" />
+    <ClInclude Include="VTSEventParameterDlg.h" />
+    <ClInclude Include="VTSEventStateDlg.h" />
+    <ClInclude Include="VTSEventTransitionBitsDlg.h" />
+    <ClInclude Include="VTSEventTypeDlg.h" />
+    <ClInclude Include="VTSFileAccessMethodDlg.h" />
+    <ClInclude Include="VTSFiltersDlg.h" />
+    <ClInclude Include="VTSInconsistentParsDlg.h" />
+    <ClInclude Include="VTSLifeSafetyModeDlg.h" />
+    <ClInclude Include="VTSLifeSafetyOperationDlg.h" />
+    <ClInclude Include="VTSLifeSafetyStateDlg.h" />
+    <ClInclude Include="VTSLimitEnable.h" />
+    <ClInclude Include="VTSLimitEnableDlg.h" />
+    <ClInclude Include="VTSListOfBitstringDlg.h" />
+    <ClInclude Include="VTSListOfDestinationDlg.h" />
+    <ClInclude Include="VTSListOfLifeSafetyStateDlg.h" />
+    <ClInclude Include="VTSListOfPropertyStatesDlg.h" />
+    <ClInclude Include="VTSListOfReadAccessResultDlg.h" />
+    <ClInclude Include="VTSListOfReadAccessSpecDlg.h" />
+    <ClInclude Include="VTSListOfTimeStampDlg.h" />
+    <ClInclude Include="VTSListOfUnsignedDlg.h" />
+    <ClInclude Include="VTSLogRecordDlg.h" />
+    <ClInclude Include="VTSLogStatusDlg.h" />
+    <ClInclude Include="vtsmaintenancedlg.h" />
+    <ClInclude Include="VTSNamesDlg.h" />
+    <ClInclude Include="VTSNotificationParameters.h" />
+    <ClInclude Include="VTSNotifyBitstring.h" />
+    <ClInclude Include="VTSNotifyBufferReady.h" />
+    <ClInclude Include="VTSNotifyCmdFailure.h" />
+    <ClInclude Include="VTSNotifyComplex.h" />
+    <ClInclude Include="VTSNotifyFloatLimit.h" />
+    <ClInclude Include="VTSNotifyOutOfRange.h" />
+    <ClInclude Include="VTSNotifyPage.h" />
+    <ClInclude Include="VTSNotifyState.h" />
+    <ClInclude Include="VTSNotifyTypeDlg.h" />
+    <ClInclude Include="VTSNotifyValue.h" />
+    <ClInclude Include="VTSObjectIdentifierDialog.h" />
+    <ClInclude Include="VTSObjectPropertyReferenceDlg.h" />
+    <ClInclude Include="VTSObjectPropertyValueDlg.h" />
+    <ClInclude Include="VTSObjectTypeDlg.h" />
+    <ClInclude Include="VTSObjectTypesSupportedDlg.h" />
+    <ClInclude Include="VTSPacket.h" />
+    <ClInclude Include="VTSPacketDB.h" />
+    <ClInclude Include="VTSPolarityDlg.h" />
+    <ClInclude Include="VTSPortARCNETDialog.h" />
+    <ClInclude Include="VTSPortDlg.h" />
+    <ClInclude Include="VTSPortEthernetDialog.h" />
+    <ClInclude Include="VTSPortIPDialog.h" />
+    <ClInclude Include="VTSPortMSTPDialog.h" />
+    <ClInclude Include="ptp\VTSPortPTPDialog.h" />
+    <ClInclude Include="VTSPreferences.h" />
+    <ClInclude Include="VTSPreferencesDlg.h" />
+    <ClInclude Include="VTSPriorityArrayDlg.h" />
+    <ClInclude Include="VTSPriorityValueDlg.h" />
+    <ClInclude Include="VTSProgramErrorDlg.h" />
+    <ClInclude Include="VTSProgramRequestDlg.h" />
+    <ClInclude Include="VTSProgramStateDlg.h" />
+    <ClInclude Include="VTSPropertyIdentifierDlg.h" />
+    <ClInclude Include="VTSPropertyPage.h" />
+    <ClInclude Include="VTSPropertyReferenceDlg.h" />
+    <ClInclude Include="VTSPropertyStatesDlg.h" />
+    <ClInclude Include="VTSPropertyValueDlg.h" />
+    <ClInclude Include="VTSPropValue.h" />
+    <ClInclude Include="VTSQueue.h" />
+    <ClInclude Include="VTSRecipientDlg.h" />
+    <ClInclude Include="VTSRecipientProcess.h" />
+    <ClInclude Include="VTSReliabilityDlg.h" />
+    <ClInclude Include="VTSResultFlasDlg.h" />
+    <ClInclude Include="VTSSegmentationDlg.h" />
+    <ClInclude Include="VTSServicesSupportedDlg.h" />
+    <ClInclude Include="VTSSessionKeyDlg.h" />
+    <ClInclude Include="VTSSetPointReferenceDlg.h" />
+    <ClInclude Include="VTSSilenceStateDlg.h" />
+    <ClInclude Include="VTSSpecialEventDlg.h" />
+    <ClInclude Include="Statistics\VTSStatisticsCollector.h" />
+    <ClInclude Include="Statistics\VTSStatisticsDlg.h" />
+    <ClInclude Include="Statistics\VTSStatisticsOptionsDlg.h" />
+    <ClInclude Include="VTSStatusFlagsDlg.h" />
+    <ClInclude Include="VTSTimeStamp.h" />
+    <ClInclude Include="VTSTimeStampDlg.h" />
+    <ClInclude Include="VTSTimeValueDlg.h" />
+    <ClInclude Include="VTSVendorPropIDDlg.h" />
+    <ClInclude Include="VTSVTClassDlg.h" />
+    <ClInclude Include="VTSVTSessionDlg.h" />
+    <ClInclude Include="VTSWeekNDayDlg.h" />
+    <ClInclude Include="VTSWinMSTPPort.h" />
+    <ClInclude Include="ptp\VTSWinPTPPort.h" />
+    <ClInclude Include="BACnetLibrary\WinBACnetTaskManager.hpp" />
+    <ClInclude Include="BACnetLibrary\WinIP.hpp" />
+    <ClInclude Include="WinMSTP.h" />
+    <ClInclude Include="ptp\WinPTP.h" />
+    <ClInclude Include="BACnetLibrary\WinWinPcap.hpp" />
+    <ClInclude Include="WPRPList.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="FileVersionInfo\file_ver.inl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="res\AboutBox.bmp" />
+    <CustomBuild Include="res\BACnetCheck.bmp" />
+    <CustomBuild Include="res\BACnetCheckT.bmp" />
+    <CustomBuild Include="res\BACnetMake.bmp" />
+    <CustomBuild Include="res\BACnetMakeT.bmp" />
+    <CustomBuild Include="res\bitmap1.bmp" />
+    <CustomBuild Include="res\BMALogo.bmp" />
+    <CustomBuild Include="res\bmp00001.bmp" />
+    <CustomBuild Include="res\colors.bmp" />
+    <CustomBuild Include="res\contents.bmp" />
+    <CustomBuild Include="res\cursor1.cur" />
+    <CustomBuild Include="res\cursor2.cur" />
+    <CustomBuild Include="res\devtree.bmp" />
+    <CustomBuild Include="res\epicstree.bmp" />
+    <CustomBuild Include="res\globalba.bmp" />
+    <CustomBuild Include="res\globalbal.bmp" />
+    <CustomBuild Include="res\ico00001.ico" />
+    <CustomBuild Include="res\idr_epic.ico" />
+    <CustomBuild Include="res\idr_vtst.ico" />
+    <CustomBuild Include="mdi.ico" />
+    <CustomBuild Include="res\nblink.bmp" />
+    <CustomBuild Include="res\packettr.bmp" />
+    <CustomBuild Include="res\RECVPKT.ico" />
+    <CustomBuild Include="res\Scripttool.bmp" />
+    <CustomBuild Include="res\SENDPKT.ico" />
+    <CustomBuild Include="res\Toolbar.bmp" />
+    <CustomBuild Include="res\toolbar1.bmp" />
+    <CustomBuild Include="res\VTS.ico" />
+    <CustomBuild Include="res\VTS.rc2">
+      <FileType>RC</FileType>
+    </CustomBuild>
+    <CustomBuild Include="res\VTSDoc.ico" />
+    <CustomBuild Include="res\WinPCapLogo.bmp" />
+    <CustomBuild Include="res\WorkSpcTool.bmp" />
+    <CustomBuild Include="NBLink\nb_link_settings.dll">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy                                                          %(FullPath)                                                          $(OutDir) </Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)\nb_link_settings.dll;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy                                                          %(FullPath)                                                          $(OutDir) </Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing Custom Build Step on %(FullPath)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)\nb_link_settings.dll;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="ReadMe.txt" />
+    <CustomBuild Include="VTS.reg">
+      <FileType>Document</FileType>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="WinPcap\wpcap.lib" />
+    <Library Include="NBLink\nb_link_settings.lib" />
+    <Library Include="GetMACAddress\IPHlpApi.Lib" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="VTS.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

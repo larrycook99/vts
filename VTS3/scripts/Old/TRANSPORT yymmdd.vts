@@ -1,0 +1,1148 @@
+;-------------------------------------------------------------------------------------
+  ;  Transport Service Execution Tests
+  ;    Draft
+  ;  TRANSPORT yymmdd.vts
+  ;  Ver 1         10/19/01        Bradsp          Initial version  
+  ;  
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and "(T)" refers 
+  ;	to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Positive ReadProperty Tests
+
+  ;------------------------------------------------------------------------------------- 
+  ; Notes on Hardcoding and other changes needing to be made outside of the setup section including hard coded objects and properties 
+  ; Items marked and found with *** are hardcoded or the error messages must be manually verified in the trace. 
+  ;
+  ;
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG  All objects and properties are listed here including notes on there use
+  ;
+
+  -- GLOBAL
+            DEVICEOBJ = DEVICE, 3050000
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------MISC-------------------------------------------------
+ -- TEST #A READPROPERTY INCONSISTANT TEST 13.4.1 REFERENCES (T)9.15.2.1
+ -- TEST #B - Writting with a Property Value Having the Wrong Datatype
+ -- TEST #C - READING WITH AN INVALID TAG
+ -- TEST #D - MISSING REQUIRED PARAMETER
+ -- TEST #E - TOO MANY PARAMETER
+ -- TEST #F - Processing Application Layer Messages Originating from Remote Networks 10.1 (remove BODY comments before running this test. - DO NOT CHANE THE DA,DNET AND DADR)
+ -- TEST #G - 13.1.X.2  DT doesn't support segmented response (THIS TEST IS THE LAST TEST IN THIS SCRIPT) tURN SEGMENTATION SEND(DEBUG)
+
+
+
+ -------------------------------------------------UNCONFIRMED-------------------------------------------------
+ -- 1 Who-Is Unconfirmed Services that are not supported MANUALLY VERIFY THAT THE DEVICE DID NOT RESPOND (ALL UNCONFIRMED SERVICE TESTS IN THIS SECTION RUN AS ONE TEST WITHIN THIS SCRIPT.)
+ -- 2 Who-Has Unconfirmed Services that are not supported
+ -- 3 TimeSynchronization Unconfirmed Services that are not supported
+ -- 4 UNCONFIRMEDTEXTMESSAGE Unconfirmed Services that are not supported
+ -- 5 ***DEBUG UNCONFIRMEDEVENTNOTIFICATION Unconfirmed Services that are not supported
+ -- 6 UNCONFIRMEDCOVNOTIFICATION Unconfirmed Services that are not supported
+ -- 7 I-HAVE Unconfirmed Services that are not supported
+ -- 8 I-AM Unconfirmed Services that are not supported
+
+
+---------------------------------------------------CONFIRMED---------------------------------------------------
+ 
+ -- ALARM AND EVENT SERVICES
+ -- 0 ACKNOWLEDGE ALARM confirmed Services that are not supported (OK)
+ -- 1 CONFIRMEDCOVNOTIFICATION confirmed Services that are not supported (OK)
+ -- 2 CONFIRMEDEVENTNOTIFICATION confirmed Services that are not supported 
+ -- 3 GETALARM confirmed Services that are not supported  (OK)
+ -- 4 GETENROLLMENTSUMMARY confirmed Services that are not supported (OK)
+ -- 5 SUBSCRIBECOV confirmed Services that are not supported (OK)
+
+ -- FILE ACCESS SERVICES
+ -- 6 ATOMICREADFILE confirmed Services that are not supported  (OK)
+ -- 7 ATOMICWRITEFILE confirmed Services that are not supported 
+
+ -- OBJECT ACCESS SERVICES
+ -- 8 ADDLISTELEMENT confirmed Services that are not supported  (OK)
+ -- 9 REMOVELISTELEMENT confirmed Services that are not supported  (OK)
+ -- 10 CREATEOBJECT confirmed Services that are not supported  (OK)
+ -- 11 DELETEOBJECT confirmed Services that are not supported  (OK)
+ -- 12 READPROPERTY confirmed Services that are not supported  (OK)
+ -- 13 READPROPERTYCONDITIONAL confirmed Services that are not supported  (OK)
+ -- 14 READPROPERTYMULTIPLE confirmed Services that are not supported  (OK)
+ -- 15 WRITEPROPERTY confirmed Services that are not supported DEBUG (OK)
+ -- 16 WRITEPROPERTYMULTIPLE confirmed Services that are not supported  (OK)
+
+ -- REMOTE DEVICE MANAGEMENT
+ -- 17 DEVICECOMMUNICATIONCONTROL confirmed Services that are not supported DEBUG (OK)
+ -- 18 CONFIRMEDPRIVATETRANSFER confirmed Services that are not supported DEBUG (OK)
+ -- 19 CONFIRMEDTEXTMESSAGE confirmed Services that are not supported DEBUG (OK)
+ -- 20 REINITIALIZEDEVICE confirmed Services that are not supported DEBUG (OK)
+
+ -- VIRTUAL TERMINAL SERVICES
+ -- 21 VTOPEN confirmed Services that are not supported DEBUG (OK)
+ -- 22 VTCLOSE confirmed Services that are not supported DEBUG (OK)
+ -- 23 VTDATA confirmed Services that are not supported DEBUG (OK)
+
+ -- SECURITY SERVICES
+ -- 24 AUTHENTICATE confirmed Services that are not supported DEBUG (OK)
+ -- 25 REQUESTKEY confirmed Services that are not supported DEBUG (OK) 
+ 
+
+
+
+       
+  EVENT_ID = EVENT-ENROLLMENT, 1  
+  EVENT_STATE_HILIMIT = 3
+
+
+  ;-------------------------------------------------------------------------------------
+  ;------------------------------------------------------------------------------------ 
+
+  SECTION ReadProperty Service Execution Tests
+
+  -- Reference (T) Positive ReadProperty Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD.
+
+  ;-------------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------MISC-------------------------------------------------
+
+;-------------------------------------------------------------------------------------
+TEST #A READPROPERTY INCONSISTANT TEST 13.4.1 REFERENCES (T)9.15.2.1
+  --- This test case verifies that the IUT can execute ReadProperty Service Request
+  --- when the requested property value is not an arry but an array index is
+  --- inculded in the service request.
+
+
+DEPENDENCIES none
+ 
+REFERENCE 13.4.2  SUBREF (B)15.5,15.5.1.1.1; (T)9.15.2.1
+
+SEND (
+  PDU         = Confirmed_Request
+  SERVICE     = ReadProperty
+  OBJECT      = 0, DEVICEOBJ           
+  PROPERTY    = 1, model-name           ; (Device-model_Name or other property that is not an array)
+  Unsigned    = 2, 1			; Array[1] reads array one
+  )
+
+EXPECT (
+  PDU         = ERROR
+  ERROR-CHoice = ReadProperty
+  ENUMERATED = 5                       ;  5 = error class services  pg 363 in the bacnet standard
+  ENUMERATED = 7	               ;  7 = error code Inconsistent-Parameters 
+    ) 
+OR (
+  PDU         = ERROR
+  ERROR-CHoice = ReadProperty
+  ENUMERATED = 2                      ;  5 = error class services  pg 363 in the bacnet standard
+  ENUMERATED = 42	              ;  42 = invaid array index 
+    ) 
+OR (
+  PDU         = reject
+  Reject-Reason = 2                   ; reject-reason = Inconsistent-Parameters
+  
+    ) 
+
+
+TEST #B - Writting with a Property Value Having the Wrong Datatype
+
+   --- This test case verifies that the IUT correctly responds to an attempt to write
+   --- a property value that has an invalid datatype.
+
+DEPENDENCIES None
+ 
+REFERENCE (B) 13.4.2   SUBREF WriteProperty Service and (T)9.19.2.3
+
+ SEND (
+   PDU                    = Confirmed-Request
+   Service                = WriteProperty
+   Object                 = 0, DEVICEOBJ
+   Property               = 1, LOCATION
+     OPENTAG 3
+       BOOLEAN            = 1              ; USE INCORRECT DATATYPE
+     CLOSETAG 3
+   )
+
+ EXPECT (
+   PDU        = Error
+   ERROR      = WriteProperty
+   ENUMERATED = 2 ; PROPERTY, 
+   Enumerated =  9 ; INVALID_DATATYPE
+   )
+
+ OR (
+   PDU           = Reject
+   REJECT-REASON = 3       ; INVALID_PARAMETER_DATATYPE
+   )
+
+
+TEST #C - READING WITH AN INVALID TAG
+
+ -- PURPOSE THIS TEST CASE VERIFIES THAT THE IUT CORRECTLY RESPONDS TO A MESSAGE CONTAINING AN INVALID TAG
+
+DEPENDENCIES None
+ 
+REFERENCE (B) 13.4.3   
+
+SEND (
+  PDU         = Confirmed_Request
+  SERVICE     = ReadProperty
+  OBJECT      = 0, DEVICEOBJ           
+  PROPERTY    = 2, model-name           
+  
+  )
+
+ EXPECT (
+   PDU           = Reject
+   REJECT-REASON = 4
+   )
+
+TEST #D - MISSING REQUIRED PARAMETER
+
+ -- PURPOSE THIS TEST CASE VERIFIES THAT THE IUT CORRECTLY RESPONDS TO A MESSAGE MISSING REQUIRED PARAMS
+
+DEPENDENCIES None
+ 
+REFERENCE (B) 13.4.4   
+
+SEND (
+  PDU         = Confirmed_Request
+  SERVICE     = ReadProperty
+  OBJECT      = 0, DEVICEOBJ           
+  
+  )
+
+ EXPECT (
+   PDU           = Reject
+   REJECT-REASON = 5   ; 5 = MISSING REQUIRED PARAMS
+   )
+
+
+TEST #E - MISSING REQUIRED PARAMETER
+
+ -- PURPOSE THIS TEST CASE VERIFIES THAT THE IUT CORRECTLY RESPONDS TO A MESSAGE CONTAINS TOO MANY ARGUMENTS
+
+DEPENDENCIES None
+ 
+REFERENCE (B) 13.4.5   
+
+SEND (
+  PDU         = Confirmed_Request
+  SERVICE     = ReadProperty
+  OBJECT      = 0, DEVICEOBJ           
+  PROPERTY    = 1, model-name           
+  PROPERTY    = 1, model-name           
+  )
+
+ EXPECT (
+   PDU           = Reject
+   REJECT-REASON = 7   ; 7 = TOO MANY PARAMS
+   )
+
+-- TEST #F - Processing Application Layer Messages Originating from Remote Networks 10.1
+
+ -- Test Concept: The TD transmits a ReadProperty-Request message that contains network layer information 
+ -- indicating that it originated from a remote network. The response from the IUT shall include correct 
+ -- DNET and DADR information so that the message can reach the original requester. The MAC layer destination 
+ -- address in the response can be either a broadcast, indicating that the IUT does not know the address of the 
+ -- router, or the MAC address of the appropriate router.
+
+
+ -- Test Steps: 
+
+ -- 1.	TRANSMIT DESTINATION = IUT, SOURCE = TD,
+ --		SNET = 		(any network number that is not the local network),
+ --		SADR = 	(any valid MAC address consistent with the source network),
+ --		ReadProperty-Request,
+ --		'Object Identifier' = 	(any supported object),
+ --		'Property Identifier' =	(any required property of the specified object)
+ -- 2.	RECEIVE DESTINATION = LOCAL BROADCAST | (an appropriate router address), 
+ --		SOURCE = IUT,
+ --		DNET = 	(the SNET specified in step 1),
+ --		DADR = 	(the SADR specified in step 1),
+ --		Hop Count = 	255,
+ --		ReadProperty-ACK,
+ --		'Object Identifier' =	(the object specified in step 1),
+ --		'Property Identifier' =	(the property specified in step 1),
+ --		'Property Value' =	(the value of the specified property as defined in the EPICS)
+
+-- DEPENDENCIES None
+
+--  REFERENCE (B) ReadProperty Service and (T) Reading Object Identifiers 10.1
+
+--  SEND (
+--      PDU = Confirmed-Request
+--      Service = ReadProperty
+--      Object = 0, OBJECT1
+--      Property = 1, Object-Identifier	; Type BACnetObjectIdentifier
+--    )
+
+--    EXPECT (
+--      PDU = ComplexAck
+--      Service = ReadProperty
+--      Object = 0, OBJECT1
+--      Property = 1, Object-Identifier
+--        OpenTag 3
+--        -- objectidentifier = 3, object1
+--         AL = {Object-Identifier}
+--        CloseTag 3
+--    )
+
+
+
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------UNCONFIRMED-------------------------------------------------
+
+-- Purpose: This test case verifies that the IUT will quietly accept and discard any unconfirmed services 
+-- that it does not support. When determining the set of services to send to the IUT, the UnconfirmedPrivateTransfer 
+-- service should be included regardless of whether the IUT supports it or not. The UnconfirmedPrivateTransfer service 
+-- shall be sent with a vendor ID/Service Number pair not supported by the device.
+
+  TEST #1a - 9.X.2 Unsupported Unconfirmed Services Test
+
+ --    1.	VERIFY(Device.SystemStatus == OPERATIONAL | OPERATIONAL_READ_ONLY)
+ --    2.	REPEAT X = (all unconfirmed services that the IUT does not execute) DO {
+ --		TRANSMIT X
+ --		BEFORE Internal Processing Fail Time 
+ --			CHECK(verify that the IUT did not reset and that the IUT did not send any packets)
+ --		VERIFY (the IUT's Device object), SystemStatus = (the value of 'System Status' read in step 1)
+
+ -- 1 Who-Is Unconfirmed Services that are not supported  
+       SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, DEVICEOBJ
+      Property = 1, SYSTEM-STATUS  	; Type BACnetObjectIdentifier
+    )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      ObjectIDENTIFIER = 0, DEVICEOBJ
+      Property = 1, SYSTEM-STATUS 
+      OPENTAG 3
+       ENUMERATED = 0
+      CLOSETAG 3
+     )
+    
+
+ -- 1 Who-Is Unconfirmed Services that are not supported  
+ 
+      SEND (
+      Destination = BROADCAST
+      PDU = Unconfirmed-Request
+      Service = Who-Is
+    )
+
+ -- 2 Who-Has Unconfirmed Services that are not supported
+   
+      SEND (
+      PDU = Unconfirmed-Request
+      Service = Who-Has
+      ObjectIDENTIFIER = 2, DEVICEOBJ 
+       )
+
+-- 3 TimeSynchronization Unconfirmed Services that are not supported
+
+      SEND (
+      PDU = Unconfirmed-Request
+      Service = TimeSynchronization
+       DATE = Friday, October 19, 2001
+       TIME = 18:10:17.00
+           )
+
+ -- 4 UNCONFIRMEDTEXTMESSAGE Unconfirmed Services that are not supported
+      SEND (
+      PDU = Unconfirmed-Request
+      Service = UNCONFIRMEDTEXTMESSAGE
+      Object = 0, DEVICEOBJ
+      ENUMERATED = 2, 0
+      CHARACTERSTRING = 3, "AAAA"
+           )
+
+-- 5 DEBUG UNCONFIRMEDEVENTNOTIFICATION Unconfirmed Services that are not supported
+      SEND (
+      PDU = Unconfirmed-Request
+      Service = UNCONFIRMEDEVENTNOTIFICATION
+      UNSIGNED = 0, 12
+      OBJECTIDENTIFIER = 1, DEVICE, 500
+      OBJECTIDENTIFIER = 2, DEVICEOBJ
+        OPENTAG 3
+         TIME = 0, 18:10:17.00
+        CLOSETAG 3
+      UNSIGNED = 4, 8
+      UNSIGNED8 = 5, 8
+      ENUMERATED = 6, 5
+      CHARSTRING = 7, "AA"
+   --   ENUMERATED = 8, 0
+    --  BOOLEAN = 9, 0
+    --  ENUMERATED = 10, 0
+    --  ENUMERATED = 11, 0
+     --  OPENTAG 12
+       
+     --  CLOSETAG 12
+      )
+
+ -- 6 UNCONFIRMEDCOVNOTIFICATION Unconfirmed Services that are not supported
+      SEND (
+      PDU = Unconfirmed-Request
+      Service = UNCONFIRMEDCOVNOTIFICATION
+      UNSIGNED = 0, 12
+      OBJECTIDENTIFIER = 1, DEVICE, 500
+      OBJECTIDENTIFIER = 2, DEVICE, 500
+      UNSIGNED = 3, 12
+      OPENTAG 4
+        ENUMERATED = 0, 58  ; MISSING ABSTRACT SYNTAX
+        CHARACTERSTRING = 2, "AAA"
+      CLOSETAG 4
+      )
+
+-- 7 I-HAVE Unconfirmed Services that are not supported
+      SEND (
+      PDU = Unconfirmed-Request
+      Service = I-HAVE
+      OBJECTIDENTIFIER = DEVICE, 100
+      OBJECTIDENTIFIER = DEVICE, 100
+      CHARACTERSTRING = "AAA"
+        )
+
+-- 8 I-AM Unconfirmed Services that are not supported
+      SEND (
+      PDU = Unconfirmed-Request
+      Service = I-AM
+      OBJECTIDENTIFIER = DEVICE, 100
+      UNSIGNED = 50
+      ENUMERATED = 0
+      UNSIGNED = 11
+      )
+
+ -- 9 UNCONFIRMEDPRIVATETRANSFER Unconfirmed Services that are not supported
+ SEND (
+      PDU = Unconfirmed-Request
+      Service = UNCONFIRMEDPRIVATETRANSFER
+      UNSIGNED = 0, 1212
+      UNSIGNED = 1, 1212
+      )
+
+-----------------------------------------------CONFIRMED-----------------------------------------------------
+
+
+-- Purpose: This test case verifies that the IUT will reject any confirmed services that it does not support.
+
+  TEST #2 - 9.X.1  Unsupported Confirmed Services Test
+
+ --    1.	REPEAT X = (all confirmed services that the IUT does not execute) DO {
+ --		TRANSMIT X
+ --		RECEIVE BACnet-Reject-PDU,
+ --			'Reject Reason' =			UNRECOGNIZED_SERVICE	
+
+-- ALARM AND EVENT SERVICES --
+
+ TEST #0 ACKNOWLEDGE ALARM confirmed Services that are not supported 
+
+     SEND (
+      PDU = Confirmed-Request
+      Service = AcknowledgeAlarm
+      UNSIGNED = 0, 2                    ; ack process id
+      OBJECTIDENTIFIER = 1, DEVICE, 500  ; even obj id
+      ENUMERATED = 2, 3                  ; eventstate ack
+       OPENTAG 3                        
+        TIME = 0, 18:10:17.00            ; 
+       CLOSETAG 3
+      CHARACTERSTRING = 4, "AAA"
+       OPENTAG 5
+        TIME = 0, 18:10:17.00  ; OR 1 UNSIGNED
+       CLOSETAG 5
+      
+      )
+
+ EXPECT (
+  PDU = 6                ; 6 = Reject-PDU
+  REJECT-REASON = UNRECOGNIZED-SERVICE
+  ENUMERATED = 2                      ; 2 = property
+  ENUMERATED = 42		      ; 42 = invalid array index
+  )
+
+
+ TEST #1 CONFIRMEDCOVNOTIFICATION confirmed Services that are not supported 
+
+SEND (
+      PDU = Confirmed-Request
+      Service = CONFIRMEDCOVNOTIFICATION
+      UNSIGNED = 0, 1
+      OBJECTIDENTIFIER = 1, DEVICE, 100
+      OBJECTIDENTIFIER = 2, DEVICE, 100
+      UNSIGNED = 3, 3
+      OPENTAG 4
+      ENUMERATED = 0, 58
+      CHARACTERSTRING = 2, "AAA"
+      CLOSETAG 4
+      )
+
+
+   EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+   REJECT-REASON = UNRECOGNIZED-SERVICE
+    )
+
+ TEST #2 CONFIRMEDEVENTNOTIFICATION confirmed Services that are not supported DEBUG
+
+
+SEND (
+      PDU = Confirmed-Request
+      Service = CONFIRMEDEVENTNOTIFICATION
+      UNSIGNED = 0, 1
+      OBJECTIDENTIFIER = 1, DEVICE, 100
+      OBJECTIDENTIFIER = 2, analog-input, 1
+       OPENTAG 3
+        TIME = 0, 18:10:17.00
+       CLOSETAG 3
+      UNSIGNED = 4, 1
+      UNSIGNED8 = 5, 1
+      ENUMERATED = 6, 1
+      ENUMERATED = 8, 0
+      BOOLEAN = 9, 1
+      ENUMERATED = 10, 1
+      ENUMERATED = 11, 2   ; TO STATE
+      OPENTAG 12
+          OPENTAG 1
+	  OPENTAG 0
+            BOOLEAN 0, 1
+	  CLOSETAG 0
+	
+            BITSTRING 1, T,T,T,T
+	  
+	  CLOSETAG 1
+      CLOSETAG 12
+     )
+
+ EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+   REJECT-REASON = UNRECOGNIZED-SERVICE
+    )
+
+TEST #3 GETALARMSUMMARY confirmed Services that are not supported 
+
+SEND (
+      PDU = Confirmed-Request
+      Service = GETALARMSUMMARY
+        )
+
+EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+   REJECT-REASON = UNRECOGNIZED-SERVICE
+    )
+
+ TEST #4 GETENROLLMENTSUMMARY confirmed Services that are not supported 
+
+SEND (
+      PDU = Confirmed-Request
+      Service = GETENROLLMENTSUMMARY
+      ENUMERATED = 0, 1
+      -- OPENTAG 1
+      --  OPENTAG 0
+      --    OBJECTIDENTIFIER = 0, DEVICE, 100         
+      --	  UNSIGNED = 1, 1
+      --	CLOSETAG 0
+      --  CLOSETAG 1
+     )
+
+EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+   REJECT-REASON = UNRECOGNIZED-SERVICE
+    )
+
+
+
+ TEST #5 SUBSCRIBECOV confirmed Services that are not supported 
+
+SEND (
+      PDU = Confirmed-Request
+      Service = SUBSCRIBECOV
+      UNSIGNED = 0, 1
+      OBJECTIDENTIFIER = 1, DEVICE, 100    
+      BOOLEAN = 2, 1
+      UNSIGNED = 3, 1
+      )
+
+EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+   REJECT-REASON = UNRECOGNIZED-SERVICE
+    )
+
+------------------------------------------------------------------------
+---------------------------------FILE ACCESS----------------------------
+
+ TEST #6 ATOMICREADFILE confirmed Services that are not supported 
+SEND (
+      PDU = Confirmed-Request
+      Service = ATOMICREADFILE
+      OBJECT = DEVICE, 100    
+      OPENTAG 1
+        
+        INTEGER = -177, 100
+        UNSIGNED = 555
+      CLOSETAG 1
+    )
+      EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+   REJECT-REASON = UNRECOGNIZED-SERVICE
+    )
+
+TEST #7 ATOMICWRITEFILE confirmed Services that are not supported 
+SEND (
+      PDU = Confirmed-Request
+      Service = ATOMICWRITEFILE
+      OBJECT = DEVICE, 200    
+      OPENTAG 0
+        INTEGER = -177
+        OCTETSTRING = X'230230AF32'
+      CLOSETAG 0
+    )
+      EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+   REJECT-REASON = UNRECOGNIZED-SERVICE
+    )
+
+  
+  ------------------------------------------------------------------------
+  ---------------------------OBJECT ACCESS SERVICES-----------------------
+
+
+TEST #8 ADDLISTELEMENT confirmed Services that are not supported 
+SEND (
+      PDU = Confirmed-Request
+      Service = ADDLISTELEMENT
+      OBJECT = 0, DEVICE, 200    
+      ENUMERATED = 1, 58
+      OPENTAG 3
+       CHARACTERSTRING = "AAA"  
+      CLOSETAG 3
+    )
+      EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+
+
+ TEST #9 REMOVELISTELEMENT confirmed Services that are not supported  (OK)
+SEND (
+      PDU = Confirmed-Request
+      Service = REMOVELISTELEMENT
+      OBJECT = 0, DEVICE, 200    
+      ENUMERATED = 1, 58
+      OPENTAG 3
+       CHARACTERSTRING = "AAA"  
+      CLOSETAG 3
+    )
+      EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+
+ TEST #10 CREATEOBJECT confirmed Services that are not supported  (OK)
+
+SEND (
+    PDU = Confirmed-Request
+    Service = CREATEOBJECT
+    OPENTAG 0
+       Object = 1, ANALOG-INPUT 54             ; MANUAL BY OBJECT IDENTIFIER
+    CLOSETAG 0
+      )
+
+   EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+
+ TEST #11 DELETEOBJECT confirmed Services that are not supported  (OK)
+
+ SEND (
+    PDU = Confirmed-Request
+    Service = DELETEOBJECT
+    Object = ANALOG-INPUT 54             ; MANUAL BY OBJECT IDENTIFIER
+      )
+
+   EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+
+TEST #12 READPROPERTY confirmed Services that are not supported  (OK)
+  SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, ANALOG-INPUT 100
+      Property = 1, Object-Identifier	; Type BACnetObjectIdentifier
+    )
+
+ EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+ TEST #13 READPROPERTYCONDITIONAL confirmed Services that are not supported  (OK)
+
+  SEND (
+      PDU = Confirmed-Request
+      Service = ReadPropertyCONDITIONAL
+      OPENTAG 0
+      ENUMERATED 0, 0
+      OPENTAG 1
+         ENUMERATED = 0, 58     ; PROP
+         ENUMERATED = 2, 0      ; RELATION SPECIFIER
+      CLOSETAG 1
+      CLOSETAG 0
+         )
+
+ EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+ TEST #14 READPROPERTYMULTIPLE confirmed Services that are not supported  (OK)
+ SEND (
+      PDU = Confirmed-Request
+      Service = READPROPERTYMULTIPLE
+      Object = 0, ANALOG-INPUT 100
+      OPENTAG 1
+      ENUMERATED = 0, 58
+      CLOSETAG 1
+
+       Object = 0, ANALOG-INPUT 100
+      OPENTAG 1
+      ENUMERATED = 0, 58
+      CLOSETAG 1
+
+         )
+
+ EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+  TEST #15 WRITEPROPERTY confirmed Services that are not supported  (OK)
+
+ SEND (
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, Object-Identifier
+    OpenTag 3
+      ObjectIdentifier = ANALOG-INPUT, 71	; 
+    CloseTag 3		; 
+       )
+
+        EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+ TEST #16 WRITEPROPERTYMULTIPLE confirmed Services that are not supported  (OK)
+
+ SEND (
+      PDU = Confirmed-Request
+      Service = WritePropertyMultiple
+      Object = 0, ANALOG-INPUT 44
+      OpenTag 1
+        Property = 0, Relinquish-Default
+        OpenTag 2
+           REAL = 22		; 
+        CloseTag 2
+      CloseTag 1                                   
+    )
+
+ EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+
+------------------------------------------------------------------------
+---------------------------REMOTE DEVICE MANAGEMENT-----------------------
+
+ TEST #17 DEVICECOMMUNICATIONCONTROL confirmed Services that are not supported  (OK)
+ 
+ SEND (
+    PDU = Confirmed-Request
+    Service = DeviceCommunicationControl
+    UNSIGNED16 = 0, 0                        ; Time-Duration (Is set back in service)
+    ENUMERATED = 1, 0                        ; ENABLE(0)/DIASABLE(1) (Device is Enabled)
+    CHARACTERSTRING = 2, "PASSWORD"                   ; PASSWORD (Device should ignore if it does not support passwords)			 
+    )
+
+    EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+ TEST #18 CONFIRMEDPRIVATETRANSFER confirmed Services that are not supported  (OK)
+ 
+  SEND (
+    PDU = Confirmed-Request
+    Service = CONFIRMEDPRIVATETRANSFER
+    UNSIGNED = 0, 0                        ;
+    UNSIGNED = 1, 0                        ;
+    		 
+    )
+
+    EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+ TEST #19 CONFIRMEDTEXTMESSAGE confirmed Services that are not supported  (OK)
+
+  SEND (
+    PDU = Confirmed-Request
+    Service = CONFIRMEDTEXTMESSAGE
+    ObjectIdentifier = 0, ANALOG-INPUT, 71	; 
+    ENUMERATED = 2, 0
+    CHARACTERSTRING = 3, "AAA"
+      )
+
+    EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+ TEST #20 REINITIALIZEDEVICE confirmed Services that are not supported  (OK)
+   SEND (
+    PDU = Confirmed-Request
+    Service = ReinitializeDevice
+    ENUM = 0, COLDSTART			; Request a coldstart, no password
+    )
+
+ EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+
+
+------------------------------------------------------------------------
+---------------------------VIRTUAL TERMINAL SERVICES--------------------
+
+ TEST #21 VTOPEN confirmed Services that are not supported  (OK)
+
+ SEND (
+    PDU = Confirmed-Request
+    Service = VTOPEN
+    ENUMERATED 1
+    UNSIGNED8 = 2
+    )
+
+ EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+  TEST #22 VTCLOSE confirmed Services that are not supported  (OK)
+
+ SEND (
+    PDU = Confirmed-Request
+    Service = VTCLOSE
+    UNSIGNED8 = 2
+    )
+
+    EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+TEST #23 VTDATA confirmed Services that are not supported  (OK)
+
+ SEND (
+    PDU = Confirmed-Request
+    Service = VTDATA
+    UNSIGNED8 = 2
+    OCTETSTRING = X'230230AF32'
+    UNSIGNED = 0
+    )
+
+    EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+
+------------------------------------------------------------------------
+---------------------------SECURITY SERVICES----------------------------
+
+
+ TEST #24 AUTHENTICATE confirmed Services that are not supported  (OK)
+SEND (
+    PDU = Confirmed-Request
+    Service = AUTHENTICATE
+    UNSIGNED32 = 0, 22432424
+    UNSIGNED8 = 1, 1212
+    CHARACTERSTRING = 2, "AAA"
+    CHARACTERSTRING = 3, "AAA"
+    BOOLEAN = 4, 1
+
+    )
+
+    EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+
+  TEST #25 REQUESTKEY confirmed Services that are not supported (OK)
+
+SEND (
+    PDU = Confirmed-Request
+    Service = 25                 ; REQUESTKEY (sOMETIMES WORKS, SOMETIMES NOT
+    OBJECT = DEVICEOBJ   ; OBJ ID
+    UNSIGNED16 = 12    ; ADDRESS1
+    OCTETSTRING = X'230230AF32'  ;ADDRESS1
+    OBJECT = DEVICEOBJ   ; OBJ ID
+    UNSIGNED16 = 12   ; ADDRESS2
+    OCTETSTRING = X'230230AF32'   ; ADDRESS2
+
+    )
+
+    EXPECT (
+     PDU = 6                ; 6 = Reject-PDU
+      )
+ 
+
+
+---------------------------------------------------------------------------------------------------
+
+
+
+TEST #G - 13.1.X.2  DT doesn't support segmented response
+
+Dependencies None
+
+-- Purpose: This test case verifies that the IUT returns the correct abort message when the requester does not support segmented responses 
+-- and a response would be larger than 1 segment.  
+
+Reference 5.4.5.3
+
+-- Test Concept: The TD uses ReadPropertyMultiple to ask for more data than can fit in a single segment.  The TD also specifies that the smallest (50 octet) segment size be used for the response.   The data which is requested is the Object_Identifier property of the Device object of the IUT.  The number of copies of the data that is requested is one more than the maximum number which would fit in a segment, calculated as in 9.17.1.X2 Reading Maximum Multiple properties:
+-- MaxPropsPerResp = ( MaxAPDU - NonSegRespHdrSize - ObjIdSize - TagsSize ) 
+--		/ ( PropIdSize + TagsSize + ObjIdSize )
+-- N = MaxPropsPerResp+1 = 5
+-- Configuration Requirements:  The IUT supports execution of the ReadPropertyMultiple service, and supports transmission of segmented responses.
+
+-- Test Steps:
+
+--		1. TRANSMIT ReadPropertyMultiple-Request,
+--			'segmented-response-accepted' = FALSE
+--			'max-APDU-length-accepted' = B'0000' 
+--			'Object Identifier' =	(Device,X),
+--			REPEAT (N times) DO{
+--				'Property Identifier' = Object_Identifier
+--			}
+--		2. RECEIVE BACnet-Abort-PDU
+--			'Abort Reason' = SEGMENTATION_NOT_SUPPORTED
+--		BUFFER_OVERFLOW,	
+
+SEND (
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, OBJECT1
+      OpenTag 1
+Property = 0, Object-Identifier	;1
+Property = 0, Object-Identifier	;2
+Property = 0, Object-Identifier	;3
+Property = 0, Object-Identifier	;4
+Property = 0, Object-Identifier	;5
+Property = 0, Object-Identifier	;6
+Property = 0, Object-Identifier	;7
+Property = 0, Object-Identifier	;8
+Property = 0, Object-Identifier	;9
+Property = 0, Object-Identifier	;10
+Property = 0, Object-Identifier	;11
+Property = 0, Object-Identifier	;12
+Property = 0, Object-Identifier	;13
+Property = 0, Object-Identifier	;14
+Property = 0, Object-Identifier	;15
+Property = 0, Object-Identifier	;16
+Property = 0, Object-Identifier	;17
+Property = 0, Object-Identifier	;18
+Property = 0, Object-Identifier	;19
+Property = 0, Object-Identifier	;20
+Property = 0, Object-Identifier	;21
+Property = 0, Object-Identifier	;22
+Property = 0, Object-Identifier	;23
+Property = 0, Object-Identifier	;24
+Property = 0, Object-Identifier	;25
+Property = 0, Object-Identifier	;26
+Property = 0, Object-Identifier	;27
+Property = 0, Object-Identifier	;28
+Property = 0, Object-Identifier	;29
+Property = 0, Object-Identifier	;30
+Property = 0, Object-Identifier	;31
+Property = 0, Object-Identifier	;32
+Property = 0, Object-Identifier	;33
+Property = 0, Object-Identifier	;34
+Property = 0, Object-Identifier	;35
+Property = 0, Object-Identifier	;36
+Property = 0, Object-Identifier	;37
+Property = 0, Object-Identifier	;38
+Property = 0, Object-Identifier	;39
+Property = 0, Object-Identifier	;40
+Property = 0, Object-Identifier	;41
+Property = 0, Object-Identifier	;42
+Property = 0, Object-Identifier	;43
+Property = 0, Object-Identifier	;44
+Property = 0, Object-Identifier	;45
+Property = 0, Object-Identifier	;46
+Property = 0, Object-Identifier	;47
+Property = 0, Object-Identifier	;48
+Property = 0, Object-Identifier	;49
+Property = 0, Object-Identifier	;50
+Property = 0, Object-Identifier	;51
+Property = 0, Object-Identifier	;52
+Property = 0, Object-Identifier	;53
+Property = 0, Object-Identifier	;54
+Property = 0, Object-Identifier	;55
+Property = 0, Object-Identifier	;56
+Property = 0, Object-Identifier	;57
+Property = 0, Object-Identifier	;58
+Property = 0, Object-Identifier	;59
+Property = 0, Object-Identifier	;60
+Property = 0, Object-Identifier	;61
+Property = 0, Object-Identifier	;62
+Property = 0, Object-Identifier	;63
+Property = 0, Object-Identifier	;64
+Property = 0, Object-Identifier	;65
+Property = 0, Object-Identifier	;66
+Property = 0, Object-Identifier	;67
+Property = 0, Object-Identifier	;68
+Property = 0, Object-Identifier	;69
+Property = 0, Object-Identifier	;70
+Property = 0, Object-Identifier	;71
+Property = 0, Object-Identifier	;72
+Property = 0, Object-Identifier	;73
+Property = 0, Object-Identifier	;74
+Property = 0, Object-Identifier	;75
+Property = 0, Object-Identifier	;76
+Property = 0, Object-Identifier	;77
+Property = 0, Object-Identifier	;78
+Property = 0, Object-Identifier	;79
+Property = 0, Object-Identifier	;80
+Property = 0, Object-Identifier	;81
+Property = 0, Object-Identifier	;82
+Property = 0, Object-Identifier	;83
+Property = 0, Object-Identifier	;84
+Property = 0, Object-Identifier	;85
+Property = 0, Object-Identifier	;86
+Property = 0, Object-Identifier	;87
+Property = 0, Object-Identifier	;88
+Property = 0, Object-Identifier	;89
+Property = 0, Object-Identifier	;90
+Property = 0, Object-Identifier	;91
+Property = 0, Object-Identifier	;92
+Property = 0, Object-Identifier	;93
+Property = 0, Object-Identifier	;94
+Property = 0, Object-Identifier	;95
+Property = 0, Object-Identifier	;96
+Property = 0, Object-Identifier	;97
+Property = 0, Object-Identifier	;98
+Property = 0, Object-Identifier	;99
+Property = 0, Object-Identifier	;100
+Property = 0, Object-Identifier	;101
+Property = 0, Object-Identifier	;102
+Property = 0, Object-Identifier	;103
+Property = 0, Object-Identifier	;104
+Property = 0, Object-Identifier	;105
+Property = 0, Object-Identifier	;106
+Property = 0, Object-Identifier	;107
+Property = 0, Object-Identifier	;108
+Property = 0, Object-Identifier	;109
+Property = 0, Object-Identifier	;110
+Property = 0, Object-Identifier	;111
+Property = 0, Object-Identifier	;112
+Property = 0, Object-Identifier	;113
+Property = 0, Object-Identifier	;114
+Property = 0, Object-Identifier	;115
+Property = 0, Object-Identifier	;116
+Property = 0, Object-Identifier	;117
+Property = 0, Object-Identifier	;118
+Property = 0, Object-Identifier	;119
+Property = 0, Object-Identifier	;120
+Property = 0, Object-Identifier	;121
+Property = 0, Object-Identifier	;122
+Property = 0, Object-Identifier	;123
+Property = 0, Object-Identifier	;124
+Property = 0, Object-Identifier	;125
+Property = 0, Object-Identifier	;126
+Property = 0, Object-Identifier	;127
+Property = 0, Object-Identifier	;128
+Property = 0, Object-Identifier	;129
+Property = 0, Object-Identifier	;130
+Property = 0, Object-Identifier	;131
+Property = 0, Object-Identifier	;132
+Property = 0, Object-Identifier	;133
+Property = 0, Object-Identifier	;134
+Property = 0, Object-Identifier	;135
+Property = 0, Object-Identifier	;136
+Property = 0, Object-Identifier	;137
+Property = 0, Object-Identifier	;138
+Property = 0, Object-Identifier	;139
+Property = 0, Object-Identifier	;140
+Property = 0, Object-Identifier	;141
+Property = 0, Object-Identifier	;142
+Property = 0, Object-Identifier	;143
+Property = 0, Object-Identifier	;144
+Property = 0, Object-Identifier	;145
+Property = 0, Object-Identifier	;146
+Property = 0, Object-Identifier	;147
+Property = 0, Object-Identifier	;148
+Property = 0, Object-Identifier	;149
+Property = 0, Object-Identifier	;150
+Property = 0, Object-Identifier	;151
+Property = 0, Object-Identifier	;152
+Property = 0, Object-Identifier	;153
+Property = 0, Object-Identifier	;154
+Property = 0, Object-Identifier	;155
+Property = 0, Object-Identifier	;156
+Property = 0, Object-Identifier	;157
+Property = 0, Object-Identifier	;158
+Property = 0, Object-Identifier	;159
+Property = 0, Object-Identifier	;160
+Property = 0, Object-Identifier	;161
+Property = 0, Object-Identifier	;162
+Property = 0, Object-Identifier	;163
+Property = 0, Object-Identifier	;164
+Property = 0, Object-Identifier	;165
+Property = 0, Object-Identifier	;166
+Property = 0, Object-Identifier	;167
+Property = 0, Object-Identifier	;168
+Property = 0, Object-Identifier	;169
+Property = 0, Object-Identifier	;170
+Property = 0, Object-Identifier	;171
+Property = 0, Object-Identifier	;172
+Property = 0, Object-Identifier	;173
+Property = 0, Object-Identifier	;174
+Property = 0, Object-Identifier	;175
+Property = 0, Object-Identifier	;176
+Property = 0, Object-Identifier	;177
+Property = 0, Object-Identifier	;178
+Property = 0, Object-Identifier	;179
+Property = 0, Object-Identifier	;180
+Property = 0, Object-Identifier	;181
+Property = 0, Object-Identifier	;182
+Property = 0, Object-Identifier	;183
+Property = 0, Object-Identifier	;184
+Property = 0, Object-Identifier	;185
+Property = 0, Object-Identifier	;186
+Property = 0, Object-Identifier	;187
+Property = 0, Object-Identifier	;188
+Property = 0, Object-Identifier	;189
+Property = 0, Object-Identifier	;190
+Property = 0, Object-Identifier	;191
+Property = 0, Object-Identifier	;192
+Property = 0, Object-Identifier	;193
+Property = 0, Object-Identifier	;194
+Property = 0, Object-Identifier	;195
+Property = 0, Object-Identifier	;196
+Property = 0, Object-Identifier	;197
+Property = 0, Object-Identifier	;198
+Property = 0, Object-Identifier	;199
+Property = 0, Object-Identifier	;200
+      Closetag 1
+      )
+      
+EXPECT (
+     service = ReadPropertyMultiple
+   PDU = 7                   ; 7 = ABORT-PDU
+   enumerated = 4            ; SEGMENTATION NOT SUPPORTED
+      )
+

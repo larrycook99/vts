@@ -1,0 +1,15 @@
+LIBRARY   MSTP
+SECTIONS
+	BDSHARE	READ WRITE SHARED
+
+EXPORTS
+	MainWndProc   			@1
+	mstpInit 				@2
+	mstpDeinit				@3
+	mstpTransmit			@4
+	mstpTransmitTest		@5
+	mstpReceive				@6
+	mstpCatName				@7
+	mstpVarMaxInfoFrames	@8
+	mstpVarMaxMaster		@9
+	mstpGetTS				@10

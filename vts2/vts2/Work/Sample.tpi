@@ -1,0 +1,623 @@
+PICS 0
+BACnet Protocol Implementation Conformance Statement
+-- 08 April 1996 by Steven T. Bushby
+--
+-- This is a sample PICS file that illustrates the format.
+-- It contains at least one of every kind of object type.
+-- Use it as a template for creating a Text PICS file.
+
+-- THIS IS A DRAFT VERSION
+
+Vendor Name: "NIST"
+Product Name: "Standard BACnet Thing"
+Product Model Number: "1.0"
+Product Description: "A really great thing!"
+
+BACnet Conformance Class Supported: 6   -- replace the 6 with your class
+
+BACnet Functional Groups Supported:     -- delete any FGs not supported
+{
+ HHWS
+ PCWS
+ COV Event Initiation
+ Event Initiation
+ Event Response
+ clock
+ Device Communications
+ Files
+ Time Master
+ Virtual Operator Interface
+ Reinitialize
+ Virtual Terminal
+}
+
+-- Delete any services not supported at all.
+-- Remove Initiate and Execute as appropriate.
+
+BACnet Standard Application Services Supported:
+{
+ AcknowledgeAlarm               Initiate Execute
+ ConfirmedCOVNotification       Initiate Ececute
+ UnconfirmedCOVNotification     Initiate Ececute
+ ConfirmedEventNotification     Initiate Ececute
+ UnconfirmedEventNotification   Initiate Ececute
+ GetAlarmSummary                Initiate Ececute
+ GetEnrollmentSummary           Initiate Ececute
+ AtomicReadFile                 Initiate Ececute
+ AtomicWriteFile                Initiate Ececute
+ AddListElement                 Initiate Ececute
+ RemoveListElement              Initiate Ececute
+ CreateObject                   Initiate Execute
+ DeleteObject                   Initiate Execute
+ ReadProperty                   Initiate Execute
+ ReadpropertyConditional        Initiate Ececute
+ ReadPropertyMultiple           Initiate Execute
+ SubscribeCOV                   Initiate Ececute
+ WriteProperty                  Initiate Execute
+ WritePropertyMultiple          Initiate Execute
+ DeviceCommunicationControl     Initiate Ececute
+ ConfirmedPrivateTransfer       Initiate Execute
+ UnconfirmedPrivateTransfer     Initiate Execute
+ TimeSynchronization            Initiate Execute
+ Who-Has                        Initiate Execute
+ I-Have                         Initiate Execute 
+ Who-Is                         Initiate Execute
+ I-Am                           Initiate Execute
+ VT-Open                        Initiate Execute
+ VT-Close                       Initiate Execute
+ VT-Data                        Initiate Execute
+ ConfirmedTextMessage           Initiate Ececute
+ UnconfirmedTextMessage         Initiate Ececute
+ ReinitializeDevice             Initiate Execute
+ RequestKey                     Initiate Execute
+ Authenticate                   Initiate Execute
+}
+
+-- Delete and object-types not supported at all.
+-- Remove Creatable or Deleteable as appropriate.
+
+Standard Object-Types Supported:
+{
+ Analog Input                   Createable Deleteable
+ Analog Output                  Createable Deleteable
+ Analog Value                   Createable Deleteable
+ Binary Input                   Createable Deleteable
+ Binary Output                  Createable Deleteable
+ Binary Value                   Createable Deleteable
+ Calendar                       Createable Deleteable
+ Command                        Createable Deleteable
+ Device
+ Event Enrollment               Createable Deleteable
+ File                           Createable Deleteable
+ Group                          Createable Deleteable
+ Loop                           Createable Deleteable
+ Multi-state Input              Createable Deleteable
+ Multi-state Output             Createable Deleteable
+ Notification Class             Createable Deleteable
+ Program                        Createable Deleteable
+ Schedule                       Createable Deleteable
+}
+
+-- Remove all DL options not supported.
+
+Data Link Layer Option:
+{
+ ISO 8802-3, 10BASE5
+ ISO 8802-3, 10BASE2
+ ISO 8802-3, 10BASET
+ ISO 8802-3, Fiber
+ ARCNET, coax star
+ ARCNET, coax bus     
+ ARCNET, twisted pair star
+ ARCNET, twisted pair bus
+ ARCNET, fiber star
+ MS/TP master. Baud rate(s): 9600
+ MS/TP slave. Baud rate(s): 9600
+ Point-To-Point. Modem, Baud rate(s): 14.4k
+ Point-To-Point. Modem, Autobaud range: 9600 to 28.8k
+ Other
+
+}
+
+-- Replace the Maximum APDU size with the appropriate value.
+-- Remove segmentation supported line or change window size as appropriate.
+-- Remove Router if the device is not a router.
+
+-- Remove any character sets not supported
+
+Character Sets Supported:
+{
+ ANSI X3.4
+-- Other Character Sets not supported
+-- IBM/Microsoft DBCS
+-- JIS C 6226
+-- ISO 10646 (ICS-4)
+-- ISO 10646 (UCS2)
+}
+
+Special Functionality:
+{
+ Maximum APDU size in octets: 474
+ Segmented Requests Supported, window size: 1
+ Segmented Responses Supported, window size: 1
+ Router
+}
+
+-- Remove any object-types that are not in the database.
+-- Copy the object-type templates as needed to obtain one per object
+-- in the database. Replace the property to indicate the actual values
+-- of the properties in the database. If the value cannot be determined
+-- because it depends on a sensor input then use "?" for the value.
+-- All property values that are writeable should be followed by a W.
+
+List of Objects in test device:
+{
+  {
+    object-identifier: (analog-input, 1)
+    object-name: "1AH1MAT" W
+    object-type: analog-input
+    present-value: 58.1
+    description: "Mixed Air Temperature"
+    device-type: "1000 Ohm RTD"
+    status-flags: (F, F, F, F)
+    event-state: normal
+    reliability: NO-FAULT-DETECTED
+    out-of-service: F
+    update-interval: 10
+    units: DEGREES-FAHRENHEIT
+    min-pres-value: -50.0
+    max-pres-value: 250.0
+    resolution: 0.1
+    COV-increment: 0.2
+    time-delay: 10
+    notification-class: 3
+    high-limit: 60.0
+    low-limit: 55.0
+    deadband: 1.0
+    limit-enable: {TRUE, TRUE}
+    event-enable: {TRUE, FALSE, TRUE}
+    acked-transitions: {TRUE, TRUE, TRUE}
+    notify-type: EVENT
+},
+
+
+{
+    object-identifier: (analog-output, 1)
+    object-name: "1AH1DMPR" W
+    object-type: analog-output
+    present-value: 75.0
+    description: "Damper Actuator"
+    device-type: "3-8 PSI Actuator"
+    status-flags: (F, F, F, F)
+    event-state: normal
+    reliability: NO-FAULT-DETECTED
+    out-of-service: False
+    units: PERCENT 
+    min-pres-value: 0.0
+    max-pres-value: 100.0
+    resolution: 0.1
+    priority-array: {?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?} R 
+    relinquish-default: 50.0
+},
+
+
+{
+    object-identifier: (analog-value, 1)
+    object-name: "1AH1ENTH" W
+    object-type: analog-value
+    present-value: 38.1
+    description: "Enthalpy"
+    status-flags: (F, F, F, F)
+    event-state: normal
+    reliability: NO-FAULT-DETECTED
+    out-of-service: False
+    units: btus-per-pound-dry-air
+    priority-array: {?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?} R
+    relinquish-default: 50.0
+    COV-increment: 0.2
+    time-delay: 10
+    notification-class: 3
+    high-limit: 60.0
+    low-limit: 20.0
+    deadband: 1.0
+    limit-enable: {TRUE, TRUE}
+    event-enable: {TRUE, FALSE, TRUE}
+    acked-transitions: {TRUE, TRUE, TRUE}
+    notify-type: EVENT
+},
+
+{
+    object-identifier: (binary-input, 1)
+    object-name: "HighPressSwitch" 
+    object-type:        BINARY-INPUT 
+    present-value: ACTIVE 
+    description: "Penthouse Supply High Static"
+    device-type: "ABC Pressure Switch"
+    status-flags: {TRUE,FALSE,FALSE,FALSE} 
+    event-state: OFFNORMAL 
+    reliability: NO-FAULT-DETECTED 
+    out-of-service: FALSE 
+    polarity: NORMAL 
+    inactive-text: "Static Pressure OK" 
+    active-text: "High Pressure Alarm" 
+    change-of-state-time: (23-MAR-1995,19:01:34.0) 
+    change-of-state-count: 134
+    time-of-state-count-reset: (1-JAN-1995,00:00:00.0)
+    elapsed-active-time: 401
+    time-of-active-time-reset: (1-JAN-1995,00:00:00.0)
+    time-delay: 10              
+    notification-class: 3
+    alarm-value: ACTIVE
+    event-enable: {TRUE, FALSE, TRUE}
+    acked-transitions: {FALSE, TRUE, TRUE}
+    notify-type: ALARM
+},
+
+{
+    object-identifier: (binary-output, 1)
+    object-name: "Floor3ExhaustFan" 
+    object-type:  BINARY-OUTPUT 
+    present-value: INACTIVE 
+    description: "Third floor bathroom exhaust fan"
+    device-type: "ABC 100 Relay"
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    reliability: NO-FAULT-DETECTED 
+    out-of-service: FALSE 
+    polarity: REVERSE
+    inactive-text: "Fan is turned off" 
+    active-text: "Fan is running" 
+    change-of-state-time: (23-MAR-1995,19:01:34.0) 
+    change-of-state-count: 47
+    time-of-state-count-reset: (1-JAN-1995,00:00:00.0)
+    elapsed-active-time: 650
+    time-of-active-time-reset: (1-JAN-1995,00:00:00.0)
+    minimum-off-time: 100
+    minimum-on-time: 10
+    priority-array: {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, INACTIVE}
+    relinquish-default: INACTIVE
+    time-delay: 10              
+    notification-class: 3
+    feedback-value: ACTIVE
+    event-enable: {TRUE, FALSE, TRUE}
+    acked-transitions: {FALSE, TRUE, TRUE}
+    notify-type: EVENT
+},
+
+{
+    object-identifier: (binary-value, 1)
+    object-name: "ExhaustFanEnable" 
+    object-type:  BINARY-VALUE 
+    present-value: ACTIVE 
+    description: "Exhaust Fan Operator"
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+    reliability: NO-FAULT-DETECTED 
+    out-of-service: FALSE 
+    inactive-text: "Enabled by Operator" 
+    active-text: "Fan Not Enabled by Operator" 
+    change-of-state-time: (23-MAR-1995,19:01:34.0) 
+    change-of-state-count: 134
+    time-of-state-count-reset: (1-JAN-1995,00:00:00.0)
+    elapsed-active-time: 401
+    time-of-active-time-reset: (1-JAN-1995,00:00:00.0)
+    minimum-off-time: 0
+    minimum-on-time: 0
+    priority-array: {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, ACTIVE}
+    relinquish-default: INACTIVE
+    time-delay: 10              
+    notification-class: 3
+    alarm-value: ACTIVE
+    event-enable: {TRUE, FALSE, TRUE}
+    acked-transitions: {FALSE, TRUE, TRUE}
+    notify-type: EVENT
+},
+
+{
+  object-identifier: (calendar,1)
+  object-name: "HOLIDAYS"
+  object-type: CALENDAR
+  description: "1995 School District Holidays"
+  present-value: TRUE
+--PARSER ERROR with the date-list property
+--  date-list: ((19-FEB-1995), (28-MAY-1995), ((24-DEC-1995)-(4-JAN-1996)))
+}
+
+{
+  object-identifier: (Command, 1)
+  object-name: "ZONE43CONTROL"
+  object-type: COMMAND
+  description: "Fourth Floor, West Wing Office Suite"
+  present-value:        1
+  in-process: FALSE
+  all-writes-successful: TRUE
+  action: {
+	       ((,(Analog-Value, 5), Present_Value,, 65.0,, TRUE,TRUE),
+		(,(Binary Output, Instance 3), Present_Value,,INACTIVE,8,1,TRUE,TRUE)),
+		((,(Analog Value, Instance 5), Present_Value,,72.0,,TRUE,TRUE), 
+		(,(Binary Output, Instance 3), Present_Value,,ACTIVE,8,2,TRUE,TRUE))
+	 }
+  action-text: {"Unoccupied", "Occupied"}
+},
+
+  {
+    object-identifier: (device, 90)
+    object-name: "AC1 System Controller" W
+    object-type: device
+    system-status: OPERATIONAL
+    vendor-name: "ABC Controls"
+    vendor-identifier: 0
+    model-name: "1000 Plus"
+    firmware-revision: "1.2 "
+    application-software-version: "V4.0 - April 12, 1989 "
+    location: "Basement Mechanical Room"
+    protocol-version: 1
+    protocol-conformance-class: 6
+    protocol-services-supported:
+    (
+       T, T, T, T, T, T,        -- Alarm and event
+       T, T,                    -- File
+       T, T, T, T, T, T,        -- Create, Delete, Read
+       T, T, T,                 -- ReadMultiple, Write, WriteMultiple
+       T, T, T, T,              -- PrivateXfer, Re-init
+       T, T, T,                 -- VT Open, Data, Close
+       T, T,                    -- security
+       T, T,T, T, T,            -- I-Am, I-Have, uPrivateXfer
+       T, T, T, T               -- TimeSync, Who-Has, Who-Is
+    )
+
+    protocol-object-types-supported:
+    (
+       T, T, T, T, T, T,        -- AI, AO, AV,BI, BO, BV
+       T, T, T, T, T, T             -- calendar, command, device, event enrollment, file, group
+       T, T, T, T, T, T             -- loop, MSI, MSO, notification class, program, schedule
+    )
+
+     object-list:
+    {
+      (analog-input, 1),
+      (analog-output, 1),
+      (analog-value, 1),
+      (binary-input, 1),
+      (binary-output, 1),
+      (binary-value, 1),
+      (calendar, 1),
+      (command, 1),
+      (device, 90),
+      (event-enrollment, 1),
+      (file, 1),
+      (group, 1),
+      (loop, 1),
+      (multi-state-input, 1),
+      (multi-state-output, 1),
+      (notification-class, 1),
+      (program, 1),
+      (schedule, 1),
+    }
+    max-APDU-length-accepted: 480
+    segmentation-supported: segmented-both
+    vt-classes-supported: (DEFAULT-TERMINAL, DEC-VT100)
+    local-time:12:34:56.78
+-- PARSER ERROR in following line
+--    local-date: (Friday, 29-SEP-1989)
+    local-date: ?
+    utc-offset: 6.0
+    daylight-savings-status: FALSE
+    apdu-segment-timeout: 2000
+    apdu-timeout: 4000
+    number-of-APDU-retries: 3
+    list-of-session-keys: ((X`3799246237984589', 1, X`3'), (X`4446214686489744', 1, X`5'))
+--    device-address-binding: ()   --empty list example
+    device-address-binding: (((Device,1), 1, X`1'),
+			       ((Device,12),1, X`23'),
+			       ((Device,40),2, X`02608C41A606'))
+  }
+
+{
+    object-identifier: (event-enrollment, 1)
+    object-name: "Zone1_Alarm"
+    object-type: EVENT_ENROLLMENT
+    description: "Zone 1 Alarms"
+    event-type: OUT_OF_RANGE
+    notify-type: ALARM
+    event-parameters: (30, 65.0, 85.0, 0.25)
+    object-property-reference: ((Analog Input, Instance 2), Present_Value)
+    object-property-reference: ((analog-input,2), present-value)
+    event-state: HIGH_LIMIT
+    event-enable: (TRUE, TRUE, TRUE)
+    acked-transitions: (FALSE, TRUE, TRUE)
+    notification-class: 1 
+}
+
+{
+    object-identifier: (file, 7) 
+    object-name: "TREND_AI1"
+    object-type: FILE
+    description: "Trend of AI1"
+    file-type: "TREND"
+    file-size: 45
+    modification-date: (1-NOV-1995,08:30:49.0)
+    archive: FALSE
+    read-only: FALSE
+    file-access-method: RECORD_ACCESS
+}
+
+{
+    object-identifier: (Group, 1)
+    object-name: "ZONE1_TEMPS"
+    object-type: GROUP
+    description: "Zone 1 Temperature Group"
+-- PARSER ERROR
+--    list-of-group-members: (
+--      ((Analog Input,8),(Present_Value, Reliability, Description)),
+--      ((Analog Input,9),(Present_Value, Reliability, Description)),
+--      ((Analog Input,10),(Present_Value, Reliability, Description)),
+--      ((Analog Input,11),(Present_Value, Reliability, Description)),
+--      ((Analog Input,12),(Present_Value, Reliability, Description))
+--      )
+-- PARSER ERROR
+--    present-value: (
+--      ((Analog Input,8),Present_Value, 69.7,Reliability,NO_FAULT_DETECTED,Description,"Room 1"),
+--      ((Analog Input,9),Present_Value, 71.2, Reliability,NO_FAULT_DETECTED,Description,"Room 2"), 
+--      ((Analog Input,10),Present_Value, -50.0, Reliability,UNRELIABLE_OTHER,Description,"Room 3"),
+--      ((Analog Input,11),Present_Value, 69.7, Reliability,NO_FAULT_DETECTED,Description,"Room 4"),
+--      ((Analog Input,12),Present_Value, 73.3, Reliability,NO_FAULT_DETECTED,Description,"Room 5")
+--              )
+}
+
+{
+    object-identifier: (Loop, 1)
+    object-name: "AHU_SAT_LOOP"
+    object-type: LOOP
+    present-value: 8.3
+    description: "Supply air temp. PI control"
+    status-flags: {FALSE,FALSE,FALSE,FALSE}
+    event-state: NORMAL
+    reliability: NO_FAULT_DETECTED
+    out-of-service: FALSE
+    update-interval: 1
+    output-units: POUNDS-FORCE-PER-SQUARE-INCH
+    manipulated-variable-reference: ((analog-output,5),present-value)
+    controlled-variable-reference: ((analog-input,3),present-value)
+    controlled-variable-value: 56.1
+    controlled-variable-units: DEGREES-FAHRENHEIT
+    setpoint-reference: ((analog-value,7),present-value)
+    setpoint: 57.0
+    action: DIRECT
+    proportional-constant: 0.5
+    proportional-constant-units: PSI-PER-DEGREE-FAHRENHEIT
+    integral-constant: 0.1
+    integral-constant-units: PER-MINUTE
+    derivative-constant: 0.0
+    derivative-constant-units: NO-UNITS
+    bias: 9.0
+    maximum-output: 15.0
+    minimum-output: 3.0
+    priority-for-writing: 10
+    COV-increment: 0.2
+    time-delay: 3               
+    notification-class: 1
+    error-limit: 5.0
+    event-enable: {TRUE, TRUE, TRUE}
+    acked-transitions: {TRUE, TRUE, TRUE}
+    notify-type: ALARM
+}
+
+{
+    object-identifier: (multi-state-input, 1)
+    object-name: "Fan1_Input"
+    object-type: MULTI-STATE-INPUT
+    present-value: 2
+    description: "2-speed Fan#1"
+    device-type: "ZZZ Fan Motor"
+    status-flags: {FALSE,FALSE,FALSE,FALSE}
+    event-state: NORMAL
+    reliability: NO_FAULT_DETECTED
+    out-of-service: FALSE
+    number-of-states: 3
+    state-text: {"Off","On_Low","On_High"}
+    time-delay: 3       
+    notification-class: 4
+-- PARSER ERROR I think that alarm-values and fault-values should use
+-- () instead of {} because they are lists.
+--    alarm-values: (3)
+--    fault-values: (2)
+--PARSER ERROR Braces do not work either
+--    alarm-values: {3}
+--    fault-values: {2}
+    event-enable: {TRUE, TRUE, TRUE}
+    acked-transitions: {TRUE, TRUE, TRUE}
+    notify-type: EVENT
+}
+
+{
+    object-identifier: (multi-state-output,1)
+    object-name: "Fan1_Output"
+    object-type: MULTI-STATE-OUTPUT
+    present-value: 2
+    description: "2-speed Fan#1"
+    device-type: "ABC Fan Model A-6"
+    status-flags: {FALSE,FALSE,FALSE,FALSE}
+    event-state: OFFNORMAL
+    reliability: NO-FAULT-DETECTED
+    out-of-service: FALSE
+    number-of-states: 3
+    state-text: {"Off","On_Low","On_High"}
+    priority-array: {NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,NULL,NULL.NULL,NULL,NULL,NULL,NULL}
+    relinquish-default: 1
+    time-delay: 3       
+    notification-class: 4
+    feedback-value: 3
+    event-enable: {TRUE, TRUE, TRUE}
+    acked-transitions: {TRUE, TRUE, TRUE}
+    notify-type: EVENT
+}
+
+{
+    object-identifier: (notification-class, 1)
+    object-name: "Alarms1"
+    object-type: NOTIFICATION-CLASS
+    description: "Critical System Alarms"
+    notification-class: 1
+-- PARSER ERROR
+--    priority: (3, 10, 10)
+    ack-required: (TRUE, TRUE, TRUE)
+-- PARSER ERROR Recipient_List will not parse
+--    recipient-list: (  ((Monday, Tuesday, Wednesday, Thursday, Friday), 6:00, 20:00,
+--                               (Device, Instance 12), 21, TRUE, (TRUE, TRUE,TRUE)),
+--                          ((Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday),
+--                               0:00, 6:00, (Device, Instance 18), 5, TRUE, (TRUE,TRUE, FALSE)),
+--                          ((Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday), 
+--                               20:00, 24:00,(Device, Instance 18), 5, TRUE, (TRUE, TRUE, FALSE))
+--              )
+
+}
+
+
+{
+    object-identifier: (Program, 1)
+    object-name: "SomeAverage"
+    object-type: PROGRAM
+    program-state: RUNNING
+    program-change: READY
+    reason-for-halt: NORMAL
+    description-of-halt: "Normal"
+    program-location: "Line 2"
+    description: "Average of Somethings"
+    instance-of: "ThreeWayAverager"
+    status-flags: {FALSE,FALSE,FALSE,FALSE}
+    reliability: NO_FAULT_DETECTED
+    out-of-service: FALSE
+}
+-- PARSER ERROR The Schedule Object has big problems. Almost anything causes
+-- a GPF.
+--{
+--    object-identifier: (schedule, 2)
+--    object-name: "Rm208Sched"
+--    object-type: SCHEDULE
+--    present-value: ACTIVE
+--    description: "Room 208 Schedule"
+--    effective-period: ((5-SEP-1995)-(10-JUN-1996))
+--
+--    weekly-schedule: {
+--      ((8:00,ACTIVE),(17:00,INACTIVE)),
+--      ((8:00,ACTIVE)),
+--      ((8:00,ACTIVE),(17:00,INACTIVE)),
+--      
+--    ((8:00,ACTIVE),(17:00,INACTIVE),(19:00,ACTIVE),(23:30,INACTIVE)),
+--      ((8:00,ACTIVE),(17:00,INACTIVE)),
+--      ((00:00,INACTIVE)),
+--      ((10:00,ACTIVE),(17:00,INACTIVE))
+--
+--              }
+--    exception-schedule: {--
+--      ((23-NOV-1995),(0:00,INACTIVE),10),
+--      ((HOLIDAYS,(0:00,INACTIVE),11), ((5-MAR-1996)-(7-MAR-1996),((9:00,ACTIVE),(14:00,INACTIVE)),6)
+--              }
+--
+--    list-of-object-property-references: ((binary-output, 9),present-value)
+--    priority-for-writing: 15
+--}
+
+}
+End of BACnet Protocol Implementation Conformance Statement

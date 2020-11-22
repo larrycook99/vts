@@ -1,0 +1,31 @@
+; dudapi32.def : Declares the module parameters for the DLL.
+
+LIBRARY      "dudapi32"
+DESCRIPTION  'dudapi32 Windows Dynamic Link Library'
+
+EXPORTS
+MyDeletePICSObject		@1
+LoadStringRes			@2
+DrawStdIcon				@3
+CpyGenObj				@4
+GetNextGenObj			@5
+FindGenObj				@6
+GetPropNameSupported	@7
+GetPropName				@8
+GetPropValue			@9
+GetObjType				@10
+GetEnumName				@11
+GetpObj					@12
+CheckObjTypeDevPics		@13
+CheckConfClass			@14
+CheckFunctionalGroup	@15
+CMyInt					@16
+CMyBigInt				@17
+CMyBigLong				@18
+DevApplServCheck		@19
+GetObjIdRoot			@20
+pIDinList				@21
+pDBinList				@22
+SplitObjectId			@23
+InitDudapi				@24
+CloseDudapi				@25

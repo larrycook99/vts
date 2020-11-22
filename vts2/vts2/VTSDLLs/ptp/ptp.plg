@@ -1,0 +1,31 @@
+--------------------Configuration: ptp - Win32 Release--------------------
+Begining build with project "P:\VTS\VTSDLLs\ptp\ptp.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /G3 /Zp1 /MT /W3 /GX /O2 /I "..\Include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FAcs /Fa"Release/" /Fp"Release/ptp.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Release/ptp.res" /d "NDEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Release/ptp.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib shell32.lib sjack32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release/ptp.pdb" /map:"Release/ptp.map" /machine:I386 /def:".\ptp.def" /out:"Release/ptp.dll" /implib:"Release/ptp.lib" /libpath:"Release" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating command line "rc.exe /l 0x409 /fo"Release/ptp.res" /d "NDEBUG" "P:\VTS\VTSDLLs\ptp\ptp.rc"" 
+Creating temp file "C:\WINDOWS\TEMP\RSP7112.TMP" with contents </nologo /G3 /Zp1 /MT /W3 /GX /O2 /I "..\Include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FAcs /Fa"Release/" /Fp"Release/ptp.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"P:\VTS\VTSDLLs\ptp\ptp.c"
+>
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP7112.TMP" 
+Creating temp file "C:\WINDOWS\TEMP\RSP7113.TMP" with contents <kernel32.lib user32.lib gdi32.lib shell32.lib sjack32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release/ptp.pdb" /map:"Release/ptp.map" /machine:I386 /def:".\ptp.def" /out:"Release/ptp.dll" /implib:"Release/ptp.lib" /libpath:"Release" 
+.\Release\ptp.obj
+.\Release\ptp.res>
+Creating command line "link.exe @C:\WINDOWS\TEMP\RSP7113.TMP" 
+Compiling resources...
+Compiling...
+ptp.c
+Linking...
+   Creating library Release/ptp.lib and object Release/ptp.exp
+
+
+
+ptp.dll - 0 error(s), 0 warning(s)

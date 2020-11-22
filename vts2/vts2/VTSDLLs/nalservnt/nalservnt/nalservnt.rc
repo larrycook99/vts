@@ -1,0 +1,278 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "nals-res.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "windows.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+NALSERVNT DIALOG DISCARDABLE  0, 0, 282, 207
+STYLE WS_CAPTION | WS_SYSMENU
+CAPTION "NALSERVNT Status"
+MENU MAINMENU
+CLASS "NALSERVNT"
+FONT 8, "Courier New"
+BEGIN
+    COMBOBOX        1000,15,6,225,40,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | 
+                    WS_VSCROLL | WS_TABSTOP
+    LISTBOX         1001,14,21,262,70,NOT LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | 
+                    LBS_WANTKEYBOARDINPUT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         1002,14,91,262,70,NOT LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | 
+                    LBS_WANTKEYBOARDINPUT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "TX",1016,2,91,9,8
+    LTEXT           "RX",1015,3,21,9,8,NOT WS_GROUP
+    EDITTEXT        1027,248,7,15,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        1028,263,7,16,12,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "cids/sids",-1,244,0,38,8
+    EDITTEXT        1029,15,162,262,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        1030,15,175,262,12,ES_AUTOHSCROLL | ES_READONLY
+END
+
+NALSCONFIG DIALOG DISCARDABLE  0, 0, 223, 311
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "NALSERVNT Configuration"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Minimize Status Window?",1011,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,5,5,95,11
+    CONTROL         "Inhibit Transmits?",1024,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,5,18,73,9
+    EDITTEXT        1007,77,47,15,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        1005,77,63,15,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        1006,77,79,140,12,ES_AUTOHSCROLL
+    EDITTEXT        1021,77,92,140,12,ES_AUTOHSCROLL
+    EDITTEXT        1012,77,108,20,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        1023,77,124,43,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        1022,56,146,24,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        1013,56,164,24,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        1014,56,180,24,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        1018,57,196,24,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        1016,156,177,24,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        1017,156,196,24,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        1015,156,214,32,12,ES_AUTOHSCROLL | ES_NUMBER
+    DEFPUSHBUTTON   "OK",1,184,4,34,14
+    PUSHBUTTON      "Cancel",2,184,24,34,14
+    CONTROL         "Segmented Receive?",1019,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,132,150,83,10
+    CONTROL         "Segmented Transmit?",1020,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,132,161,83,10
+    LTEXT           "WhoIs/IAm Interval:",IDC_STATIC,4,63,67,10
+    LTEXT           "Our Peername:",IDC_STATIC,4,79,60,10
+    LTEXT           "Our Vendorname:",IDC_STATIC,4,92,60,10
+    LTEXT           "Our Vendor ID:",IDC_STATIC,4,108,60,10
+    LTEXT           "Minutes (0=None)",IDC_STATIC,97,63,61,10
+    LTEXT           "Tseg:",IDC_STATIC,4,148,23,12
+    LTEXT           "Tout:",IDC_STATIC,4,162,23,12
+    LTEXT           "Nretry:",IDC_STATIC,4,182,23,12
+    LTEXT           "Seconds",IDC_STATIC,85,148,36,12
+    LTEXT           "Seconds",IDC_STATIC,85,166,36,12
+    LTEXT           "Maximum Length Assembled APDU:",IDC_STATIC,89,212,62,16
+    LTEXT           "Octets",IDC_STATIC,192,215,23,12
+    LTEXT           "TX Length:",IDC_STATIC,104,180,39,9
+    LTEXT           "RX Length:",IDC_STATIC,104,196,40,10
+    LTEXT           "Octets",IDC_STATIC,184,180,23,12
+    LTEXT           "Octets",IDC_STATIC,186,196,23,12
+    LTEXT           "Window Size:",IDC_STATIC,5,196,46,9
+    LTEXT           "Our Device Instance:",IDC_STATIC,4,124,60,19
+    LTEXT           "Time Sync Interval:",IDC_STATIC,4,50,67,10
+    LTEXT           "Minutes (0=None)",IDC_STATIC,97,50,62,10
+    CONTROL         "Promiscuous RX?",1025,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,104,4,73,12
+    LTEXT           "(Ethernet only..Arcnet from Control Panel)",IDC_STATIC,
+                    109,16,71,18
+    CONTROL         "Passive Server?",IDC_PASSIVE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,5,30,73,9
+    GROUPBOX        "PTP Source Address",IDC_STATIC,5,230,190,40
+    LTEXT           "SNET",IDC_STATIC,9,240,35,10
+    LTEXT           "SLEN",IDC_STATIC,9,255,35,10
+    LTEXT           "SADR",IDC_STATIC,89,255,25,10
+    EDITTEXT        IDC_PTPSNET,55,239,25,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PTPSLEN,55,254,25,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PTPSADR,119,255,70,12,ES_AUTOHSCROLL
+    GROUPBOX        "MSTP Properties",IDC_STATIC,5,270,90,37
+    LTEXT           "MaxMaster:",IDC_STATIC,9,280,40,10
+    LTEXT           "MaxInfoFrames:",IDC_STATIC,9,291,51,10
+    EDITTEXT        IDC_MAXMASTER,71,278,20,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_MAXINFOFRAMES,71,291,20,12,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+END
+
+NALSABOUT DIALOG DISCARDABLE  20, 20, 201, 75
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "BACnet Network & Application Layer Server DLL v0.00",
+                    1012,35,5,105,20,SS_NOPREFIX
+    LTEXT           "©1995, 1998 PolarSoft Inc. and \r   National Institute for Standards and Technology                     All Rights Reserved",
+                    1013,30,30,165,25,SS_NOPREFIX
+    ICON            "NALSICON",-1,5,5,20,20
+    DEFPUSHBUTTON   "OK",1,165,6,32,14
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "nals-res.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""windows.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+NALSICON                ICON    DISCARDABLE     "NALSERV.ICO"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+MAINMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&Actions"
+    BEGIN
+        MENUITEM "&Transmit Who-Is Packet",     2010
+        MENUITEM "&Shutdown",                   2008
+    END
+    MENUITEM "&Configure",                  2001
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Clear Server Log",           2002
+        MENUITEM SEPARATOR
+        MENUITEM "Show &Receive Packets",       2003, CHECKED
+        MENUITEM "Show &Transmit Packets",      2004, CHECKED
+        MENUITEM "Interpret Network Layer",     2009, CHECKED
+    END
+    POPUP "&Help", HELP
+    BEGIN
+        MENUITEM "&Contents...",                2005
+        MENUITEM "&Search for Help on...",      2006
+        MENUITEM SEPARATOR
+        MENUITEM "&About NALSERVNT...",         2007
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+REDLED                  BITMAP  DISCARDABLE     "REDLED.BMP"
+GREENLED                BITMAP  DISCARDABLE     "GREENLED.BMP"
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+1 VERSIONINFO
+ FILEVERSION 2,18,0,1
+ PRODUCTVERSION 2,18,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "PolarSoft® Inc.\0"
+            VALUE "FileDescription", "nalservnt\0"
+            VALUE "FileVersion", "2.18\0"
+            VALUE "InternalName", "nalservnt\0"
+            VALUE "LegalCopyright", "©1998-2000 PolarSoft® Inc.\0"
+            VALUE "OriginalFilename", "nalservnt.dll\0"
+            VALUE "ProductName", "PolarSoft Inc. nalservnt\0"
+            VALUE "ProductVersion", "2.18\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    "NALSCONFIG", DIALOG
+    BEGIN
+        BOTTOMMARGIN, 231
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

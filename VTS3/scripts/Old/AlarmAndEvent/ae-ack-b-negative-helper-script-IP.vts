@@ -1,0 +1,215 @@
+;--------------------------------------------------------------
+  ; Testing Support for the unsuccessful alarm acknowledgment of confirmed event 
+  ; notifications because the 'Time Stamp' is too old.
+  ;
+  ; Exec_AckAlarm_ConfEv_TimeOld.vts	alm07mmddyy.vts
+  ; 9.1.2.1
+  ;   Ver 0.0   02/20/01    Steve Gillingham
+  ;
+  ;  In the REFERENCE sections "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;--------------------------------------------------------------
+  ;--------------------------------------------------------------
+  ;   INITIAL VALUES:
+  ;
+  ;   SCRIPT CHANGES REQUIRED:
+  ;       - The MACROs in TD_CONFIG must be assigned values that
+  ;       correctly reflect the setup of the VTS computer
+  ;       - The MACROs in IUT_CONFIG must be assigned values that
+  ;       accurately reflect the setup of the IUT device, the
+  ;       event generating object, and monitored object.
+  ;       - changes due to the choice of event type
+  ;       - changes in the time stamps
+  ;       - change the destination to the other the IUT
+  ;
+  ;   SCRIPT LIMITATIONS:
+  ;--------------------------------------------------------------
+
+
+SETUP Object Support Tests - unsuccessful alarm acknowledgment of confirmed event notifications because the 'Time Stamp' is too old
+
+  ;--------------------------------------------------------------
+   IUT_IP = 208.6.162.35
+  
+  ;--------------------------------------------------------------
+  ;            CHANGE: MY_MAC address and "Untitled"
+  ; TD_CONFIG
+  ;
+  ;"Untitled" = 1, ETHERNET, 0
+  -- The network which is directly-connected to the TD
+  -- and can be used to reach the IUT.
+  -- Adjust the parameters as needed to reflect the actual
+  -- physical environment. The first value represents the 
+  -- physical network number, the second value the physical 
+  -- network type and the third value the physical port.
+
+  ;MY_MAC = 0000e8e5164a   -- MAC address of the TD
+                          -- replace with you TD address
+
+
+
+  EVENT_ID = EVENT-ENROLLMENT, 1        -- the event generating object. 
+  
+  MONITORED_ID = MULTISTATE-INPUT, 1    -- This is the object which when changed will be the cause of an alarm
+  MONITORED_PROP = Present-Value        -- The monitored property, present-value. This is the objects property which when changed will be the cause of an alarm
+                                        -- if intrinsic
+  HI_LIMIT = 90                         -- A value high enough to trigger an alarm. This value is used in the initial write proeprty request.
+  EVENT_STATE_ACKED = 3                 -- A value 0 - 5 must be here. This must be the same as the event state in the event notification.
+
+  ;EVENT_GENERATING_OBJECT               -- This is the Event-Object-Identifier. This is the same object that initiated the event-notification that is being acknowledged.
+
+  SEQNUM = 99
+
+  TRANSITIONS_ACKED = T,F,F	;F,T,T             -- This is the value of ACKED-TRANSITIONS right after an alarm goes off.
+  
+  ALL_TRANSITIONS_ACKED = T,T,T         -- This is the value of ACKED-TRANSITIONS right after Alarm has been Acked.
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
+Section 9.1.2.2 Unsuccessful alarm acknowledgment of confirmed event notifications because the 'Time Stamp' is too old
+
+  Test #1 Trigger Alarm
+-- 1. MAKE (a change that triggers the detection of an alarm event in the IUT)
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, MONITORED_ID
+      Property = 1, MONITORED_PROP
+      OpenTag 3
+	Unsigned = HI_LIMIT
+      ;ENUM = HI_LIMIT  ; CHANGE: change according to value being written
+      -- REAL = HI_LIMIT  ; CHANGE: change according to value being written
+      CloseTag 3
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      ;DA = IUT_IP
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      )    
+
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+ 
+
+ Test #4 Verify Transition Bits
+  -- 4. VERIFY (the 'Event Object Identifier' from the event notification),
+  --    Acked_Transitions = B'011'
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, ACKED-TRANSITIONS
+      )
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+ 
+
+ Test #7 Verify Transition Bits
+
+  -- 4. VERIFY (the 'Event Object Identifier' from the event notification),
+  --    Acked_Transitions = B'011'
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, ACKED-TRANSITIONS
+      )
+
+
+
+    EXPECT ( 
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, ACKED-TRANSITIONS
+      OpenTag 3
+        BitString = TRANSITIONS_ACKED
+      CloseTag 3
+      )
+
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
+
+
+  -- 12. VERIFY (the 'Event Object Identifier' from the event notification), 
+  --            Acked_Transitions = B'111'
+
+  Test #12 Verify Acked Transitions
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, ACKED-TRANSITIONS
+      )
+
+    EXPECT ( 
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, ACKED-TRANSITIONS
+      OpenTag 3
+        BitString = TRANSITIONS_ACKED
+      CloseTag 3
+      )

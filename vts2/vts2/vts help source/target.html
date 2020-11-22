@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>Selecting a Target BACnet Device</title>
+</head>
+<body>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="device">
+	<param name="Keyword" value="target">
+	<param name="Keyword" value="target device">
+	<param name="Keyword" value="local devices">
+	<param name="Keyword" value="remote devices">
+	<param name="Keyword" value="source routing">
+	<param name="Keyword" value="destination routing">
+	<param name="Keyword" value="PTP devices">
+	<param name="Keyword" value="MS/TP devices">
+	<param name="Keyword" value="alias">
+	<param name="Keyword" value="global devices">
+	<param name="Keyword" value="PTP connection">
+	<param name="Keyword" value="destination address">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>Selecting a Target BACnet Device</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="3" align="right">
+	<a href="view.html"><img src="prev.gif" border="0" width="20" height="20" alt="previous"></a><a href="al.html"><img src="next.gif" border="0" width="20" height="20" alt="next"></a><a href="home.html"><img src="home.gif" border="0" width="20" height="20" alt="home"></a>
+	</td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	 <a href="#target">Target Device Window</a><br>
+	 <a href="#localtarget">Local Target Devices</a><br>
+	 <a href="#remotetargetnorouter">Remote Target Devices When the Router is Unknown</a><br>
+	 <a href="#remotetargetrouter">Remote Target Devices When the Router is Known</a><br>
+	 <a href="#globaltarget">Global Target Devices</a><br>
+	 <a href="#sourcerouting">Source Routing</a><br>
+	 <a href="#ptp">PTP Target Devices</a><br>
+	 <a href="#mstp">MS/TP Target Devices</a><br>
+	 <p>
+	 <a name="target"></a><b>Target Device Window</b><br>
+	 VTS allows you to initiate all BACnet service requests on demand, using the AL and NL menu 
+	 selections. Before you can transmit a service request, you must identify the MAC address 
+	 information of the target BACnet device you wish to receive the request. 
+	 The target device window is an interactive dialog that allows you to select the MAC layer 
+	 and network layer address parameters for the request. 
+	 </p>
+	 <p>
+	 <img src="target.jpg" border="0">
+	 </p>
+	 <p>
+	 When you select the AL or NL menu, the target device window automatically appears. You 
+	 can also activate the target device window at any time using the View/Target Device Window 
+	 menu selection. The target device window lets you select:<br>
+	 <ul>
+	 <li>MAC destination address of the target BACnet device
+	 <li>NPDU destination routing information
+	 <li>NPDU source routing information
+	 </ul>
+	 </p>
+	 <p>
+	 The MAC address in the "Destination" box at the top of the window is always the final 
+	 destination of the packet. If you do not include destination routing, then this is 
+	 the MAC layer destination address. If you do include destination routing, then this is 
+	 the NPDU DADR.
+	 </p>
+	 <p>
+	 To make device selection easier, you can define an alias for each BACnet device MAC 
+	 address so you don't have to remember MAC addresses. If you type the MAC address into 
+	 the device address field under the "MAC address" radio button, type the alias into the 
+	 alias field and click the "new alias" button, an alias/device MAC address pair will 
+	 be created. 
+	 </p>
+	 <p>
+	 <a name="localtarget"></a><b>Local Target Devices</b><br>
+	 A local target device is a BACnet device that is on the same physical network as VTS 
+	 and requires no NPDU destination routing. The sample below illustrates a local target 
+	 device selection.  
+	 </p>
+	 <p>
+	 <img src="target_local.jpg" border="0">
+	 </p>
+	 <p>
+	 The resulting NPCI is illustrated below.
+	 </p>
+	 <p>
+	 <img src="target_local_npci.jpg" border="0">
+	 </p>
+	 <p>
+	 <a name="remotetargetnorouter"></a><b>Remote Target Devices When the Router is Unknown</b><br>
+	 A remote target device is a BACnet device that is on a different physical network than VTS 
+	 and requires NPDU destination routing. If the router is unknown, the router address, and hence 
+	 the MAC layer destination address, is the broadcast address. The NPDU DADR is the 
+	 MAC address in the "Destination" box and NPDU DNET is the network number that you enter in the 
+	 "Routing" box. The sample below illustrates a remote target device selection when the 
+	 router to the device is unknown. 
+	 </p>
+	 <p>
+	 <img src="target_remote_norouter.jpg" border="0">
+	 </p>
+	 <p>
+	 The resulting NPCI is illustrated below.
+	 </p>
+	 <p>
+	 <img src="target_remote_norouter_npci.jpg" border="0">
+	 </p>
+	 <p>
+	 <a name="remotetargetrouter"></a><b>Remote Target Devices When the Router is Known</b><br>
+	 A remote target device is a BACnet device that is on a different physical network than VTS 
+	 and requires NPDU destination routing. If the router is known, the router address, and hence 
+	 the MAC layer destination address, is the router MAC address you enter in the "Routing" box. The 
+	 NPDU DADR is the MAC address in the "Destination" box and NPDU DNET is the network number 
+	 that you enter in the "Routing" box. The sample below illustrates a remote target device 
+	 selection when the router to the device is known. 
+	 </p>
+	 <p>
+	 <img src="target_remote_router.jpg" border="0">
+	 </p>
+	 <p>
+	 The resulting NPCI is illustrated below.
+	 </p>
+	 <p>
+	 <img src="target_remote_router_npci.jpg" border="0">
+	 </p>
+	 <p>
+	 To make router selection easier, you can define an alias for each router MAC 
+	 address so you don't have to remember MAC addresses. If you type the MAC address into 
+	 the router MAC addr, type the alias into the 
+	 router alias field and click the "new alias" button, an alias/router MAC address pair will 
+	 be created.
+	 </p> 
+	 <p>
+	 <a name="globaltarget"></a><b>Global Target Devices</b><br>
+	 When you specify a global target device, the BACnet request will be broadcast on all 
+	 physical networks reached by all routers on the BACnet network. The destination MAC layer
+	 address is always the broadcast address. This selection requires NPDU destination 
+	 routing with the DNET set to the broadcast address (0xFFFF) and DLEN=0. The sample 
+	 below illustrates a global target device selection. 
+	 </p>
+	 <p>
+	 <img src="target_global.jpg" border="0">
+	 </p>
+	 <p>
+	 The resulting NPCI is illustrated below.
+	 </p>
+	 <p>
+	 <img src="target_global_npci.jpg" border="0">
+	 </p>
+	 <p>
+	 <a name="sourcerouting"></a><b>Source Routing</b><br>
+	 Source routing information is the information included in the NPDU by a router 
+	 when the final destination for the response is not on the same physical network as the 
+	 device receiving the request. VTS allows you to include NPDU source routing information in 
+	 any packet to simulate the presence of routers. The sample below illustrates a source 
+	 routing selection. 
+	 </p>
+	 <p>
+	 <img src="target_source.jpg" border="0">
+	 </p>
+	 <p>
+	 The resulting NPCI is illustrated below.
+	 </p>
+	 <p>
+	 <img src="target_source_npci.jpg" border="0">
+	 </p>
+	 <a name="ptp"></a><b>PTP Target Devices</b><br>
+	 If the target of a BACnet request is a PTP device, you must make a PTP connection to the 
+	 device before you can transmit the request to it. The PTP connection dialog is shown below.  
+	 </p>
+	 <p>
+	 <img src="target_ptpconnect.jpg" border="0">
+	 </p>
+	 <p>
+	 The PTP connection dialog is displayed when you select the VTS PTP/Connect to PTP Peer menu. 
+	 In order to select the PTP menu, you must first have displayed the target device window 
+	 (by selecting the View/Target Device Window menu or the AL or NL menu).
+	 <p>
+	 After you have made the PTP connection, you can use the target device window to select the 
+	 PTP port as the target for the request. You may include destination and source routing 
+	 information if needed in order to reach a PTP device through a PTP half router. A sample 
+	 target device window is shown below.
+	 </p>
+	 <p>
+	 <img src="target_ptp.jpg" border="0">
+	 </p>
+	 <a name="mstp"></a><b>MS/TP Target Devices</b><br>
+	 If the target of a BACnet request is an MS/TP device, you can use the target device 
+	 window to select the MS/TP port and node address as the target for the request. 
+	 You may include destination and source routing information if needed. The destination 
+	 address is the MS/TP node (0x00 through 0xFE) of the target device or broadcast 
+	 (0xFF). A sample target device window is shown below.
+	 </p>
+	 <p>
+	 <img src="target_mstp.jpg" border="0">
+	 </p>
+	 <p>
+ 	 <a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	 <a href="al.html">Go to the <b>Next</b> VTS Help Topic.</a><br>
+	 <a href="view.html">Go to the <b>Previous</b> VTS Help Topic.</a><br>
+	 </p>
+	 </font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

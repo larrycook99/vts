@@ -1,0 +1,1277 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Command Prioritization Test
+  ;
+  ;  ComPriommddyy.vts
+  ;
+  ;  Ver 1.0	05/12/01	P. Bowen	
+  ;
+  ;  Purpose: This test case verifies that the command prioritization algorithm
+  ;	is properly implemented. This test applies to Analog Output, Analog Value,
+  ;	Binary Output, Binary Value, Multi-state Output, and Multi-state Value 
+  ;	objects that are commandable.
+  ;
+  ;  Dependencies: ReadProperty and WriteProperty Service Execution Tests
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Command Prioritization Test
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+  
+  TD_IP = 10.10.10.2
+	
+  OBJECT1 = Analog-Value, 1	; object under test, type AO, AV, BO, BV, MO, or MV
+
+  V_LOW  = 1.0			; Hi, Med & Low test values. Replace with
+  V_MED  = 50.0			; any values Hi > Med > Low not equal to PV default
+  V_HIGH = 99.0
+
+  P1	 = 1
+  P_HIGH = 2
+  P_MED  = 3
+  P_LOW  = 4
+  P5	 = 5
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  
+  IUT_IP = 208.6.162.35			; Address of IUT
+				                            
+  ;-------------------------------------------------------------------------------------
+
+  SECTION Command Prioritization Test 
+
+  -- Note: this test takes place over steps #1a - #1o so that the test can be paused
+  -- between steps to verify the values of the Priority-Array and Present-Value
+  -- properties.
+
+  -- Configuration Requirements: 
+  --	a) The object to be tested shall be configured such that all slots in the 
+  --	   Priority_Array with a priority higher than 6 have a value of NULL.
+  --	b) IUT is on the same network as TD
+
+  -- Test Concept: The TD selects three different values Vlow, Vmed, and Vhigh chosen
+  -- from the valid values specified in (B) 4.4.2. The TD also selects three
+  -- priorities Plow, Pmed, and Phigh, all between 1 and 5, such that numerically 
+  -- Plow > Pmed > Phigh. The selected values are written one at a time to 
+  -- Present_Value at the corresponding priority. The Present_Value and Priority_Array
+  -- are checked to verify correct operation. Priorities numerically smaller than 6 
+  -- (higher priority) are used to eliminate minimum on/off time considerations.
+
+  -- Test Steps:
+  --
+  -- 1. WRITE Present_Value = Vlow, PRIORITY = Plow
+  -- 2. VERIFY Present_Value = Vlow
+  -- 3.	VERIFY Priority_Array = Vlow, ARRAY INDEX = Plow 
+  -- 4.	REPEAT Z = (each index 1 through 5 not equal to Plow) DO {
+  --	VERIFY Priority_Array = NULL, ARRAY INDEX = Z
+  --    }
+  -- 5.	WRITE Present_Value = Vhigh, PRIORITY = Phigh
+  -- 6.	VERIFY Present_Value = Vhigh
+  -- 7.	VERIFY Priority_Array = Vhigh, ARRAY INDEX = Phigh 
+  -- 8.	REPEAT Z = (each index 1 through 5 not equal to Plow  or Phigh) DO {
+  -- 	VERIFY Priority_Array = NULL, ARRAY INDEX = Z
+  --	}
+  -- 9.	WRITE Present_Value = Vmed, PRIORITY = Pmed
+  -- 10. VERIFY Present_Value = Vhigh
+  -- 11. VERIFY Priority_Array = Vmed, ARRAY INDEX = Pmed 
+  -- 12. REPEAT Z = (each index 1 through 5 not equal to Plow, Pmed or Phigh) DO {
+  --	VERIFY Priority_Array = NULL, ARRAY INDEX = Z
+  --	}
+  -- 13. WRITE Present_Value = NULL, PRIORITY = Phigh
+  -- 14. VERIFY Present_Value = Vmed
+  -- 15. REPEAT Z = (each index 1 through 5 not equal to Plow  or Pmed) DO {
+  --	VERIFY Priority_Array = NULL, ARRAY INDEX = Z
+  --	}
+  -- 16. WRITE Present_Value = NULL, PRIORITY = Pmed
+  -- 17. VERIFY Present_Value = Vlow
+  -- 18. REPEAT Z = (each index 1 through 5 not equal to Plow ) DO {
+  --	 VERIFY Priority_Array = NULL, ARRAY INDEX = Z
+  --	}
+  -- 19. WRITE Present_Value = NULL, PRIORITY = Plow
+  -- 20. REPEAT Z = (each index 1 through 5) DO {
+  --	VERIFY Priority_Array = NULL, ARRAY INDEX = Z
+  --	}
+
+  -- REFERENCE (B) Command Prioritization and (T) Command Prioritization Test
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Command Prioritization Test Steps 1 - 2 Write and Verify Present-Value
+
+  DEPENDENCIES None
+
+  -- Step #1: Write Present-Value = Vlow, priority = Plow
+
+    SEND (
+       	NETWORK = "Untitled"
+       	DA = IUT_IP
+       	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+	Service = WriteProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value
+      	OpenTag 3
+        	REAL = V_LOW
+      	CloseTag 3
+     	Priority = 3, P_LOW		
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+  -- Step #2: Verify (read) the object's Present-Value property
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value	; read the object's Present-Value property
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Present-Value
+      OpenTag 3		
+         REAL = V_LOW			; compare: Present-Value should = V_LOW
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1b Command Prioritization Test Step 3 - Read Priority-Array Index = P_LOW
+
+  DEPENDENCIES None
+
+  -- Step #3: Read object's Priority-Array, index = Plow
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_LOW		; Read Priority-Array[P_LOW]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_LOW
+      OpenTag 3
+         Null ;REAL = V_LOW			; Verfiy that Priority-Array[P_LOW] = V_LOW
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1c Command Prioritization Test Step 4 - Read Priority Array Indeces 1-5
+
+  DEPENDENCIES None
+
+  -- Step #4: Read object's Priority-Array indeces 1 - 5 not equal to P_LOW
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P1			; Read Priority-Array[P1]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P1
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P1] should = NULL
+      CloseTag 3
+    )
+
+   SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_HIGH		; Read Priority-Array[P_HIGH] 
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_HIGH
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P_HIGH] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_MED		; Read Priority-Array[P_MED]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_MED
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P_MED] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P5			; Read Priority-Array[P5]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P5
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P5] should = NULL
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1d Command Prioritization Test Steps 5 - 6 Write and Verify Present-Value
+
+  DEPENDENCIES None
+
+  -- Step #5: Write Present-Value = Vhigh, priority = Phigh
+
+    SEND (
+      	NETWORK = "Untitled"
+	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = WriteProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value
+      	OpenTag 3
+        	REAL = V_HIGH
+      	CloseTag 3
+     	Priority = 3, P_HIGH		
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+  -- Step #6: Verify (read) the object's Present-Value property
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value	; read the object's Present-Value property
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	SA = IUT_IP
+      	PDU = ComplexAck
+      	DER = FALSE
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value
+      	OpenTag 3		
+         	REAL = V_HIGH			; compare: Present-Value should = V_HIGH
+      	CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1e Command Prioritization Test Step 7 - Read Priority-Array Index = P_HIGH
+
+  DEPENDENCIES None
+
+  -- Step #7: Read object's Priority-Array, index = Phigh
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_HIGH		; Read Priority-Array[P_HIGH]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_HIGH
+      OpenTag 3
+         Null        ;REAL = V_HIGH			; Verfiy that Priority-Array[P_HIGH] = V_HIGH
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1f Command Prioritization Test Step 8 - Read Priority Array Indeces 1-5
+
+  DEPENDENCIES None
+
+  -- Step #8: Read object's Priority-Array indeces 1 - 5 not equal to P_LOW or P_HIGH
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P1			; Read Priority-Array[P1]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P1
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P1] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_MED		; Read Priority-Array[P_MED]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_MED
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P_MED] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P5			; Read Priority-Array[P5]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P5
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P5] should = NULL
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1g Command Prioritization Test Steps 9 - 10 Write and Verify Present-Value
+
+  DEPENDENCIES None
+
+  -- Step #9: Write Present-Value = Vmed, priority = Pmed
+
+    SEND (
+      	NETWORK = "Untitled"
+	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = WriteProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value
+      	OpenTag 3
+        	REAL = V_MED
+      	CloseTag 3
+     	Priority = 3, P_MED		
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+  -- Step #10: Verify (read) the object's Present-Value property
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value	; read the object's Present-Value property
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Present-Value
+      OpenTag 3		
+         REAL = V_MED			; compare: Present-Value should = V_MED
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1h Command Prioritization Test Step 11 - Read Priority-Array Index = P_MED
+
+  DEPENDENCIES None
+
+  -- Step #11: Read object's Priority-Array, index = Pmed
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+     	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_MED		; Read Priority-Array[P_MED]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_MED
+      OpenTag 3
+         null ;REAL = V_MED			; Verfiy that Priority-Array[P_MED] = V_MED
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1i Command Prioritization Test Step 12 - Read Priority Array Indeces 1-5
+
+  DEPENDENCIES None
+
+  -- Step #12: Read object's Priority-Array indeces 1 - 5,
+  -- indeces not equal to P_LOW, P_MED or P_HIGH
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P1			; Read Priority-Array[P1]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P1
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P1] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P5			; Read Priority-Array[P5]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P5
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P5] should = NULL
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1j Command Prioritization Test Steps 13 - 14 Write and Verify Present-Value
+
+  DEPENDENCIES None
+
+  -- Step #13: Write Present-Value = NULL, priority = Phigh
+
+    SEND (
+      	NETWORK = "Untitled"
+	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = WriteProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value
+      	OpenTag 3
+        AL = X'00'			; write Present-Value = NULL
+      	CloseTag 3
+     	Priority = 3, P_HIGH		
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+  -- Step #14: Verify (read) the object's Present-Value property
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value	; read the object's Present-Value property
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Present-Value
+      OpenTag 3		
+         REAL = 100.0;V_MED			; compare: Present-Value should = V_MED
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1k Command Prioritization Test Step 15 - Read Priority Array Indeces 1-5
+
+  DEPENDENCIES None
+
+  -- Step #15: Read object's Priority-Array indeces 1 - 5,
+  -- indeces not equal to P_LOW or P_MED
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P1			; Read Priority-Array[P1]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P1
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P1] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_HIGH		; Read Priority-Array[P_HIGH] 
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_HIGH
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P_HIGH] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P5			; Read Priority-Array[P5]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P5
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P5] should = NULL
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1l Command Prioritization Test Steps 16 - 17 Write and Verify Present-Value
+
+  DEPENDENCIES None
+
+  -- Step #16: Write Present-Value = NULL, priority = Pmed
+
+    SEND (
+      	NETWORK = "Untitled"
+	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = WriteProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value
+      	OpenTag 3
+        	AL = X'00'			; write Present-Value = NULL
+      	CloseTag 3
+     	Priority = 3, P_MED		
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+  -- Step #17: Verify (read) the object's Present-Value property
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value	; read the object's Present-Value property
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Present-Value
+      OpenTag 3		
+         REAL = 100.0;V_LOW			; compare: Present-Value should = V_LOW
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1m Command Prioritization Test Step 18 - Read Priority Array Indeces 1-5
+
+  DEPENDENCIES None
+
+  -- Step #18: Read object's Priority-Array indeces 1 - 5, index not equal to P_LOW
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P1			; Read Priority-Array[P1]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P1
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P1] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_HIGH		; Read Priority-Array[P_HIGH] 
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_HIGH
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P_HIGH] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_MED		; Read Priority-Array[P_MED] 
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_MED
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P_MED] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P5			; Read Priority-Array[P5]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P5
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P5] should = NULL
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1n Command Prioritization Test Step 19 Write and Verify Present-Value
+
+  DEPENDENCIES None
+
+  -- Step #19: Write Present-Value = NULL, priority = Plow
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = WriteProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Present-Value
+      	OpenTag 3
+        	AL = X'00'			; write Present-Value = NULL
+      	CloseTag 3
+     	Priority = 3, P_LOW		
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1o Command Prioritization Test Step 20 - Read Priority Array Indeces 1-5
+
+  DEPENDENCIES None
+
+  -- Step #20: Read object's Priority-Array indeces 1 - 5
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P1			; Read Priority-Array[P1]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P1
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P1] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_HIGH		; Read Priority-Array[P_HIGH] 
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_HIGH
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P_HIGH] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+     	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_MED		; Read Priority-Array[P_MED] 
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_MED
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P_MED] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P_LOW		; Read Priority-Array[P_LOW] 
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P_LOW
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P_LOW] should = NULL
+      CloseTag 3
+    )
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, OBJECT1
+      	Property = 1, Priority-Array
+      	Unsigned = 2, P5			; Read Priority-Array[P5]
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Priority-Array
+      Unsigned = 2, P5
+      OpenTag 3
+         AL = X'00'			; compare: Priority-Array[P5] should = NULL
+      CloseTag 3
+    )

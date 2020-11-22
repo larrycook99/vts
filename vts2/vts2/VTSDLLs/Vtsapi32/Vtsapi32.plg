@@ -1,0 +1,34 @@
+--------------------Configuration: Vtsapi32 - Win32 Debug--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Vtsapi32\Vtsapi32.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MTd /W3 /Gm /GX /Zi /Od /I "..\includent" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "MDEBUG" /FAcs /Fa"Debug/" /FR"Debug/" /Fp"Debug/Vtsapi32.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Debug/Vtsapi32.res" /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/Vtsapi32.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/Vtsapi32.pdb" /debug /machine:I386 /def:".\Vtsapi32.def" /out:"Debug/Vtsapi32.dll" /implib:"Debug/Vtsapi32.lib" /pdbtype:sept "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP55F.tmp" with contents </nologo /Zp1 /MTd /W3 /Gm /GX /Zi /Od /I "..\includent" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "MDEBUG" /FAcs /Fa"Debug/" /FR"Debug/" /Fp"Debug/Vtsapi32.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\Vtsapi32\Vtsapi32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP55F.tmp" 
+Creating temp file "C:\TEMP\RSP560.tmp" with contents <kernel32.lib user32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"Debug/Vtsapi32.pdb" /debug /machine:I386 /def:".\Vtsapi32.def" /out:"Debug/Vtsapi32.dll" /implib:"Debug/Vtsapi32.lib" /pdbtype:sept 
+".\Debug\Vtsapi32.obj"
+".\Debug\Vtsapi32.res">
+Creating command line "link.exe @C:\TEMP\RSP560.tmp" 
+Compiling...
+Vtsapi32.c
+Linking...
+Creating temp file "C:\TEMP\RSP561.bat" with contents <@echo off
+copy debug\vtsapi32.dll    "c:\program files\visual test shell v2.27"
+>
+Creating command line "C:\TEMP\RSP561.bat" 
+copy debug to 2.27
+        1 file(s) copied.
+
+
+
+Vtsapi32.dll - 0 error(s), 0 warning(s)

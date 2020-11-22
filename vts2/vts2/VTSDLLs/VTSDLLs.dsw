@@ -1,0 +1,215 @@
+Microsoft Developer Studio Workspace File, Format Version 5.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "Bacprim32"=".\Bacprim32\Bacprim32.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Vtsapi32
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "NALdum"=".\NALdum\NALdum.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Naltst"=".\Naltst\Naltst.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Vtsapi32"=".\Vtsapi32\Vtsapi32.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "bacregnt"=".\BACREGNT\bacregnt.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "dudapi32"=".\dudapi32\dudapi32.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Bacprim32
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dummy"=".\dummy\dummy.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Bacprim32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name bacregnt
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name dudapi32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mstp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name NALdum
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name nalservnt
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name packet32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ptp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name sjack32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Vtsapi32
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mstp"=".\mstp\mstp.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name sjack32
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "nalservnt"=".\nalservnt\nalservnt\nalservnt.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Bacprim32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mstp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ptp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name packet32
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "packet32"=".\Packet32 for NT\packet32.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ptp"=".\ptp\ptp.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name sjack32
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "sjack32"=".\sjack\sjack32.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

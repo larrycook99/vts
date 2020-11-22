@@ -1,0 +1,10 @@
+TEST #2b
+------------------------------------------
+19) SEND(0),DA=00001A18210B,PDU=Confirmed-Request,Service=readProperty,AL=0C02000001194C2A7D00
+20) XPCT(0),PDU=Error,Service=readProperty,AL=9102912A
+------------------------------------------
+1) AL(0) 0.00400531D858,0.00001A18210B,50440C9102912A
+------------------------------------------
+Test #2b - Section 1 - passed
+SEND(19) sent, EXPECT(20) found, passed.
+==========================================

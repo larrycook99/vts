@@ -1,0 +1,35 @@
+--------------  S C R I P T   V E R S I O N   I N F O   -----------------------
+;
+; Script: config.vts
+;
+; Purpose: Address and other definitions for inclusion by other scripts
+;          to minimize the need to edit the scripts for each IUT
+;
+
+; Specify the name of your interface port (as defined by VTS Ports dialog)
+; (not currently used) TD_PORT  = 'MyIP'
+
+; Device ID of the Test Device (PC running VTS, as defined by VTS Devices dialog)
+; Used to register for notifications, etc.
+TD_DEVICE_OBJECT = (device, 100)
+
+; Process ID of the Test Device (PC running VTS)
+; used in event notification tests etc.
+TD_PROCESS_ID = 10
+
+; Specify the name of the device to be tested (as defined by VTS Names dialog)
+IUT_ADDR = "IUT"
+
+; If the device to be tested is on a remote network, set FIND_ROUTER to 1
+FIND_ROUTER = 0
+
+; Specify the Device ID of the IUT
+IUT_DEVICE_OBJECT = (device, 481641)
+
+; Specify the Device instance of the IUT
+IUT_DEVICE_INSTANCE = 481641
+
+; TODO: Eventually we should define OBJECT1, OBJECT2 etc. here so that the scripts
+; would not need to be modified at all.  But that may require a bit of refactoring
+; of the scripts to ensure that reasonable objects are used in each one.
+; Anyone?  Anyone?

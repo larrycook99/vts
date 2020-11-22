@@ -1,0 +1,202 @@
+  ;-------------------------------------------------------------------------------
+  ;    Test-Help for the ReadProperty Service (negative)
+  ;    nRPmmddyy.vts
+  ;--------------------------------------------------------------------------------
+  ;    Version 1.0  (** Englisch **)
+  ;  "DRAFT COPY--- DO NOT DISTRIBUTE"
+  ;      written  by  Jens Haase 04. April 2001   (First Version)
+  ;          update   Jens Haase 07. MAi   2001   (destroy the First-Syntax-Errors)
+  ;          update   Jens Haase 08. Mai   2001   (write the Error-Class and Error-Codes)
+  ;          update   Jens Haase 09. Mai   2001   (uptade the 'EXPECT')
+  ;  Ver 1.0 update   Bradsp          08/15/01    (Enumerated Send and Expect & added routing)
+  ;  Ver 1.1          Bradsp          09/17/01    Marked with easy change symbols and Routing sections
+  ;      In the REFERENCE section "B" BACnet standard and
+  ;      "(T)" refers to the Testing-Addendum.
+  ; ------------------------------------------------------------------------------
+  ; ------------------------------------------------------------------------------
+   SETUP Positive ReadProperty Tests
+   
+    IUT_IP = 10.10.10.100:0xBAC0
+  
+   OBJECT1 = Device, 1967	; DEVICE OBJECT
+   OBJECT2 = analog-VALUE, 1	; Object which is the subject of the Read Prop tests
+   OBJECT3 = analog-VALUE, 2	; Object which is the subject of the Read Prop tests
+   OBJECT4 = File, 104		; Object which is the subject of the Read Prop tests
+
+   INDEX0 = 0		; Index used in any test to read array length
+   INDEX1 = 1		; Array index for test #1g "Read a Single Element of an Array"
+   INDEX2 = 4		; Array index for test #1j "Read Property - Read Null Values"
+
+  ;------------------------------------------------------------------------------------- 
+  ;-------------------------------------------------------------------------------------
+
+   SECTION ReadProperty Service Execution Tests
+
+  -- Reference (T) Positive ReadProperty Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD.
+
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+TEST #n1a
+  --- This test case verifies that the IUT can execute ReadProperty Service Request
+  --- when the requested property value is not an arry but an array index is
+  --- inculded in the service request.
+
+
+DEPENDENCIES none
+ 
+REFERENCE (B)15.5,15.5.1.1.1; (T)9.15.2.1
+
+  SEND (
+    NETWORK = "Untitled"
+    DA = IUT_IP
+    BVLCI = ORIGINAL-UNICAST-NPDU
+    DER  = True
+    DER  = True
+    PDU  = Confirmed_Request
+    SegMsg = 0
+    SegResp = 0
+    MaxResp = 1476
+    InvokeID = 1 
+    SERVICE = ReadProperty
+    OBJECT      = 0, OBJECT1           
+    PROPERTY    = 1, model-name           ; (Device-model_Name or other property that is not an array)
+    Unsigned    = 2, INDEX1			; Array[1] reads array one
+    )
+
+  EXPECT (
+    NETWORK = "Untitled"
+    sa = IUT_IP
+    BVLCI = ORIGINAL-UNICAST-NPDU
+    DER   = FALSE
+    PDU   = ERROR
+    ERROR-CHoice = ReadProperty
+    ENUMERATED = 5                       ;  5 = error class services  pg 363 in the bacnet standard
+    ENUMERATED = 7	               ;  7 = error code Inconsistent-Parameters 
+   ) 
+  OR (
+    NETWORK     = "Untitled"
+    sa = IUT_IP
+    BVLCI = ORIGINAL-UNICAST-NPDU
+    DER         = FALSE
+    PDU         = ERROR
+    ERROR-CHoice = ReadProperty
+    ENUMERATED = 2                      ;  5 = error class services  pg 363 in the bacnet standard
+    ENUMERATED = 42	              ;  42 = invaid array index 
+   ) 
+  OR (
+    NETWORK     = "Untitled"
+    sa = IUT_IP
+    BVLCI = ORIGINAL-UNICAST-NPDU
+    DER         = FALSE
+    PDU         = reject
+    Reject-Reason = 2                   ; reject-reason = Inconsistent-Parameters
+  
+   ) 
+
+;-------------------------------------------------------------------------------------
+  ; ------ Reading Array Properties with an Array Index that is Out of Range -------
+
+TEST #n1b
+  --- This test case verifies that the IUT can execute ReadProperty Service Request
+  --- when the requested property value is an array but the array index is out of range.
+
+ --    ; DEPENDENCIES (B)12.9.16, 15.5; (T)9.15.2.2
+ 
+  SEND (
+    NETWORK = "Untitled"
+    DA = IUT_IP
+    BVLCI = ORIGINAL-UNICAST-NPDU
+    DER  = True
+    PDU  = Confirmed_Request
+    SegMsg = 0
+    SegResp = 0
+    MaxResp = 1476
+    InvokeID = 1 
+    SERVICE = ReadProperty
+    OBJECT      = 0, OBJECT1           
+    PROPERTY    = 1, object-list                        ; (Device Object-list or other array)
+    Unsigned    = 2, 26			              ; Array[max_array_index+1]
+    )
+
+  EXPECT (
+    NETWORK = "Untitled"
+    sa = IUT_IP
+    BVLCI = ORIGINAL-UNICAST-NPDU
+    DER   = FALSE
+    PDU   = ERROR
+    ERROR-CHoice = ReadProperty
+    ENUMERATED = 2                       ; 2 = property
+    ENUMERATED = 42	               ;  42 = invalid array index
+   ) 
+
+ ; ---------- Reading an Unknown Object ----------------------
+
+TEST #n1c
+  --- This test case verifies that the IUT can execute ReadProperty Service Request 
+  --- under circumstances where the request object does not exist.
+
+
+ -- ; DEPENDENCIES (B) ; (T)9.15.2.3
+
+ 
+  SEND (
+    NETWORK = "Untitled"
+    DA = IUT_IP
+    BVLCI = ORIGINAL-UNICAST-NPDU
+    DER  = True
+    PDU  = Confirmed_Request
+    SegMsg = 0
+    SegResp = 0
+    MaxResp = 1476
+    InvokeID = 1 
+    SERVICE = ReadProperty
+    OBJECT      = 0, object4                             --- (Any standard Object not contained in the IUT's Database)
+    PROPERTY    = 1, object-list                         --- (Any Property defined for the specified Object)
+   )
+
+  EXPECT (
+    NETWORK = "Untitled"
+    sa = IUT_IP
+    BVLCI = ORIGINAL-UNICAST-NPDU
+    DER   = FALSE
+    PDU   = ERROR
+    ERROR-CHoice = ReadProperty
+    ENUMERATED = 1                      ; 1 = object error class 
+    ENUMERATED = 31		      ; 31 = unknown object
+   ) 
+; --------- Reading an Unknown Property ---------
+
+TEST #n1d
+  --- This test case verifies that the IUT can execute ReadProperty Service Request
+  --- under circumstances where the request property does not exist.
+
+-- ; DEPENDENCIES (B) ; (T)9.15.2.4
+
+ 
+  SEND (
+    NETWORK = "Untitled"
+    DA = IUT_IP
+    BVLCI = ORIGINAL-UNICAST-NPDU
+    DER  = True
+    PDU  = Confirmed_Request
+    SegMsg = 0
+    SegResp = 0
+    MaxResp = 1476
+    InvokeID = 1 
+    SERVICE = ReadProperty
+    OBJECT      = 0, object1                             --- (Any standard Object not contained in the IUT's Database)
+    PROPERTY    = 1, 60                           --- (Any Property not defined for Device Object - this value may need to change)
+   )
+
+  EXPECT (
+    NETWORK = "Untitled"
+    sa = IUT_IP
+    BVLCI = ORIGINAL-UNICAST-NPDU
+    DER   = FALSE
+    PDU   = ERROR
+    ERROR-CHoice = ReadProperty
+    ENUMERATED = 2
+    ENUMERATED = 32
+   ) 

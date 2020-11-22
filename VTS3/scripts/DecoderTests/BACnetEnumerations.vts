@@ -1,0 +1,106 @@
+--------------  S C R I P T   V E R S I O N   I N F O   -----------------------
+;
+; Version 1      2010-01-27   By John Hartman
+;
+---------------------- S C R I P T   H E A D E R ------------------------------
+;
+; Script: BACnetEnumerations.vts
+;
+; Purpose: Common definition of equates used by test scripts
+;
+---------------------- S C R I P T   B O D Y ----------------------------------
+
+; Error Classes
+   EC_DEVICE                                  = 0
+   EC_OBJECT                                  = 1
+   EC_PROPERTY                                = 2
+   EC_RESOURCES                               = 3
+   EC_SECURITY                                = 4
+   EC_SERVICES                                = 5
+   EC_VT                                      = 6
+   EC_COMMUNICATION                           = 7
+
+; Error codes
+   EC_OTHER                                   = 0
+   EC_AUTHENTICATION_FAILED                   = 1
+   EC_CONFIGURATION_IN_PROGRESS               = 2
+   EC_DEVICE_BUSY                             = 3
+   EC_DYNAMIC_CREATION_NOT_SUPPORTED          = 4
+   EC_FILE_ACCESS_DENIED                      = 5
+   EC_INCOMPATIBLE_SECURITY_LEVELS            = 6
+   EC_INCONSISTENT_PARAMETERS                 = 7
+   EC_INCONSISTENT_SELECTION                  = 8
+   EC_INVALID_DATA_TYPE                       = 9
+   EC_INVALID_FILE_ACCESS_METHOD              = 10
+   EC_INVALID_FILE_START_POSITION             = 11
+   EC_INVALID_OPERATOR_NAME                   = 12
+   EC_INVALID_PARAMETER_DATA_TYPE             = 13
+   EC_INVALID_TIME_STAMP                      = 14
+   EC_KEY_GENERATION_ERROR                    = 15
+   EC_MISSING_REQUIRED_PARAMETER              = 16
+   EC_NO_OBJECTS_OF_SPECIFED_TYPE             = 17
+   EC_NO_SPACE_FOR_OBJECT                     = 18
+   EC_NO_SPACE_TO_ADD_LIST_ELEMENT            = 19
+   EC_NO_SPACE_TO_WRITE_PROPERTY              = 20
+   EC_NO_VT_SESSIONS_AVAILABLE                = 21
+   EC_PROPERTY_IS_NOT_A_LIST                  = 22
+   EC_OBJECT_DELETION_NOT_PERMITTED           = 23
+   EC_OBJECT_IDENTIFIER_EXISTS                = 24
+   EC_OPERATIONAL_PROBLEM                     = 25
+   EC_PASSWORD_FAILURE                        = 26
+   EC_READ_ACCESS_DENIED                      = 27
+   EC_SECURITY_NOT_SUPPORTED                  = 28
+   EC_SERVICE_REQUEST_DENIED                  = 29
+   EC_TIMEOUT                                 = 30
+   EC_UNKNOWN_OBJECT                          = 31
+   EC_UNKNOWN_PROPERTY                        = 32
+  ;EC_UNKNOWN_SERVICE                         = 33 // removed in 135-2004
+   EC_UNKNOWN_VT_CLASS                        = 34
+   EC_UNKNOWN_VT_SESSION                      = 35
+   EC_UNSUPPORTED_OBJECT_TYPE                 = 36
+   EC_VALUE_OUT_OF_RANGE                      = 37
+   EC_VT_SESSION_ALREADY_CLOSED               = 38
+   EC_VT_SESSION_TERMINATION_FAIL             = 39
+   EC_WRITE_ACCESS_DENIED                     = 40
+   EC_CHAR_SET_NOT_SUPPORTED                  = 41
+   EC_INVALID_ARRAY_INDEX                     = 42
+   EC_COV_SUBSCRIPTION_FAILED                 = 43
+   EC_NOT_COV_PROPERTY                        = 44
+   EC_OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED    = 45
+   EC_INVALID_CONFIGURATION_DATA              = 46
+   EC_DATATYPE_NOT_SUPPORTED                  = 47
+   EC_DUPLICATE_NAME                          = 48
+   EC_DUPLICATE_OBJECT_ID                     = 49
+   EC_PROPERTY_IS_NOT_AN_ARRAY                = 50
+
+   ; Added in 135-2008
+   EC_ABORT_BUFFER_OVERFLOW                   = 51
+   EC_ABORT_INVALID_APDU_IN_THIS_STATE        = 52
+   EC_ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK = 53
+   EC_ABORT_SEGMENTATION_NOT_SUPPORTED        = 54
+   EC_ABORT_PROPRIETARY                       = 55
+   EC_ABORT_OTHER                             = 56
+   EC_INVALID_TAG                             = 57
+   EC_NETWORK_DOWN                            = 58
+   EC_REJECT_BUFFER_OVERFLOW                  = 59
+   EC_REJECT_INCONSISTENT_PARAMETERS          = 60
+   EC_REJECT_INVALID_PARAMETER_DATA_TYPE      = 61
+   EC_REJECT_INVALID_TAG                      = 62
+   EC_REJECT_MISSING_REQUIRED_PARAMETER       = 63
+   EC_REJECT_PARAMETER_OUT_OF_RANGE           = 64
+   EC_REJECT_TOO_MANY_ARGUMENTS               = 65
+   EC_REJECT_UNDEFINED_ENUMERATION            = 66
+   EC_REJECT_UNRECOGNIZED_SERVICE             = 67
+   EC_REJECT_PROPRIETARY                      = 68
+   EC_REJECT_OTHER                            = 69
+   EC_UNKNOWN_DEVICE                          = 70
+   EC_UNKNOWN_ROUTE                           = 71
+   EC_VALUE_NOT_INITIALIZED                   = 72
+   EC_INVALID_EVENT_STATE                     = 73
+   EC_NO_ALARM_CONFIGURED                     = 74
+   EC_LOG_BUFFER_FULL                         = 75
+   EC_LOGGED_VALUE_PURGED                     = 76
+   EC_NO_PROPERTY_SPECIFIED                   = 77
+   EC_NOT_CONFIGURED_FOR_TRIGGERED_LOGGING    = 78
+   ; values 79 through 82 reserved for future addenda
+   EC_COMMUNICATION_DISABLED                  = 83

@@ -1,0 +1,247 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Positive SubscribeCOV Service Execution Tests
+  ;	Finite Lifetime Subscriptions Test Case
+  ;
+  ; FiniteLifeSubs.vts		FinLifeSubsddmmyy.vts
+  ;
+  ;  Ver 0.1   06/02/01    P. Bowen	Initial version (untested)
+  ;
+  ;  Purpose: This test case verifies that the IUT correctly responds to
+  ;	a SubscribeCOV request to establish a subscription with a temporary
+  ;	lifetime. Either confirmed or unconfirmed notifications may be used
+  ;	but at least one of these options must be supported by the IUT.
+  ;  
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Finite Lifetime Subscriptions Test Case
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+  TD_IP = 10.10.10.36
+ 
+  OBJECT1 = Analog-Value, 1	; Object which is the subject of the COV tests
+
+  PID = 60			; Subscriber Process Identifier
+  LIFETIME = 120		; Subscription lifetime in seconds
+  WRITE_PRIORITY = 1
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  
+--  IUT_IP = 10.10.10.100
+  IUT_IP = 208.6.162.35
+  ;-------------------------------------------------------------------------------------
+ 
+   SECTION Finite Lifetime Subscriptions Test Case
+
+  -- This test takes place across test #1a - #1f so the TD can be manually paused
+  -- between tests. This is necessary since a time delay is needed in this test 
+  -- sequence and VTS currently doesn't give us a means for doing this within the 
+  -- script.
+
+  -- Configuration Requirements:
+  --	1) The IUT shall be configured with at least one object that supports
+  --		subscriptions for COV notifications.
+  --	2) IUT is on the same network as the TD.
+
+  -- Test Steps:
+  --
+  -- 1.	TRANSMIT SubscribeCOV-Request,
+  --	'Subscriber Process Identifier' = (any valid process identifier),
+  --	'Monitored Object Identifier' =	(any object supporting COV notifications),
+  --	'Issue Confirmed Notifications' = TRUE | FALSE,
+  --	'Lifetime' = ( a value between 60 seconds and 300 seconds)
+  -- 2.	RECEIVE BACnet-SimpleACK-PDU
+  -- 3.	WAIT Notification Fail Time
+  -- 4.	IF (the subscription was for confirmed notifications) THEN
+  --	   RECEIVE BACnetConfirmedCOVNotification-Request,
+  --		'Subscriber Process Identifier' = (the same identifier used in 
+  --			the subscription),
+  --		'Initiating Device Identifier' = IUT,
+  --		'Monitored Object Identifier' =	(the same object used in the
+  --			subscription),
+  --		'Time Remaining' = (the requested subscription lifetime),
+  --		'List of Values' = (values appropriate to the object type of
+  --			the monitored object)
+  --	ELSE
+  --	   RECEIVE BACnetUnconfirmedCOVNotification-Request,
+  --		'Subscriber Process Identifier' = (the same identifier used in
+  --			the subscription),
+  --		'Initiating Device Identifier' = IUT,
+  --		'Monitored Object Identifier' =	(the same object used in the
+  --			subscription),
+  --		'Time Remaining' = (the requested subscription lifetime),
+  --		'List of Values' = (values appropriate to the object type of
+  --			the monitored object)
+  -- 5.	MAKE (a change to the monitored object that should cause a COV notification)
+  -- 6.	IF (the subscription was for confirmed notifications) THEN
+  --	   RECEIVE BACnetConfirmedCOVNotification-Request,
+  --		'Subscriber Process Identifier' = (the same identifier used in 
+  --			the subscription),
+  --		'Initiating Device Identifier' = IUT,
+  --		'Monitored Object Identifier' =	(the same object used in the
+  --			subscription),
+  --		'Time Remaining' = (a value greater than 0 and less than the
+  --			requested subscription lifetime),
+  --		'List of Values' = (values appropriate to the object type of
+  --			the monitored object)
+  --	ELSE
+  --	   RECEIVE BACnetUnconfirmedCOVNotification-Request,
+  --		'Subscriber Process Identifier' = (the same identifier used in
+  --			the subscription),
+  --		'Initiating Device Identifier' = IUT,
+  --		'Monitored Object Identifier' =	(the same object used in the
+  --			subscription),
+  --		'Time Remaining' = (a value greater than 0 and less than the
+  --			requested subscription lifetime),
+  --		'List of Values' = (values appropriate to the object type of the
+  --			monitored object including the changed value of that 
+  --			triggered the notification)
+  -- 7.	WAIT (the lifetime of the subscription)
+  -- 8.	MAKE (a change to the monitored object that would cause a COV notification
+  --	if there were an active subscription)
+  --
+  -- Passing Result: The IUT shall not transmit a COV notification message 
+  -- addressed to the TD after step 6.
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Transmit SubscribeCOV Request and Receive SimpleACK
+
+  DEPENDENCIES None
+
+  REFERENCE (B) SubscribeCOV Service and (T) Positive SubscribeCOV Service Execution Tests
+
+  -- Steps #1 & 2: Subscribe to COV and Receive Simple ACK
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = SubscribeCOV
+      Unsigned = 0, PID			; Process-Identifier = PID
+      Object = 1, OBJECT1		; Object-Identifier = OBJECT1
+      Boolean = 2, TRUE			; Request confirmed notifications
+      Unsigned = 3, LIFETIME		; Subscribe for LIFETIME seconds
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = SubscribeCOV
+    )
+
+  -- Step #3: Wait 3~10 seconds by Step test Mode
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1b Receive Confirmed COV Notification Request
+
+  -- Step #4: Receive Confirmed COV Notification Request
+
+  EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      Service = ConfirmedCOVNotification
+  )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1c Make a Change to the Object That Would Cause a COV Notification
+
+  -- Step #5: Make Out-of-Service = TRUE and Cause a COV Notification to be issued
+
+   SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = WriteProperty
+      Object = 0, OBJECT1
+      Property = 1, Out-of-Service
+      OpenTag 3
+        BOOLEAN = TRUE			; Put OBJECT1 out of service
+      CloseTag 3
+      Unsigned = 4, WRITE_PRIORITY	; Set Out-of-Service write priority
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1d Receive Confirmed COV Notification Request
+
+  -- Step #6: Receive Confirmed COV Notification Request
+
+  EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      Service = ConfirmedCOVNotification
+  )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1e Wait Lifetime of the Subscription
+
+  -- Step #7: Wait for the Subscription to Expire....
+
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1f Make a Change to the Object That Would Cause a COV Notification
+
+  -- Step #8: Make Out-of-Service = FALSE and Cause a COV Notification to be issued
+
+   SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = WriteProperty
+      Object = 0, OBJECT1
+      Property = 1, Out-of-Service
+      OpenTag 3
+        BOOLEAN = FALSE			; Put OBJECT1 back into service
+      CloseTag 3
+      Unsigned = 4, WRITE_PRIORITY	; Set Out-of-Service write priority
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = WriteProperty
+    )

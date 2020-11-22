@@ -1,0 +1,1997 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Object Functionality Service Execution Tests  (LOOPX1, MULTIX3 AND BINARYX3 AND ANALOGX3) 
+  ;    Draft
+  ;  LOOP AI 7.3.1.1 yymmdd.vts
+  ;
+  ;	Ver 1.0		10/25/01	BradSp	Initial Version
+  ;  
+  ;  OBJECTS - ALL MULTISTATE 	
+  ;  The tests defined in this subclause are used to verify that the required functionality for various BACnet objects is supported. 
+  ;  The tests are object type specific and in some cases also dependent of the value of particular properties. For each object type 
+  ;  supported, all of the tests in this subclause that apply shall be executed. It is sufficient to demonstrate the correct functionality 
+  ;  for a single instance of each object type.
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and "(T)" refers 
+  ;	to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Positive ReadProperty Tests
+
+  ;------------------------------------------------------------------------------------- 
+  ; Notes on Hardcoding and other changes needing to be made outside of the setup section including hard coded objects and properties 
+  ; Items marked and found with *** are hardcoded or the error messages must be manually verified in the trace. 
+  ;
+ 
+  
+  -- RUN STEP 1 - 5 
+  -- MANAULLY VERIFY STATUS FLAGS IN VTS TRACE: -- STEP 3.	VERIFY Status_Flags = (?, FALSE, ?, TRUE) ; MANUALLY VERIFY EXPECT
+  -- RUN STEP 6 IF RELIABILITY IS WRITABLE ELSE SKIP STEP 6 AND SCROLL AND RUN STEP 7
+  -- RUN STEP 7
+  ;
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG  All objects and properties are listed here including notes on there use
+  ;
+  TD_IP = 10.10.10.2
+
+  OBJECT1 = MULTISTATE-INPUT, 1		; Object which is the subject of the Read Prop tests
+
+
+  HIGHVAL = 9
+  MIDDLEVAL1 = 4 
+  MIDDLEVAL2 = 5
+  LOWVAL = 1
+
+  SF = F,F,F,T                           ; THIS IS THE VALUE FOR THE STATUS FLAGS (POSITION 1 AND 3 MUST MATCH THE EPICS)
+  SF1 = F,T,F,T                          ; VERIFY Status_Flags = (?, TRUE, ?, TRUE) (POSITION 1 AND 3 MUST MATCH THE EPICS)
+
+
+  -- MANUALLY REMOVE OR ADD THE NUMBER OF RELIABILITY OPTIONS (BY DEFUALT THTERE AE 8)
+  -- EACH RELIABILITY TEST IS SEPERATED BY THIS LINE  --RELIABILITY 1--------------------------------
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+
+  IUT_IP = 208.6.162.35	; Address of IUT
+
+  ;-------------------------------------------------------------------------------------
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ;  Routing_Config
+  ;  
+
+  ;DNET_MSTP = 20001, MS/TP     ; Sets the DNET of the remote MSTP network (Comment if no routing)
+
+  ;-----IUT and TD are on the same Ethernet segment
+  ;   DA = IUT_IP 
+  ;-----IUT is on an MSTP segment and TD is on an Ethernet segment
+  ;   DA = Broadcast
+  ;   DNET = DNET_MSTP
+  ;   DADR = IUT_IP
+  ;------------------------------------------------------------------------------------ 
+  SECTION ReadProperty Service Execution Tests
+
+  -- Reference (T) Positive ReadProperty Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD.
+
+
+ --  TEST #1 7.3.1.1	  Out_Of_Service, Status_Flags, and Reliability Tests (Need to write in this script)
+ --                         MANAUAL SEND AND RECEIVE:
+                                     --  (STEP 1) IF OUT-OF-SERVICE IS NOT WRITABLE THEN FIND A WAY TO MAKE OUT-OF-SERVICE 'TRUE'
+                                     --  (STEP 6) RELIABILITY MUST BE WRITABLE FOR THIS STEP. IF NOT WRITABLE THEN SKIP TO STEP 7
+ --                         BODY CHANGES: NONE
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1 - 5    ; 7.3.1.1	Out_Of_Service, Status_Flags, and Reliability Tests
+
+
+
+-- Purpose: This test case verifies that Present_Value is writable when Out_Of_Service is TRUE. It also verifies the 
+--          interrelationship between the Out_Of_Service, Status_Flags, and Reliability properties. If the PICS indicates that 
+--          the Out_Of_Service property of the object under test is not writable, and if the value of the property cannot be 
+--          changed by other means, then this test shall be omitted. This test applies to Analog Input, Analog Output, Binary Input, 
+--          Binary Output, Binary Value, Multi-state Input, Multi-state Output, and Multi-state Value objects.
+-- Test Concept: The IUT will select one instance of each appropriate object type and test it as described. If the Reliability 
+--          property is not supported then step 4 shall be omitted.
+
+-- Test Steps:
+
+-- 1.	IF (Out_Of_Service is writable) THEN
+--		WRITE Out_Of_Service = TRUE
+--	ELSE
+--		MAKE (Out_Of_Service TRUE)
+-- 2.	VERIFY Out_Of_Service = TRUE
+-- 3.	VERIFY Status_Flags = (?, FALSE, ?, TRUE)
+-- 4.	REPEAT X = (all values meeting the functional range requirements of 7.2.1) DO {
+--		WRITE Present_Value = X
+--		VERIFY Present_Value = X
+--		}
+-- 5.	WRITE Present_Value = (any value that corresponds to an Event_State of NORMAL)
+-- 6.	IF (Reliability is writable) THEN
+--		REPEAT X = (all values of the Reliability enumeration appropriate to the object type except 
+--				NO_FAULT_DETECTED) DO {
+--			WRITE Reliability = X
+--			VERIFY Reliability = X
+--			VERIFY Status_Flags = (?, TRUE, ?, TRUE)
+--			WRITE Reliability = NO_FAULT_DETECTED
+--			VERIFY Reliability = NO_FAULT_DETECTED
+--			VERIFY Status_Flags = (?, FALSE, ?, TRUE)
+--			}
+-- 7.	IF (Out_Of_Service is writable) THEN
+--		WRITE Out_Of_Service = FALSE
+--	ELSE
+--		MAKE (Out_Of_Service FALSE)
+
+Dependencies NONE ; ReadProperty Service Execution Tests, 9.15; WriteProperty Service Execution Tests, 9.19
+
+Reference 12.1.10, 12.2.10, 12.3.9, 12.4.10, 12.5.10, 12.6.9, 12.14.10, and 12.15.10
+
+--  Step 1.	IF (Out_Of_Service is writable) THEN WRITE Out_Of_Service = TRUE
+
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, OUT-OF-SERVICE
+      OPENTAG 3
+      BOOLEAN = 1                ; SET OUT OF SERVICE TO TRUE
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+
+-- STEP 2.	VERIFY Out_Of_Service = TRUE
+
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, OUT-OF-SERVICE	; Type BACnetObjectIdentifier
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, OUT-OF-SERVICE
+      OpenTag 3
+         BOOLEAN = 1                 ; oUT OF SERVICE SHOULD BE 1
+      CloseTag 3
+    )
+
+-- STEP 3.	VERIFY Status_Flags = (?, FALSE, ?, TRUE) ; MANUALLY VERIFY EXPECT
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS	; Type BACnetObjectIdentifier
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF                 ;
+      CloseTag 3
+    )
+
+-- STEP 4.	REPEAT X = (all values meeting the functional range requirements of 7.2.1) DO { WRITE Present_Value = X VERIFY Present_Value = X
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, PRESENT-VALUE
+      OPENTAG 3
+      UNSIGNED = LOWVAL               ;  WRITE MINIMUM VALUE
+      CLOSETAG 3
+     )
+
+   EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+      
+
+   
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, PRESENT-VALUE 
+      
+    )
+
+  EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, PRESENT-VALUE
+      OpenTag 3
+        UNSIGNED = LOWVAL                 ; 
+      CloseTag 3
+    )
+
+    ------------------------------
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, PRESENT-VALUE
+      OPENTAG 3
+      UNSIGNED = MIDDLEVAL1               ;  WRITE MIDDLE VALUE 1
+      CLOSETAG 3
+     )
+
+   EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+      
+
+   
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, PRESENT-VALUE 
+      
+    )
+
+  EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, PRESENT-VALUE
+      OpenTag 3
+        UNSIGNED = MIDDLEVAL1                 ; 
+      CloseTag 3
+    )
+-----------------------------------
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, PRESENT-VALUE
+      OPENTAG 3
+      UNSIGNED = MIDDLEVAL2                ;  WRITE MIDDLE VALUE 2
+      CLOSETAG 3
+     )
+
+   EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+      
+
+   
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, PRESENT-VALUE 
+      
+    )
+
+  EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, PRESENT-VALUE
+      OpenTag 3
+        UNSIGNED = MIDDLEVAL2                 ; 
+      CloseTag 3
+    )
+
+----------------------------
+   SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, PRESENT-VALUE
+      OPENTAG 3
+      UNSIGNED = HIGHVAL                ;  WRITE MAX VALUE
+      CLOSETAG 3
+     )
+
+   EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+      
+
+   
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, PRESENT-VALUE 
+      
+    )
+
+  EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, PRESENT-VALUE
+      OpenTag 3
+        UNSIGNED = HIGHVAL                ; VERIFY MAX VALUE
+      CloseTag 3
+    )
+
+
+
+
+
+-- STEP 5.	WRITE Present_Value = (any value that corresponds to an Event_State of NORMAL) (ASSUMING ONE  SETS THE EVENT STATE TO NORMAL)
+
+---------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------
+
+ TEST #6
+
+
+Dependencies NONE ; ReadProperty Service Execution Tests, 9.15; WriteProperty Service Execution Tests, 9.19
+
+Reference 12.1.10, 12.2.10, 12.3.9, 12.4.10, 12.5.10, 12.6.9, 12.14.10, and 12.15.10
+
+-- STEP 6.	IF (Reliability is writable)...
+--RELIABILITY 1--------------------------------
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 1                ; NO SENSOR
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 1                 ; 
+      CloseTag 3
+    )
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS	; Type BACnetObjectIdentifier
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF 	;SF1                 ;
+      CloseTag 3
+    )
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 0                ; 
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 0                ; 
+      CloseTag 3
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF                 ;
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF               ; 
+      CloseTag 3
+    )
+--RELIABILITY 2--------------------------------
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 2                ; OVER RANGE
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 2                 ; 
+      CloseTag 3
+    )
+
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF                 ;
+      CloseTag 3
+    )
+
+   EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 0                ; 
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 0                ; 
+      CloseTag 3
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF                 ;
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF               ; 
+      CloseTag 3
+    )
+--RELIABILITY 3--------------------------------
+
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 3                ; UNDER RANGE
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 3                 ; 
+      CloseTag 3
+    )
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+   EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 0                ; 
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 0                ; 
+      CloseTag 3
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF                 ;
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF               ; 
+      CloseTag 3
+    )
+--RELIABILITY 4--------------------------------
+
+
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 4                ; OPEN LOOP
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 4                 ; 
+      CloseTag 3
+    )
+
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+       EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 0                ; 
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 0                ; 
+      CloseTag 3
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF                 ;
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF               ; 
+      CloseTag 3
+    )
+--RELIABILITY 5--------------------------------
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 5                ; SHORTED LOOP
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 5                 ; 
+      CloseTag 3
+    )
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+       EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 0                ; 
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 0                ; 
+      CloseTag 3
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF                 ;
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF               ; 
+      CloseTag 3
+    )
+--RELIABILITY 6--------------------------------
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 6                ; NO-OUTPUT
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 6                 ; 
+      CloseTag 3
+    )
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+
+   EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 0                ; 
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 0                ; 
+      CloseTag 3
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF                 ;
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF               ; 
+      CloseTag 3
+    )
+--RELIABILITY 7--------------------------------
+
+
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 7                ; UNRELIABLE-OTHER
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 7                 ; 
+      CloseTag 3
+    )
+
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+
+   EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 0                ; 
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 0                ; 
+      CloseTag 3
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF                 ;
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF               ; 
+      CloseTag 3
+    )
+--RELIABILITY 8--------------------------------
+
+
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 8                ; PROCESS-RANGE
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 8                 ; 
+      CloseTag 3
+    )
+
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+
+   EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF1                 ;
+      CloseTag 3
+    )
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, RELIABILITY
+      OPENTAG 3
+      ENUMERATED = 0                ; 
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      
+
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, RELIABILITY
+      OpenTag 3
+         ENUMERATED = 0                ; 
+      CloseTag 3
+    )
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF                 ;
+      CloseTag 3
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, STATUS-FLAGS
+      OpenTag 3
+         BITSTRING = SF               ; 
+      CloseTag 3
+    )
+-----------------------------------------
+
+ 
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, OBJECT1 
+      Property = 1, OUT-OF-SERVICE
+      OPENTAG 3
+      BOOLEAN = 0                ; SET OUT OF SERVICE TO FALSE
+      CLOSETAG 3
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+    )
+
+TEST #7
+
+
+Dependencies NONE ; ReadProperty Service Execution Tests, 9.15; WriteProperty Service Execution Tests, 9.19
+
+Reference 12.1.10, 12.2.10, 12.3.9, 12.4.10, 12.5.10, 12.6.9, 12.14.10, and 12.15.10
+-- STEP 7.	PUT Out_Of_Service BACK TO FALSE STATE
+
+ SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, OUT-OF-SERVICE	; Type BACnetObjectIdentifier
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, OUT-OF-SERVICE
+      OpenTag 3
+         BOOLEAN = 0                 ; oUT OF SERVICE SHOULD BE 0
+      CloseTag 3
+    )

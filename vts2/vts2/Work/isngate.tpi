@@ -1,0 +1,261 @@
+PICS 0
+BACnet Protocol Implementation Conformance Statement
+-- 12 June 1998 by Jack Neyer
+--
+-- York BACnet ISN Gateway
+--
+
+
+
+Vendor Name: "YORK INTERNATIONAL CORPORATION"
+Product Name: "YORK BACnet ISN Gateway"
+Product Model Number: "YORK BACnet ISN Gateway"
+Product Description: "BACnet ISN Gateway"
+
+BACnet Conformance Class Supported:3
+
+BACnet Functional Groups Supported:     -- delete any FGs not supported
+{
+ clock
+ Device Communications
+-- Files
+-- Reinitialize
+}
+
+-- Delete any services not supported at all.
+-- Remove Initiate and Execute as appropriate.
+
+BACnet Standard Application Services Supported:
+{
+ ReadProperty                            Execute
+ ReadPropertyMultiple                    Execute
+ WriteProperty                           Execute
+ WritePropertyMultiple                   Execute
+ Who-Has                                 Execute
+ I-Have                         Initiate
+ Who-Is                         Initiate Execute
+ I-Am                           Initiate Execute
+ TimeSynchronization                     Execute
+ AtomicReadFile                 	 Execute
+ AtomicWriteFile                	 Execute
+ DeviceCommunicationControl     	 Execute
+-- ReinitializeDevice			 	Execute
+}
+
+
+-- Delete and object-types not supported at all.
+-- Remove Creatable or Deleteable as appropriate.
+
+Standard Object-Types Supported:
+{
+ Analog Input                   
+ Analog Output                  
+ Analog Value                   
+ Binary Input                   
+ Binary Output                  
+-- Binary Value                   
+ Device
+-- File                           
+-- Program                        Createable Deleteable
+}
+
+-- Remove all DL options not supported.
+
+Data Link Layer Option:
+{
+-- MS/TP slave. Baud rate(s): 9600
+
+}
+
+-- Replace the Maximum APDU size with the appropriate value.
+-- Remove segmentation supported line or change window size as appropriate.
+-- Remove Router if the device is not a router.
+
+-- Remove any character sets not supported
+
+Character Sets Supported:
+{
+ ANSI X3.4
+}
+
+Special Functionality:
+{
+ Maximum APDU size in octets: 1470
+}
+
+-- Remove any object-types that are not in the database.
+-- Copy the object-type templates as needed to obtain one per object
+-- in the database. Replace the property to indicate the actual values
+-- of the properties in the database. If the value cannot be determined
+-- because it depends on a sensor input then use "?" for the value.
+-- All property values that are writeable should be followed by a W.
+
+List of Objects in test device:
+{
+  {
+    object-identifier: (analog-input, 16512)
+    object-name: "LCHW.TEMP0001"
+    object-type: analog-input
+    present-value: ?
+    description: "Leaving Chilled Water Temp 0001"
+--   device-type: "1000 Ohm RTD"
+    status-flags: (F, F, F, F)
+    event-state: normal
+--   reliability: NO-FAULT-DETECTED
+    out-of-service: F
+--   update-interval: 10
+    units: DEGREES-FAHRENHEIT
+--   min-pres-value: -50.0
+--   max-pres-value: 250.0
+--   resolution: 0.1
+--   COV-increment: 0.2
+--   time-delay: 10
+--   notification-class: 3
+--   high-limit: 60.0
+--   low-limit: 55.0
+--    deadband: 1.0
+--    limit-enable: {TRUE, TRUE}
+--    event-enable: {TRUE, FALSE, TRUE}
+--    acked-transitions: {TRUE, TRUE, TRUE}
+--    notify-type: EVENT
+},
+
+
+--{
+--    object-identifier: (analog-output, 1)
+--    object-name: "1AH1DMPR"
+--    object-type: analog-output
+--    present-value: 75.0
+--    description: "Damper Actuator"
+--    device-type: "3-8 PSI Actuator"
+--    status-flags: (F, F, F, F)
+--    event-state: normal
+--    reliability: NO-FAULT-DETECTED
+--    out-of-service: False
+--    units: PERCENT 
+--    min-pres-value: 0.0
+--    max-pres-value: 100.0
+--    resolution: 0.1
+--    priority-array: {?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?} R 
+--    relinquish-default: 50.0
+--},
+
+
+{
+    object-identifier: (analog-value, 16512)
+    object-name: "LCHW_TEMP.SP0001"
+    object-type: analog-value
+    present-value: ? W
+    description: "Leaving Chilled Water Temp Setpoint 0001"
+    status-flags: (F, F, F, F)
+    event-state: normal
+--    reliability: NO-FAULT-DETECTED
+    out-of-service: False
+    units: DEGREES-FAHRENHEIT
+    priority-array: {?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?} R
+    relinquish-default: 0.0
+--    COV-increment: 0.2
+--    time-delay: 10
+--    notification-class: 3
+--    high-limit: 60.0
+--    low-limit: 20.0
+--    deadband: 1.0
+--    limit-enable: {TRUE, TRUE}
+--    event-enable: {TRUE, FALSE, TRUE}
+--    acked-transitions: {TRUE, TRUE, TRUE}
+--    notify-type: EVENT
+},
+
+
+{
+    object-identifier: (binary-output, 32896)
+    object-name: "Comm_Fault0001" 
+    object-type:  BINARY-OUTPUT 
+    present-value: ? W 
+    description: "Communications Fault 0001"
+--    device-type: "ABC 100 Relay"
+    status-flags: {FALSE,FALSE,FALSE,FALSE} 
+    event-state: NORMAL 
+--    reliability: NO-FAULT-DETECTED 
+    out-of-service: FALSE 
+    polarity: NORMAL
+--    inactive-text: "Fan is turned off" 
+--    active-text: "Fan is running" 
+--    change-of-state-time: (23-MAR-1995,19:01:34.0) 
+--    change-of-state-count: 47
+--    time-of-state-count-reset: (1-JAN-1995,00:00:00.0)
+--    elapsed-active-time: 650
+--    time-of-active-time-reset: (1-JAN-1995,00:00:00.0)
+    minimum-off-time: 0
+    minimum-on-time: 0
+    priority-array: {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}
+    relinquish-default: INACTIVE
+--    time-delay: 10              
+--    notification-class: 3
+--    feedback-value: ACTIVE
+--    event-enable: {TRUE, FALSE, TRUE}
+--    acked-transitions: {FALSE, TRUE, TRUE}
+--    notify-type: EVENT
+},
+
+  {
+    object-identifier: (device,1)
+    object-name: "ISNsimulator" 
+    object-type: device
+    system-status: OPERATIONAL
+    vendor-name: "YORK INTERNATIONAL CORPORATION"
+    vendor-identifier: 23
+    model-name: "YORK BACnet ISN Gateway"
+    firmware-revision: "1.00"
+    application-software-version: "ISN SERVER 1.00"
+    location: "PolarSoft"
+    protocol-version: 1
+    protocol-conformance-class: 3
+    protocol-services-supported:
+    (
+       F, F, F, F, F, F,        -- Alarm and event
+       T, T,                    -- File
+       F, F, F, F, T, F,        -- AddList, RemoveList,Create, Delete, Read, ReadConditional
+       T, T, T,                 -- ReadMultiple, Write, WriteMultiple
+       T, F, F, F,              -- PrivateXfer, Re-init
+       F, F, F,                 -- VT Open, Data, Close
+       F, F,                    -- security
+       T, F, F, F, F, F,        -- I-Am, I-Have, uPrivateXfer
+       T, T, T                  -- TimeSync, Who-Has, Who-Is
+    )
+
+    protocol-object-types-supported:
+    (
+       T, T, T, T, T, F,        -- AI, AO, AV,BI, BO, BV
+       F, F, T, F, F, F         -- calendar, command, device, event enrollment, file, group
+       F, F, F, F, F, F         -- loop, MSI, MSO, notification class, program, schedule
+    )
+
+     object-list:
+    {
+      (analog-input, 16512),
+	  (analog-value, 16512),
+	  (binary-output, 32896),
+      (device, 1)
+    }
+    max-APDU-length-accepted: 1470
+    segmentation-supported: segmented_both
+    local-time:?
+-- PARSER ERROR in following line
+--    local-date: (Friday, 29-SEP-1989)
+    local-date: ?
+    utc-offset: 0.0
+    daylight-savings-status: FALSE
+    apdu-segment-timeout: 2000
+    apdu-timeout: 10000
+    number-of-APDU-retries: 3
+--    list-of-session-keys: ((X`3799246237984589', 1, X`3'), (X`4446214686489744', 1, X`5'))
+    device-address-binding: ()   --empty list example
+--    device-address-binding: (((Device,1), 1, X`1'),
+--			       ((Device,12),1, X`23'),
+--			       ((Device,40),2, X`02608C41A606'))
+}
+
+
+}
+End of BACnet Protocol Implementation Conformance Statement

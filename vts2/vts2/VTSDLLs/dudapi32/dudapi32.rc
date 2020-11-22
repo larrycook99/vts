@@ -1,0 +1,601 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+//////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG1 DIALOG DISCARDABLE  0, 0, 188, 47
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,132,6,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,132,23,50,14
+END
+
+IDD_DATETIME DIALOG DISCARDABLE  0, 0, 229, 77
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "BACnetDateTime property"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,185,60,40,14
+    PUSHBUTTON      "Cancel",IDCANCEL,135,60,40,14
+    EDITTEXT        IDC_MONTH,35,15,40,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DAY,85,15,40,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_WEEK,135,15,40,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_YEAR,185,15,40,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_HOUR,35,40,40,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MINUTE,85,40,40,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SECOND,135,40,40,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_HUNDREDTHS,185,40,40,13,ES_AUTOHSCROLL
+    LTEXT           "month",IDC_STATIC,35,5,30,8
+    LTEXT           "day",IDC_STATIC,85,5,30,8
+    LTEXT           "week",IDC_STATIC,135,5,30,8
+    LTEXT           "year",IDC_STATIC,185,5,30,8
+    LTEXT           "hour",IDC_STATIC,35,30,30,8
+    LTEXT           "minute",IDC_STATIC,85,30,30,8
+    LTEXT           "second",IDC_STATIC,135,30,30,8
+    LTEXT           "hundredths",IDC_STATIC,185,30,35,8
+    RTEXT           "Time:",IDC_STATIC,0,40,25,8
+    RTEXT           "Date:",IDC_STATIC,0,15,25,8
+END
+
+IDD_DIALOG2 DIALOG DISCARDABLE  0, 0, 188, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,132,6,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,132,23,50,14
+END
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_VTS_STR4711         "HHWS"
+    IDS_VTS_STR4712         "PCWS"
+    IDS_VTS_STR4713         "COV Event Initiation"
+    IDS_VTS_STR4714         "COV Event Response"
+    IDS_VTS_STR4715         "Event Initiation"
+    IDS_VTS_STR4716         "Event Response"
+    IDS_VTS_STR4717         "Clock"
+    IDS_VTS_STR4718         "Device Communications"
+    IDS_VTS_STR4719         "Files"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_VTS_STR4720         "Time Master"
+    IDS_VTS_STR4721         "Virtual Operator Interface"
+    IDS_VTS_STR4722         "Reinitialize"
+    IDS_VTS_STR4723         "Virtual Terminal"
+    IDS_VTS_STR4724         "Max. APDU size (octets): "
+    IDS_VTS_STR4725         "Segmented Req. window size: "
+    IDS_VTS_STR4726         "Segmented Resp. window size: "
+    IDS_VTS_STR4727         "Router"
+    IDS_VTS_STR4728         "AcknowledgeAlarm"
+    IDS_VTS_STR4729         "ConfirmedCOVNotification"
+    IDS_VTS_STR4730         "ConfirmedEventNotification"
+    IDS_VTS_STR4731         "GetAlarmSummary"
+    IDS_VTS_STR4732         "GetEnrollmentSummary"
+    IDS_VTS_STR4733         "SubscribeCOV"
+    IDS_VTS_STR4734         "AtomicReadFile"
+    IDS_VTS_STR4735         "AtomicWriteFile"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_VTS_STR4736         "AddListElement"
+    IDS_VTS_STR4737         "RemoveListElement"
+    IDS_VTS_STR4738         "CreateObject"
+    IDS_VTS_STR4739         "DeleteObject"
+    IDS_VTS_STR4740         "ReadProperty"
+    IDS_VTS_STR4741         "ReadPropertyConditional"
+    IDS_VTS_STR4742         "ReadPropertyMultiple"
+    IDS_VTS_STR4743         "WriteProperty"
+    IDS_VTS_STR4744         "WritePropertyMultiple"
+    IDS_VTS_STR4745         "DeviceCommunicationControl"
+    IDS_VTS_STR4746         "ConfirmedPrivateTransfer"
+    IDS_VTS_STR4747         "ConfirmedTextMessage"
+    IDS_VTS_STR4748         "ReinitializeDevice"
+    IDS_VTS_STR4749         "VT_Open"
+    IDS_VTS_STR4750         "VT_Close"
+    IDS_VTS_STR4751         "VT_Data"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_VTS_STR4752         "Authenticate"
+    IDS_VTS_STR4753         "RequestKey"
+    IDS_VTS_STR4754         "I-Am"
+    IDS_VTS_STR4755         "I-Have"
+    IDS_VTS_STR4756         "UnconfirmedCOVNotification"
+    IDS_VTS_STR4757         "UnconfirmedEventNotification"
+    IDS_VTS_STR4758         "UnconfirmedPrivateTransfer"
+    IDS_VTS_STR4759         "UnconfirmedTextMessage"
+    IDS_VTS_STR4760         "TimeSynchronization"
+    IDS_VTS_STR4761         "Who-Has"
+    IDS_VTS_STR4762         "Who-Is"
+    IDS_VTS_STR4763         "Analog Input"
+    IDS_VTS_STR4764         "Analog Output"
+    IDS_VTS_STR4765         "Analog Value"
+    IDS_VTS_STR4766         "Binary Input"
+    IDS_VTS_STR4767         "Binary Output"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_VTS_STR4768         "Binary Value"
+    IDS_VTS_STR4769         "Calendar"
+    IDS_VTS_STR4770         "Command"
+    IDS_VTS_STR4771         "Device"
+    IDS_VTS_STR4772         "Event Enrollment"
+    IDS_VTS_STR4773         "File"
+    IDS_VTS_STR4774         "Group"
+    IDS_VTS_STR4775         "Loop"
+    IDS_VTS_STR4776         "Multi-state Input"
+    IDS_VTS_STR4777         "Multi-state Output"
+    IDS_VTS_STR4778         "Notification Class"
+    IDS_VTS_STR4779         "Program"
+    IDS_VTS_STR4780         "Schedule"
+    IDS_VTS_STR4781         "ISO 8802-3, 10BASE5"
+    IDS_VTS_STR4782         "ISO 8802-3, 10BASE2"
+    IDS_VTS_STR4783         "ISO 8802-3, 10BASET"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_VTS_STR4784         "ISO 8802 - 3, fiber"
+    IDS_VTS_STR4785         "ARCNET, coax star"
+    IDS_VTS_STR4786         "ARCNET, coax bus"
+    IDS_VTS_STR4787         "ARCNET, twisted pair star"
+    IDS_VTS_STR4788         "ARCNET, twisted pair bus"
+    IDS_VTS_STR4789         "ARCNET, fiber star"
+    IDS_VTS_STR4790         "MS/TP master.  Baud rate(s): 9600, q"
+    IDS_VTS_STR4791         "MS/TP slave.  Baud rate(s): 9600, q"
+    IDS_VTS_STR4792         "Point-To-Point.  EIA232, Baud rate(s): q"
+    IDS_VTS_STR4793         "Point-To-Point.  Modem, Baud rate(s): q"
+    IDS_VTS_STR4794         "Point-To-Point.  Modem, Autobaud range: q to q"
+    IDS_VTS_STR4795         "Other"
+    IDS_STRING4796          "acked-states"
+    IDS_STRING4797          "ack-required"
+    IDS_STRING4798          "action"
+    IDS_STRING4799          "action-text"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_VTS_STR7777         "An unknown error occured!"
+    IDS_VTS_STR7778         "Error while unloading object database!"
+    IDS_VTS_STR7779         "Error while loading object database!"
+    IDS_VTS_STR7780         "No appropriate PICS File selected!"
+    IDS_VTS_STR7781         "No error occured!"
+    IDS_VTS_STR7782         "File not found: ~1 Try again?"
+    IDS_VTS_STR7783         "File not found: ~1 Create ?"
+    IDS_VTS_STR7784         "File not found: ~1"
+    IDS_VTS_STR7785         "PICS Test Error"
+    IDS_STRING7786          "BACnet-Confirmed-Request expected!"
+    IDS_STRING7787          "Wrong InvokeID"
+    IDS_STRING7788          "Wrong Service Choice Number"
+    IDS_STRING7789          "Wrong APDU received"
+    IDS_STRING7790          "Read/Write property Service failed: ~1"
+    IDS_STRING7791          "Object Identifier Tag expected"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    3000                    "PICS file: ~1 parsed successfully!"
+    IDS_STRING3001          "+++ Checking PICS consistency..."
+    IDS_STRING3002          "Test of:  ~1 object."
+    IDS_STRING3003          "Read Property Test: ~1 "
+    IDS_STRING3004          "Write Property Test: ~1 "
+    IDS_STRING3005          "Object Instance: ~1, Object Name: ~2"
+    IDS_STRING3006          "Read/Write ~1, PropId= ~2 in Object Name= ~3"
+    IDS_STRING3007          "rd orig: ~1, wrt test:  ~2, rd test: ~3,  compare: ~4, wrt orig: ~5."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING3008          "not tested"
+    IDS_STRING3009          "passed"
+    IDS_STRING3010          "error"
+    IDS_STRING3011          "Please wait, while preparing test scenario. Reading all objects."
+    IDS_STRING3012          "Object Nr:"
+    IDS_STRING3013          "rd orig: ~1, compare: ~2."
+    IDS_STRING3014          "+++ ReadProperty Test: ~1 object..."
+    IDS_STRING3015          "Testing Property ~1 (~2) in object: ~3 (~4,~5)"
+    IDS_STRING3016          "Required Properties Test"
+    IDS_STRING3017          "      error: Prop: ~1 in Obj: ~2, Inst: ~3 not supported."
+    IDS_STRING3018          "Object Types Test"
+    IDS_STRING3019          "      error: Object type: ~1 in Database, but not in object types supported section of PICS."
+    3020                    "      error: Object type: ~1 in object types supported section of PICS, but not in Database."
+    3021                    "      error: Object type: ~1 in object types supported section of PICS, but not in property Object_Types_Supported."
+    IDS_STRING3022          "      error: Object type: ~1 in property Object_Types_Supported, but not in object types supported section of PICS."
+    IDS_STRING3023          "PICS file cross check completed."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING7792          "Wrong Object Identifier"
+    IDS_STRING7793          "Property Identifier Tag expected"
+    IDS_STRING7794          "Wrong Property Identifier"
+    IDS_STRING7795          "Property Values don't match. "
+    IDS_STRING7796          "The maximum of ~1 errors occured! Do you want to continue the PICS testing?"
+    IDS_STRING7797          "The log file could not be opened! Try again? (~1)"
+    IDS_STRING7798          "PICS Database is empty (no objects)!"
+    IDS_STRING7799          "Invalid reference. Specified Object/Property not in PICS Database."
+    IDS_STRING7800          "Please, Select a Log-Filename in Setup-Menu!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING3024          "--"
+    3025                    "PICS Consistency Test"
+    IDS_STRING3026          "Group Properties Test"
+    IDS_STRING3027          "      error: Invalid group property: ~1, in object: ~2, inst: ~3"
+    IDS_STRING3028          "Conformance Class Test"
+    IDS_STRING3029          "Functional Group Test"
+    IDS_STRING3030          "Application Services Supported Test"
+    IDS_STRING3031          "Object List Test"
+    IDS_STRING3032          "Required Properties checked."
+    IDS_STRING3033          "Object Types supported checked."
+    IDS_STRING3034          "Group properties checked."
+    IDS_STRING3035          "Conformance Classes checked."
+    IDS_STRING3036          "Functional Groups checked."
+    IDS_STRING3037          "Application Services supported checked."
+    IDS_STRING3038          "Object List checked."
+    IDS_STRING3039          "Test of Conformance Class ~1."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING4800          "active-text"
+    IDS_STRING4801          "active-vt-sessions"
+    IDS_STRING4802          "alarm-value"
+    IDS_STRING4803          "alarm-values"
+    IDS_STRING4804          "all"
+    IDS_STRING4805          "all-writes-successful"
+    IDS_STRING4806          "apdu-segment-timout"
+    IDS_STRING4807          "apdu-timout"
+    IDS_STRING4808          "application-software-version"
+    IDS_STRING4809          "archive"
+    IDS_STRING4810          "bias"
+    IDS_STRING4811          "change-of-state-count"
+    IDS_STRING4812          "change-of-state-time"
+    IDS_STRING4813          "notification-class"
+    IDS_STRING4814          "blank1"
+    IDS_STRING4815          "controlled-variable-reference"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING4816          "controlled-variable-units"
+    IDS_STRING4817          "controlled-variable-value"
+    IDS_STRING4818          "cov-increment"
+    IDS_STRING4819          "datelist"
+    IDS_STRING4820          "daylight-savings-status"
+    IDS_STRING4821          "deadband"
+    IDS_STRING4822          "derivative-constant"
+    IDS_STRING4823          "derivative-constant-units"
+    IDS_STRING4824          "description"
+    IDS_STRING4825          "description-of-halt"
+    IDS_STRING4826          "device-address-binding"
+    IDS_STRING4827          "device-type"
+    IDS_STRING4828          "effective-period"
+    IDS_STRING4829          "elapsed-active-time"
+    IDS_STRING4830          "error-limit"
+    IDS_STRING4831          "event-enabled"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING4832          "event-state"
+    IDS_STRING4833          "event-type"
+    IDS_STRING4834          "exception-schedule"
+    IDS_STRING4835          "fault-values"
+    IDS_STRING4836          "feedback-value"
+    IDS_STRING4837          "file-access-method"
+    IDS_STRING4838          "file-size"
+    IDS_STRING4839          "file-type"
+    IDS_STRING4840          "firmware-revision"
+    IDS_STRING4841          "high-limit"
+    IDS_STRING4842          "inactive-text"
+    IDS_STRING4843          "in-process"
+    IDS_STRING4844          "instance-of"
+    IDS_STRING4845          "integral-constant"
+    IDS_STRING4846          "integral-constant-units"
+    IDS_STRING4847          "issue-confirmed-notifications"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING4848          "limit-enable"
+    IDS_STRING4849          "list-of-group-members"
+    IDS_STRING4850          "list-of-object-property-references"
+    IDS_STRING4851          "list-of-session-keys"
+    IDS_STRING4852          "local-date"
+    IDS_STRING4853          "local-time"
+    IDS_STRING4854          "location"
+    IDS_STRING4855          "low-limit"
+    IDS_STRING4856          "manipulated-variable-reference"
+    IDS_STRING4857          "maximum-output"
+    IDS_STRING4858          "max-apdu-length-accepted"
+    IDS_STRING4859          "max-info-frames"
+    IDS_STRING4860          "max-master"
+    IDS_STRING4861          "max-pres-value"
+    IDS_STRING4862          "minimum-off-time"
+    IDS_STRING4863          "minimum-on-time"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING4864          "minimum-output"
+    IDS_STRING4865          "min-pres-value"
+    IDS_STRING4866          "model-name"
+    IDS_STRING4867          "modification-date"
+    IDS_STRING4868          "notify-type"
+    IDS_STRING4869          "number-of-apdu-retries"
+    IDS_STRING4870          "number-of-states"
+    IDS_STRING4871          "object-identifier"
+    IDS_STRING4872          "object-list"
+    IDS_STRING4873          "object-name"
+    IDS_STRING4874          "object-property-reference"
+    IDS_STRING4875          "object-type"
+    IDS_STRING4876          "optional"
+    IDS_STRING4877          "out-of-service"
+    IDS_STRING4878          "output-units"
+    IDS_STRING4879          "event-parameters"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING4880          "polarity"
+    IDS_STRING4881          "present-value"
+    IDS_STRING4882          "priority"
+    IDS_STRING4883          "priority-array"
+    IDS_STRING4884          "priority-for-writing"
+    IDS_STRING4885          "process-identifier"
+    IDS_STRING4886          "program-change"
+    IDS_STRING4887          "program-location"
+    IDS_STRING4888          "program-state"
+    IDS_STRING4889          "proportional-constant"
+    IDS_STRING4890          "proportional-constant-units"
+    IDS_STRING4891          "protocol-conformance-class"
+    IDS_STRING4892          "protocol-object-types-supported"
+    IDS_STRING4893          "protocol-services-supported"
+    IDS_STRING4894          "protocol-version"
+    IDS_STRING4895          "read-only"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING4896          "reason-for-halt"
+    IDS_STRING4897          "recipient"
+    IDS_STRING4898          "recipient-list"
+    IDS_STRING4899          "reliability"
+    IDS_STRING4900          "relinquish-default"
+    IDS_STRING4901          "required"
+    IDS_STRING4902          "resolution"
+    IDS_STRING4903          "segmentation-supported"
+    IDS_STRING4904          "setpoint"
+    IDS_STRING4905          "setpoint-reference"
+    IDS_STRING4906          "state-text"
+    IDS_STRING4907          "status-flags"
+    IDS_STRING4908          "system-status"
+    IDS_STRING4909          "time-delay"
+    IDS_STRING4910          "time-of-active-time-reset"
+    IDS_STRING4911          "time-of-state-count-reset"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING4912          "time-synchronization-recipients"
+    IDS_STRING4913          "units"
+    IDS_STRING4914          "update-interval"
+    IDS_STRING4915          "utc-offset"
+    IDS_STRING4916          "vendor-identifier"
+    IDS_STRING4917          "vendor-name"
+    IDS_STRING4918          "vt-classes-supported"
+    IDS_STRING4919          "weekly-schedule"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING3040          "      error: Application Service: ~1 is missing: ~2 ~3"
+    IDS_STRING3041          "      error: Object Type: ~1 is missing."
+    IDS_STRING3042          "Device Object Test"
+    IDS_STRING3043          "Test of Functional Group: ~1"
+    IDS_STRING3044          "      error: Group Property: ~1, object type: ~2. Group not supported."
+    IDS_STRING3045          "Test of Conformance Class: ~1"
+    IDS_STRING3046          "      error: Application Service: ~1 (~2 ~3) is"
+    IDS_STRING3047          "      error: Not in Object Database (PICS): (~1,~2)"
+    IDS_STRING3048          "      error: Not in property Object_List: (~1,~2)"
+    IDS_STRING3052          "(PICS Test)"
+    IDS_STRING3053          "-- Required properties have to be supported by any"
+    IDS_STRING3054          "-- object included in the Object Database section of the PICS."
+    IDS_STRING3055          "-- Object types supported are checked in:"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING3056          "-- Object Database, object types supported section of PICS, property Object_Types_Supported."
+    IDS_STRING3057          "-- If any group property is required/supported, then all properties of"
+    IDS_STRING3058          "-- that group have to be present. "
+    IDS_STRING3059          "-- Required application services, object types and properties by the specified conformance class are "
+    IDS_STRING3060          "-- checked in: application services supported section of PICS, Object Database."
+    IDS_STRING3061          "-- Required application services, object types and properties by the specified functional group are"
+    IDS_STRING3062          "-- checked in: application services supported section of PICS, Object Database."
+    IDS_STRING3063          "-- Application Services (Executeable) are checked in:"
+    IDS_STRING3064          "-- application services supported (PICS section), property Protocol_Services_Supported."
+    IDS_STRING3065          "-- Consistency of the listed objects are checked in:"
+    IDS_STRING3066          "-- PICS Object Database, property Object_List of device object."
+    IDS_STRING3067          "Initiate"
+    IDS_STRING3068          "Execute"
+    IDS_STRING3069          "-- Checking for: single Device Object, Vendor-Name, Conformance Class,"
+    IDS_STRING3070          "-- Maximum APDU size."
+    IDS_STRING3071          "rd Out_Of_Service: ~1,  wrt Out_Of_Service: ~2, Present_Value Test: ~3, reset Out_Of_Service: ~4."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING3072          "*** End of Present_Value Test ***"
+    IDS_STRING3073          "*** End Of Range Test ***"
+    IDS_STRING3075          "Error Class: ~1, Error Code: ~2 "
+    IDS_STRING3076          "No writable property in object: ~1"
+    IDS_STRING3077          "      error: ~1 is missing in Protocol_Services_Supported, present in application services supported (PICS section)"
+    IDS_STRING3078          "      error: ~1 is missing in application services supported (PICS section), present in Protocol_Services_Supported."
+    IDS_STRING3079          "ReadProperty Service (InvId=~1): Out_Of_Service (received)"
+    IDS_STRING3080          "WriteProperty Service (InvId=~1): Out_Of_Service (sent)"
+    IDS_STRING3081          "Wrt Test Value: ~1, Rd Test Value: ~2, Cmp Test Value: ~3"
+    IDS_STRING3082          "Rd orig.: ~1, Wrt/Rd/Cmp test values: ~2, Wrt orig.: ~3"
+    IDS_STRING3083          "WriteProperty Service  (InvId=~1):  test value (sent)"
+    IDS_STRING3084          "ReadProperty Service (InvId=~1): test value (received)"
+    IDS_STRING3085          "ReadProperty Service (InvId=~1): original value (received)"
+    IDS_STRING3086          "WriteProperty Service (InvId=~1): original value (sent)"
+    IDS_STRING3087          "encoded Data from PICS Database:"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING3088          "Value:  "
+    IDS_STRING3089          "*** Range Test: writing all test values ***"
+    IDS_STRING3090          "Add/Remove List Element Test: ~1"
+    IDS_STRING3091          "Application Services for  Add/Remove List Element Test are not Supported!"
+    IDS_STRING3092          "rd org: ~1, wrt empty list: ~2, rd empty list: ~3,  cmp empty list: ~4, Add List Elements: ~5,  Remove List Elements: ~6, wrt org: ~7."
+    IDS_STRING3093          "*** Present_Value Test: writing test values ***"
+    IDS_STRING3094          "Service failed: "
+    IDS_STRING3095          "Add Test List Element: ~1, Read List Property: ~2, Compare List: ~3."
+    IDS_STRING3096          "Rmv 1 LstElem: ~1, Rd LstProp: ~2, Cmp Lst: ~3, Rmv all LstElem: ~4, Rd LstProp: ~5, Cmp Lst: ~6"
+    IDS_STRING3098          "AddListElement Service  (InvId=~1):  list elements (sent)"
+    IDS_STRING3099          "RemoveListElement Service (InvId=~1): list elements (sent)"
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "dudapi32 DLL\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "dudapi32\0"
+            VALUE "LegalCopyright", "Copyright (C) 1998\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "dudapi32.DLL\0"
+            VALUE "ProductName", "dudapi32 Dynamic Link Library\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "afxres.rc"         // Standard components
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

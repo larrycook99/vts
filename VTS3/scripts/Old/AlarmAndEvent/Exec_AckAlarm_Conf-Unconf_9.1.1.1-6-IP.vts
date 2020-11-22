@@ -1,0 +1,366 @@
+;--------------------------------------------------------------
+  ; Testing Support for the successful alarm acknowledgment of confirmed event 
+  ; notifications using the Sequence Number form of the "Time of Acknowledgment"
+  ; parameter.
+  ;
+  ; Exec_AckAlarm_Conf_SeqNum.vts	alm02mmddyy.vts
+  ; 9.1.1.2
+  ;   Ver 0.0   02/17/01    Steve Gillingham
+  ;
+  ;  In the REFERENCE sections "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;--------------------------------------------------------------
+  ;--------------------------------------------------------------
+  ;   INITIAL VALUES:
+  ;
+  ;   SCRIPT CHANGES REQUIRED:
+  ;       - The MACROs in TD_CONFIG must be assigned values that
+  ;       correctly reflect the setup of the VTS computer
+  ;       - The MACROs in IUT_CONFIG must be assigned values that
+  ;       accurately reflect the setup of the IUT device, the
+  ;       event generating object, and monitored object.
+  ;       - changes due to the choice of event type
+  ;       - changes in the time stamps
+  ;       - change the destination to the other the IUT
+  ;
+  ;   SCRIPT LIMITATIONS:
+  ;--------------------------------------------------------------
+
+
+SETUP Object Support Tests - successful alarm acknowledgment of confirmed event notifications using the Sequence Number form of the "Time of Acknowledgment" parameter Tests
+
+  ;--------------------------------------------------------------
+    IUT_IP = 208.6.162.35
+  
+  ;--------------------------------------------------------------
+  ;            CHANGE: MY_MAC address and "Untitled"
+  ; TD_CONFIG
+  ;
+  ;"Untitled" = 1, ETHERNET, 0
+  -- The network which is directly-connected to the TD
+  -- and can be used to reach the IUT.
+  -- Adjust the parameters as needed to reflect the actual
+  -- physical environment. The first value represents the 
+  -- physical network number, the second value the physical 
+  -- network type and the third value the physical port.
+
+  ;MY_MAC = 000402B22D5C    -- MAC address of the TD
+                           -- replace with you TD address
+
+  ;--------------------------------------------------------------
+  ;              CHANGE:  IUT_IP, and DEVICE_ID
+  ; IUT_CONFIG
+  ;
+ 
+  ;IUT_IP =  0040ae00193e  -- MAC address of IUT
+                           -- replace with your IUT address
+                            
+
+  EVENT_ID = EVENT-ENROLLMENT, 1        -- the event generating object. 
+  
+  MONITORED_ID = ANALOG-VALUE, 1    -- This is the object which when changed will be the cause of an alarm
+  MONITORED_PROP = Present-Value        -- The monitored property, present-value. This is the objects property which when changed will be the cause of an alarm
+                                        -- if intrinsic
+  HI_LIMIT = 90                         -- A value high enough to trigger an alarm. This value is used in the initial write proeprty request.
+  EVENT_STATE_ACKED = 3                 -- A value 0 - 5 must be here. This must be the same as the event state in the event notification.
+
+  EVENT_GENERATING_OBJECT = ANALOG-VALUE, 1               -- This is the Event-Object-Identifier. This is the same object that initiated the event-notification that is being acknowledged.
+
+  SEQNUM = 0	;99
+
+  ACKSOURCE = ANSI, "ACKSOURCE"
+
+  TRANSITIONS_ACKED = T,F,T	;F,T,T             -- This is the value of ACKED-TRANSITIONS right after an alarm goes off.
+  
+  ALL_TRANSITIONS_ACKED = T,T,T         -- This is the value of ACKED-TRANSITIONS right after Alarm has been Acked.
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
+Section 9.1.1.2 Successful Alarm Acknowledgment of Confirmed Event Notifications Using the Sequence Number Form of the 'Time of Acknowledgment' Parameter
+
+  Test #1 Trigger Alarm
+-- 1. MAKE (a change that triggers the detection of an alarm event in the IUT)
+
+SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = WriteProperty
+      Object = 0, MONITORED_ID
+      Property = 1, MONITORED_PROP
+      OpenTag 3
+      --ENUM = HI_LIMIT  ; CHANGE: change according to value being written
+       REAL = 100;HI_LIMIT  ; CHANGE: change according to value being written
+      CloseTag 3
+      )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = SimpleAck
+      Service = WriteProperty
+      )    
+
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
+ 
+ ----------Manually verify in the VTS trace X2 ***See Test Plan concerning how to find bugs here**----------
+
+ -- 2. RECEIVE ConfirmedEventNotification-Request,
+  --             'Process Identifier' =            (the process identifier
+  --                                             configured for this event),
+  --             'Initiating Device Identifier' =    IUT,
+  --             'Event Object identifier' =        (the object detecting the 
+  --                                             alarm),
+  --             'Time Stamp' =                (the current time or sequence 
+  --                                             number),
+  --         'Notification Class' =            (the notification class 
+  --                                             configured for this event),
+  --         'Priority' =                 (the priority configured for 
+  --                                             this event),
+  --         'Event Type' =                (any valid event type),
+  --         'Notify Type' =                ALARM,
+  --         'AckRequired' =                TRUE,
+  --         'From State' =                NORMAL,
+  --         'To State' =                (any appropriate non-normal
+  --                                             event state),
+  --         'Event Values' =                (the values appropriate to the
+  --                                             event type)
+
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
+
+ Test #4 Verify Transition Bits
+  -- 4. VERIFY (the 'Event Object Identifier' from the event notification),
+  --    Acked_Transitions = B'011'
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, ACKED-TRANSITIONS
+      )
+
+    EXPECT ( 
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, ACKED-TRANSITIONS
+      OpenTag 3
+        BitString = TRANSITIONS_ACKED
+      CloseTag 3
+      )
+
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+  
+  Test #5 Acknowledge Alarm
+
+  -- 5. TRANSMIT AcknowledgeAlarm-Request,
+  --         'Acknowledging Process Identifier' =(the value of the 'Process
+  --                                             Identifier' parameter in the 
+  --                               event notification),
+  --         'Event Object Identifier' =         (the 'Event Object Identifier' 
+  --                                             from the event notification),
+  --        'Event State Acknowledged' =        (the state specified in the 'To
+  --                                             State' parameter of the 
+  --                                 notification),
+  --         'Time Stamp' =                 (the time stamp conveyed in the 
+  --                                             notification),
+  --         'Time of Acknowledgment' =         (the current time using a 
+  --                                             Sequence Number format)
+
+     SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = AcknowledgeAlarm
+      INTEGER = 0, 9
+      Object = 1, EVENT_GENERATING_OBJECT
+      ENUM = 2, EVENT_STATE_ACKED
+
+      --------- Time-Stamp of type BACnetTimeStamp below (This must match the Event Notification value, tag and datattype)
+      --------- Choose one of the script blocks and uncomment the lines in between the beginning and end of the script blocks. 
+      --------- Only one script block may be uncommented at a time. 
+      OpenTag 3
+         -- Begin Script Block 0
+             TIME = 0, 11:10:00.00   ; CHANGE:  put in current time
+         -- End Script Block 0
+
+         -- Begin Script Block 1
+            UNSIGNED = 1, 16;SEQNUM         ; CHANGE:  put in sequence number
+         -- End Script Block 1
+
+         -- Begin Script Block 2
+	    OPENTAG 2                   ; CHANGE: comment if needed
+	    Date = MONDAY, 9/18/2002   ; CHANGE: put in Event-notification TEST_MONTH TEST_DAY, TEST_YEAR   
+            Time = 11:10:05.00        ; CHANGE: put in Event-notification time
+	    CLOSETAG 2                  ; CHANGE: comment if needed
+         -- End Script Block 2
+      CloseTag 3
+
+      CHARSTRING = 4, ACKSOURCE         ; Do not make changes to this line
+
+      --------- Time-of-Acknowledgement of type BACnetTimeStamp below (The time value specified here must be properly written)
+      OpenTag 5
+         -- Begin Script Block 0
+              TIME = 0, 11:10:00.00    -- CHANGE:  put in current time
+         -- End Script Block 0
+
+         -- Begin Script Block 1
+             UNSIGNED = 1, 16	;SEQNUM          -- CHANGE:  put in sequence number
+         -- End Script Block 1
+
+         -- Begin Script Block 2
+	    OPENTAG 2                   
+	    DATE = sat, 1/20/2001   		; CHANGE: put in Event-notification TEST_MONTH TEST_DAY, TEST_YEAR   
+            Time = 5:55:33.00        ; CHANGE: put in Event-notification time
+	    CLOSETAG 2            
+         -- End Script Block 2
+      CloseTag 5
+      )
+
+
+-- 6. RECEIVE BACnet-Simple-ACK-PDU
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DA = IUT_IP
+      DER = FALSE
+      PDU = SimpleAck
+      Service = AcknowledgeAlarm
+      )    
+
+
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
+ 
+ ----------Manually verify in the VTS trace X2 ***See Test Plan concerning how to find bugs here**----------
+
+
+-- 7. RECEIVE ConfirmedEventNotification-Request,
+  --         'Process Identifier' =            (the process identifier
+  --                                            configured for this event),
+  --         'Initiating Device Identifier' =   IUT,
+  --         'Event Object identifier' =       (the object detecting the 
+  --                                            alarm),
+  --         'Time Stamp' =                    (the time or sequence number 
+  --                                            from the notification in step
+  --                                            2),
+  --         'Notification Class' =            (the notification class 
+  --                                            configured for this event),
+  --         'Priority' =                      (the priority configured for 
+  --                                            this event),
+  --         'Event Type' =                    (the event type included in step 
+  --                                            2),
+  --         'Notify Type' =                   ACK_NOTIFICATION,
+  --         'To State' =                      (the 'To State' used in step 3)
+
+  -- ***AND*** ---------------------------------------------------------------------------------------------------
+
+  -- 8. RECEIVE 
+  --         DA =                    (at least one device other than
+  --                                           the TD,
+  --         SOURCE =                          IUT,
+  --        ConfirmedEventNotification-Request,
+  --         'Process Identifier' =            (the process identifier 
+  --                                            configured for this event),
+  --         'Initiating Device Identifier' =   IUT,
+  --         'Event Object identifier' =       (the object detecting the 
+  --                                            alarm),
+  --         'Time Stamp' =                    (the time or sequence number 
+  --                                            from the notification in step
+  --                                            2),
+  --         'Notification Class' =            (the notification class 
+  --                                            configured for this event),
+  --         'Priority' =                      (the priority configured for 
+  --                                            this event),
+  --         'Event Type' =                    (the event type included in step 
+  --                                            2),
+  --         'Notify Type' =                   ALARM,
+  --         'AckRequired' =                   TRUE,
+  --         'From State' =                    NORMAL,
+  --         'Notify Type' =                   ACK_NOTIFICATION,
+  --         'To State' =                      (the 'To State' used in step 3)
+
+
+  -- 9. VERIFY (the 'Event Object Identifier' from the event notification), 
+  --            Acked_Transitions = B'111'
+
+  Test #9 Verify Acked Transitions
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = FALSE
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, ACKED-TRANSITIONS
+      )
+
+    EXPECT ( 
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = FALSE
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, MONITORED_ID
+      Property = 1, ACKED-TRANSITIONS
+      OpenTag 3
+        BitString = TRANSITIONS_ACKED
+      CloseTag 3
+      )

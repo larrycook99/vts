@@ -1,0 +1,6 @@
+VTS Version: this file is parsed by VTS.exe to determine the latest release
+3.6.7.0
+- Increase EPICS max string lengths to 255
+- Fix bug in EPICS reading BACnetDoorValue_orNull
+- Fix for Bug 324: change BACnetEngineeringUnits strings to exactly match 135-2012, using dashes instead of spaces, and removing capital letters (except for pH). 
+- Various bug fixes and code refactoring

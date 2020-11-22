@@ -1,0 +1,15 @@
+LIBRARY   VTSAPI32
+
+EXPORTS
+	VTSAPIgetpropinfo			@1
+	VTSAPIgetenumtable			@2
+	VTSAPIgetdefaultparsetype	@3
+	VTSAPIgetdefaultpropinfo	@4
+	VTSAPIgetpropertystates		@5
+	VTSAPIgetpropertystate		@6
+	ReadTextPICS				@7
+	DeletePICSObject			@8
+
+	
+		
+	

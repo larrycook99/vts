@@ -1,0 +1,1072 @@
+;-------------------------------------------------------------------------------------
+  ;  Positive ReadPropertyMultiple Service Execution Tests
+  ;    Draft
+  ;  RPMmmddyy.vts
+  ;
+  ;  Ver 1.0	02/04/01	P. Bowen	Initial version
+  ;  Ver 1.1	04/01/01	P. Bowen	Updated documentation
+  ;  Ver 1.2	08/12/01	P. Bowen	Add test to read one instance of each datatype
+  ;  Ver 1.3    09/17/01        Bradsp          Marked with easy change symbols and Routing sections  
+  ;  Ver 1.4    10/01/01        Bradsp          Added variable header section, renamed all variables and marked hardcode in body.
+  ;  Purpose: This file defines the tests necessary to to verify correct execution 
+  ;  of ReadPropertyMultiple service requests under circumstances where the 
+  ;  service is expected to be successfully completed. 
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and "(T)" refers to
+  ;  the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP ReadPropertyMultiple Service Execution Tests
+  
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG   All objects and properties are listed here including notes on there use
+  ;----------------------------------
+  ; KEWORD SEARCH:
+  ;                HARDCODE -  THE OBJECT OR PROPERTY IN THE SCRIPT NEEDS TO BE CHANGED WITHIN THE BODY OF THE SCRIPT
+  ;                ENCODE -    THE VALUE IN THE BODY OF THE SCRIPT NEEDS TO BE ENCODED
+  ;                MANAUL -    SEND OR RECEIVE NEEDS TO BE CONFIGURED IN VTS MANUALLY
+  ; Note: Changes needing to be made outside of the setup section including hard coded objects/properties, encoding, 
+  ;       manual send and receive are searchable. See individaul test in the setup section to decide if this search needs to be made.
+  ;
+  -----------------------------------
+  -----------------------------------
+  --  TEST #1a Reading a Single Property from a Single Object 
+  ;
+     TESTAOBJ = Device, 3050000       ; This value should change to match the IUT (No changes ever needed beyond setup section for this test) 
+  ;                                  ; The required properties; Object-Name are used for this test
+  ;                                  ; Note: No changes required beyond this setup section for this test
+  -----------------------------------
+  -----------------------------------
+  --  TEST #1b Reading Multiple properties from a Single Object.
+  ;
+     TESTBOBJ = DEVICE, 3050000       ; This value should change to match the IUT  
+  ;                                  ; The required properties; Object-Name, Vendor-Name and Model name are used for this test.
+  ;                                  ; Note: No changes required beyond this setup section for this test
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1c Reading a Single Property from Multiple Objects
+  ;
+     TESTCOBJ1 = DEVICE, 3050000      ; This value should change to match the IUT 
+     TESTCOBJ2 = ANALOG-VALUE, 1     ; This value should change to match the IUT  
+  ;                                  ; The required properties; Object-Name are used for this test.
+  ;                                  ;  Note: No changes required beyond this setup section for this test 
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1d Reading Multiple Properties from Multiple Objects
+  ;
+     TESTDOBJ1 = DEVICE, 3050000      ; This value should change to match the IUT 
+     TESTDOBJ2 = ANALOG-VALUE, 1     ; This value should change to match the IUT 
+  ;                                  ; The required properties; Object-Name, Object-Type, Object-Identifier are used for this test.
+  ;                                  ; Note: No changes required beyond this setup section for this test 
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1e - Read Property Multiple, Type Object Identifier
+  ;
+     TESTEOBJ = DEVICE, 3050000       ; This value should change to match the IUT 
+  ;                                  ; The required properties; Object-Identifier is used for this test.
+  ;                                  ; Note: No changes required beyond this setup section for this test    
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1f - Read Property Multiple, Type Enumerated
+  ;
+     TESTFOBJ = DEVICE, 3050000       ; This value should change to match the IUT 
+  ;                                  ; The required properties; Object-Type is used for this test.
+  ;                                  ;  Note: No changes required beyond this setup section for this test       
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1g - Read Property Multiple, Type CharacterString 
+  ;
+     TESTGOBJ = DEVICE, 3050000       ; This value should change to match the IUT 
+  ;                                  ; The required properties; Description is used for this test.
+  ;                                  ;  Note: No changes required beyond this setup section for this test       
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1h - Read Property Multiple, Type Unsigned
+  ;
+     TESTHOBJ = DEVICE, 3050000       ; This value should change to match the IUT 
+  ;                                  ; The required properties; Vendor-Identifier is used for this test.
+  ;                                  ; Note: No changes required beyond this setup section for this test       
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1i - Read Property Multiple, Read an Entire Array
+  ;
+     TESTIOBJ = Analog-Output, 1      ; This value should change to match the IUT 
+  ;                                  ; The well used property; priority-array is used for this test.
+  ;                                  ; HARDCODE changes may be required beyond this setup section if a priority-array is not used for this test
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1j - Read Property Multiple, Read the Size of an Array
+  ;                                  ; MANAUL - SEND AND RECEIVE NEEDS TO BE CONFIGURED IN VTS MANUALLY (FOLLOW THIS TESTS 'SCRIPT TEST STEPS' WHEN MANUALLY CONFIGURING THIS TEST)
+  ;   
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1k - Read Property Multiple, Read a Single Element of an Array
+  ;                                  ;  MANAUL - SEND AND RECEIVE NEEDS TO BE CONFIGURED IN VTS MANUALLY (FOLLOW THIS TESTS 'SCRIPT TEST STEPS' WHEN MANUALLY CONFIGURING THIS TEST)
+  ;     
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1l - Read Property Multiple, Type Bitstring
+  ;
+     TESTLOBJ = ANALOG-VALUE, 1      ; This value should change to match the IUT 
+  ;                                  ; The WELL USED property; STATUS-FLAGS is used for this test.
+  ;                                  ; HARDCODE changes may be required beyond this setup section if STATUS-FLAGS is not used for this test
+  -----------------------------------
+  -----------------------------------
+  --  TEST #1m - Read Property Multiple, Read an Entire List
+  ;
+     TESTMOBJ = DEVICE, 3050000       ; This value should change to match the IUT 
+  ;                                  ; The REQUIRED property; Device-Address-Binding is used for this test.
+  ;                                  ; HARDCODE changes may be required beyond this setup section if STATUS-FLAGS is not used for this test
+  ;                                  ; MANAUL - RECEIVE MAY NEED TO BE VERIFIED IN THE VTS TRACE MANUALLY (THIS SCRIPT MAY FAIL BUT THE MANUAL RESULT MAY PASS)
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1n - Read Property Multiple, Read Null Values
+  ;
+  ;                                  MANAUL - SEND AND RECEIVE NEEDS TO BE CONFIGURED IN VTS MANUALLY (FOLLOW THIS TESTS 'SCRIPT TEST STEPS' WHEN MANUALLY CONFIGURING THIS TEST)   
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1o - Read Property Multiple, Type Boolean
+  ;
+     TESTOOBJ = ANALOG-VALUE, 1      ; This value should change to match the IUT 
+  ;                                  ; The WELL USED property; OUT-OF-SERVICE is used for this test.
+  ;                                  ; HARDCODE changes may be required beyond this setup section if OUT-OF-SERVICE is not used for this test    
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1p - Read Property Multiple, Type Signed
+  ;
+  ;                                   MANAUL - SEND AND RECEIVE NEEDS TO BE CONFIGURED IN VTS MANUALLY (FOLLOW THIS TESTS 'SCRIPT TEST STEPS' WHEN MANUALLY CONFIGURING THIS TEST)     
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1q - Read Property Multiple, Type Real
+  ;
+     TESTQOBJ = ANALOG-VALUE, 1      ; This value should change to match the IUT 
+  ;                                  ; The WELL USED property; Present-Value is used for this test.
+  ;                                  ; HARDCODE changes may be required beyond this setup section if Present-Value is not used for this test
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1r - Read Property Multiple, Type Time
+  ;
+     TESTROBJ = DEVICE, 3050000       ; This value should change to match the IUT 
+  ;                                  ; The WELL USED property; Local-Time is used for this test.
+  ;                                  ; HARDCODE changes may be required beyond this setup section if Local-Time is not used for this test     
+  -----------------------------------
+  -----------------------------------
+  -- TEST #1s - Read Property Multiple, Type Date
+  ;
+     TESTSOBJ = DEVICE, 3050000       ; This value should change to match the IUT 
+  ;                                  ; The WELL USED property; Local-Date is used for this test.
+  ;                                  ; HARDCODE changes may be required beyond this setup section if Local-Date is not used for this test   
+  -----------------------------------
+ 
+  SECTION ReadPropertyMultiple Service Execution Tests
+
+  -- Configuration Requirements: 
+  --	a) Two objects shall be selected by the tester from the IUT's database. 
+  --	   The various tests consist of reading combinations of properties from 
+  --	   one or both of these objects. In the test descriptions the Object_Identifier
+  --	   for these objects are designated Object1 and Object2. Properties selected by
+  --	   the tester are designated P1, P2, P3, etc. as needed.
+  --	b) IUT is on the same network as TD.
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Reading a Single Property from a Single Object 
+
+  -- Purpose: This test case verifies the ability to read a single property from a
+  -- single object.
+
+  -- Test Concept: A single supported property is read from the Device object. The 
+  -- property is selected by the TD and is designated as P1 in the test description.
+
+  -- Test Steps:
+  --  1. TRANSMIT ReadPropertyMultiple-Request,
+  --	'Object Identifier' = Object1 | Object2, 'Property Identifier' = P1
+  --  2. RECEIVE ReadPropertyMultiple-ACK,
+  --	'Object Identifier' = (the object selected in step 1), 'Property Identifier' = P1,
+  --	'Property Value' = (the value of P1 specified in the EPICS)
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadPropertyMultiple Service and (T) Reading a Single Property of a Single Object
+
+  -- Step #1: Send ReadPropertyMultiple request for a single property, single object
+
+    SEND (
+      
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTAOBJ
+      OpenTag 1
+         Property = 0, Object-Name
+      CloseTag 1
+    )
+
+  -- Step #2: Receive ReadPropertyMultiple ACK
+
+    EXPECT (
+     
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTAOBJ
+      OpenTag 1
+         Property = 2, Object-Name
+         OpenTag 4
+           AL = {Object-Name}
+         CloseTag 4
+      CloseTag 1
+    )
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+  TEST #1b Reading Multiple properties from a Single Object.
+
+  -- Purpose: This test case verifies the ability to read multiple properties from a
+  --	single object.
+
+  -- Test Steps:
+  --  1. TRANSMIT ReadPropertyMultiple-Request,
+  --	'Object Identifier' = Object1 | Object2, 'Property Identifier' = P1, 'Property 
+  --		Identifier' = P2, 'Property Identifier' = P3
+  --  2. RECEIVE ReadPropertyMultiple-ACK,
+  --	'Object Identifier' = (the object selected in step 1), 'Property Identifier' = P1,
+  --	'Property Value' = (the value of P1 specified in the EPICS), 'Property Identifier' = P2,
+  --	'Property Value' = (the value of P2 specified in the EPICS), 'Property Identifier' = P3,
+  --	'Property Value' = (the value of P3 specified in the EPICS)
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadPropertyMultiple Service and (T) Reading Multiple properties from a Single Object
+
+  -- Step #1: Send ReadPropertyMultiple request for multiple properties, single object
+
+    SEND (
+     
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTBOBJ
+      OpenTag 1
+         Property = 0, Object-Name
+         Property = 0, Vendor-Name
+         Property = 0, Model-Name
+      CloseTag 1
+    )
+
+  -- Step #2: Receive ReadPropertyMultiple ACK
+
+    EXPECT (
+      
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTBOBJ
+      OpenTag 1
+         Property = 2, Object-Name
+         OpenTag 4
+            AL = {Object-Name}
+         CloseTag 4
+         Property = 2, Vendor-Name
+         OpenTag 4
+            AL = {Vendor-Name}
+         CloseTag 4
+         Property = 2, Model-Name
+         OpenTag 4
+            AL = {Model-Name}
+         CloseTag 4
+      CloseTag 1
+    )
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+  TEST #1c Reading a Single Property from Multiple Objects
+
+  -- Purpose: This test case verifies the ability to read a single property from 
+  --	multiple objects.
+
+  -- Test Steps:
+  --  1. TRANSMIT ReadPropertyMultiple-Request,
+  --	'Object Identifier' = Object1, 'Property Identifier' = P1,
+  --	'Object Identifier' = Object2, 'Property Identifier' = P2
+  --  2. RECEIVE ReadPropertyMultiple-ACK,
+  --	'Object Identifier' = Object1, 'Property Identifier' = P1, 'Property Value' =
+  --		(the value of P1 specified in the EPICS),
+  --	'Object Identifier' = Object2, 'Property Identifier' = P2, 'Property Value' =
+  --		(the value of P2 specified in the EPICS)
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadPropertyMultiple Service and (T) Reading a Single Property from Multiple Objects
+   
+  -- Step #1: Send ReadPropertyMultiple request to multiple objects, single property
+
+    SEND (
+      
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTCOBJ1
+      OpenTag 1
+         Property = 0, Object-Name
+      CloseTag 1
+      Object = 0, TESTCOBJ2
+      OpenTag 1
+         Property = 0, Object-Name
+      CloseTag 1
+    )
+
+  -- Step #2: Receive ReadPropertyMultiple ACK
+
+    EXPECT (
+     
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTCOBJ1
+      OpenTag 1
+         Property = 2, Object-Name
+         OpenTag 4
+            AL = {Object-Name}
+         CloseTag 4
+      CloseTag 1
+
+      Object = 0, TESTCOBJ2
+      OpenTag 1
+         Property = 2, Object-Name
+         OpenTag 4
+            AL = {Object-Name}
+         CloseTag 4
+      CloseTag 1
+    )
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+  TEST #1d Reading Multiple Properties from Multiple Objects
+
+  -- Purpose: This test case verifies the ability to read multiple properties from 
+  --	multiple objects.
+
+  -- Test Steps:
+  --  1. TRANSMIT ReadPropertyMultiple-Request,
+  --	'Object Identifier' = Object1,
+  --	'Property Identifier' = P1, 'Property Identifier' = P2, 'Property Identifier' =	P3,
+  --	'Object Identifier' = Object2,
+  --	'Property Identifier' = P4, 'Property Identifier' = P5,	'Property Identifier' =	P6,
+  --  2. RECEIVE ReadPropertyMultiple-ACK,
+  --	'Object Identifier' = Object1,
+  --	'Property Identifier' =	P1, 'Property Value' = (the value of P1 specified in the EPICS),
+  --	'Property Identifier' =	P2, 'Property Value' = (the value of P2 specified in the EPICS),
+  --	'Property Identifier' =	P3, 'Property Value' = (the value of P3 specified in the EPICS),
+  --	'Object Identifier' = Object2,
+  --	'Property Identifier' =	P4, 'Property Value' = (the value of P4 specified in the EPICS),
+  --	'Property Identifier' =	P5, 'Property Value' = (the value of P5 specified in the EPICS),
+  --	'Property Identifier' =	P6, 'Property Value' = (the value of P6 specified in the EPICS)
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadPropertyMultiple Service and (T) Reading Multiple Properties from Multiple Objects
+   
+  -- Step #1: Send ReadPropertyMultiple request for multiple properties, multiple objects
+
+    SEND (
+    
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTDOBJ1
+      OpenTag 1
+         Property = 0, Object-Name
+         Property = 0, Object-Type
+         Property = 0, Object-Identifier
+      CloseTag 1
+      Object = 0, TESTDOBJ2
+      OpenTag 1
+         Property = 0, Object-Name
+         Property = 0, Object-Type
+         Property = 0, Object-Identifier
+      CloseTag 1
+    )
+
+  -- Step #2: Receive ReadPropertyMultiple ACK
+
+    EXPECT (
+     
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTDOBJ1
+      OpenTag 1
+         Property = 2, Object-Name
+         OpenTag 4
+            AL = {Object-Name}
+         CloseTag 4
+         Property = 2, Object-Type
+         OpenTag 4
+            AL = {Object-Type}
+         CloseTag 4
+         Property = 2, Object-Identifier
+         OpenTag 4
+            AL = {Object-Identifier}
+         CloseTag 4
+      CloseTag 1
+
+      Object = 0, TESTDOBJ2
+      OpenTag 1
+         Property = 2, Object-Name
+         OpenTag 4
+            AL = {Object-Name}
+         CloseTag 4
+         Property = 2, Object-Type
+         OpenTag 4
+            AL = {Object-Type}
+         CloseTag 4
+         Property = 2, Object-Identifier
+         OpenTag 4
+            AL = {Object-Identifier}
+         CloseTag 4
+      CloseTag 1
+    )
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+  TEST #1e - Read Property Multiple, Type Object Identifier
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type BACnetObjectIdentifier.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any value of type BACnetObjectIdentifier)
+ 
+  -- Passing Result: The IUT shall respond as indicated conveying the value 
+  -- specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading Object Identifiers
+
+    SEND (
+      
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTEOBJ
+      OpenTag 1
+         Property = 0, Object-Identifier	; BACnetObjectIdentifier
+      CloseTag 1
+    )
+
+    EXPECT (
+     
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTEOBJ
+      OpenTag 1
+         Property = 2, Object-Identifier
+         OpenTag 4
+            AL = {Object-Identifier}
+         CloseTag 4
+      CloseTag 1
+    )
+ ;-------------------------------------------------------------------------------------
+ ;-------------------------------------------------------------------------------------
+ ;-------------------------------------------------------------------------------------
+
+  TEST #1f - Read Property Multiple, Type Enumerated
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type Enumerated.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any value of type Enumerated)
+ 
+  -- Passing Result: The IUT shall respond as indicated conveying the value 
+  -- specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading Enumerated Values
+
+    SEND (
+      
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTFOBJ
+      OpenTag 1
+         Property = 0, Object-Type		; Object_Type is indirectly of type ENUM
+      CloseTag 1
+    )
+
+    EXPECT (
+     
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTFOBJ
+      OpenTag 1
+         Property = 2, Object-Type
+         OpenTag 4
+            AL = {Object-Type}
+         CloseTag 4
+      CloseTag 1
+    )
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+  TEST #1g - Read Property Multiple, Type CharacterString
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type CharacterString.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any value of type CharacterString)
+ 
+  -- Passing Result: The IUT shall respond as indicated conveying the value 
+  -- specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading CharacterString Values
+
+    SEND (
+    
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTGOBJ
+      OpenTag 1
+         Property = 0, Description	           ; Vendor-Name is of type CharacterString
+      CloseTag 1
+    )
+
+    EXPECT (
+     
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTGOBJ
+      OpenTag 1
+         Property = 2, Description
+         OpenTag 4
+            AL = {Description}            
+         CloseTag 4
+      CloseTag 1
+    )
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+  TEST #1h - Read Property Multiple, Type Unsigned
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type Unsigned.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any value of type Unsigned)
+ 
+  -- Passing Result: The IUT shall respond as indicated conveying the value 
+  -- specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading Unsigned Values
+
+    SEND (
+     
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTHOBJ
+      OpenTag 1
+         Property = 0, Vendor-Identifier	; Vendor-Identifier is of type Unsigned
+      CloseTag 1
+    )
+
+    EXPECT (
+     
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTHOBJ
+      OpenTag 1
+         Property = 2, Vendor-Identifier
+         OpenTag 4
+            AL = {Vendor-Identifier}
+         CloseTag 4
+      CloseTag 1
+    )
+
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+  TEST #1i - Read Property Multiple, Read an Entire Array
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type Entire Array.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any value of type Entire Array)
+ 
+  -- Passing Result: The IUT shall respond as indicated conveying values specified
+  -- in the EPICS. If segmentation is not supported and the object list is too long
+  -- to return without segmentation an abort message indicating "segmentation not
+  -- supported" is a passing result. If an abort message is received and the IUT
+  -- has another array that is small enough to read in its entirety without 
+  -- segmentation, then this test shall be repeated using that array. A passing 
+  -- result in that case is that the entire array is returned in response to the 
+  -- ReadPropertyMultiple request.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading an Entire Array
+
+    SEND (
+     
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTIOBJ
+      OpenTag 1
+         Property = 0, Priority-Array		; HARDCODE Read entire Object-List array
+      CloseTag 1
+    )
+
+    EXPECT (
+    
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTIOBJ
+      OpenTag 1
+         Property = 2, Priority-Array           ; HARDCODE
+         OpenTag 4
+            AL = {Priority-Array}               ; HARDCODE
+         CloseTag 4
+      CloseTag 1
+    )
+  
+  
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+  ; Note: This test commented out since VTS doesn't recognize the array index reference
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+
+-- TEST #1j - MANAUL Read Property Multiple, Read the Size of an Array
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type Array and the length of
+  -- the array is read.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (the array length)
+ 
+  -- Passing Result: The IUT shall respond as indicated conveying the array length 
+  -- as specified in the EPICS. 
+  
+--  DEPENDENCIES None
+
+--  REFERENCE (B) ReadProperty Service and (T) Reading the Size of an Array
+
+--    SEND (
+
+--      PDU = Confirmed-Request
+--      Service = ReadPropertyMultiple
+--      Object = 0, OBJECT1
+--      OpenTag 1
+--         Property = 0, Object-List
+--	 Unsigned = 1, 0			; get "unrecognized Packet keyword" error - ref pg 274 & pg 378 for syntax
+--      CloseTag 1
+--    )
+
+--    EXPECT (
+
+--      PDU = ComplexAck
+--      Service = ReadPropertyMultiple
+--      Object = 0, OBJECT1
+--      OpenTag 1
+--         Property = 2, Object-List
+--	 Unsigned = 3, 0			; get "unrecognized packet keyword" error
+--         OpenTag 4
+--            AL = {Object-List}
+--         CloseTag 4
+--      CloseTag 1
+--    )
+
+  
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+  ; Note: This test commented out since VTS doesn't recognize the array index reference
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+ 
+ -- TEST #1k - MANAUL Read Property Multiple, Read a Single Element of an Array
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type Array and a single element
+  -- of the array is read.
+  
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (the value of the Yth element of 
+  -- the array)
+ 
+ -- Passing Result: The IUT shall respond as indicated conveying the value of the 
+  -- Yth element as specified in the EPICS.
+  
+--  DEPENDENCIES None
+
+--  REFERENCE (B) ReadProperty Service and (T) Reading a Single Element of an Array
+
+--    SEND (
+
+--      PDU = Confirmed-Request
+--      Service = ReadPropertyMultiple
+--      Object = 0, OBJECT1
+--      OpenTag 1
+--         Property = 0, Object-List            ; HARDCODE
+--	 Unsigned = 1, 1			; HARDCODE get "unrecognized Packet keyword" error - ref pg 274 & pg 378 for syntax
+--      CloseTag 1
+--    )
+
+--    EXPECT (
+
+--      PDU = ComplexAck
+--      Service = ReadPropertyMultiple
+--      Object = 0, OBJECT1
+--      OpenTag 1
+--         Property = 2, Object-List            ; HARDCODE
+--	 Unsigned = 3, 1			; HARDCODE get "unrecognized packet keyword" error
+--         OpenTag 4
+--            AL = {Object-List}                ; HARDCODE
+--         CloseTag 4
+--      CloseTag 1
+--    )
+
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+  TEST #1l - Read Property Multiple, Type Bitstring
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type Bitstring.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any value of type Bitstring)
+ 
+  -- Passing Result: The IUT shall respond as indicated conveying the value of
+  -- the bitstring as specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading Bitstring Values
+
+    SEND (
+      
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTLOBJ
+      OpenTag 1
+         Property = 0, Status-Flags		; HARDCODE Read type BITSTRING
+      CloseTag 1
+    )
+
+    EXPECT (
+    
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTLOBJ
+      OpenTag 1
+         Property = 2, Status-Flags             ; HARDCODE
+         OpenTag 4
+            AL = {Status-Flags}                 ; HARDCODE
+         CloseTag 4
+      CloseTag 1
+    )
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+  TEST #1m - Read Property Multiple, Read an Entire List
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type List and the value read
+  -- is an entire list.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (an entire list)
+ 
+ -- Passing Result: The IUT shall respond as indicated conveying the values in the
+  -- list as specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) TBD
+
+    SEND (
+     
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTMOBJ
+      OpenTag 1
+         Property = 0, Device-Address-Binding	  ; MANUAL
+      CloseTag 1
+    )
+
+    EXPECT (
+     
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTMOBJ
+      OpenTag 1
+         Property = 2, Device-Address-Binding     ; MANUAL
+         OpenTag 4 
+            AL = {Device-Address-Binding}         ; MANUAL
+         CloseTag 4
+      CloseTag 1
+    )
+
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+  ; Note: This test commented out since VTS doesn't recognize the array index reference
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+--  TEST #1n - Read Property Multiple, Read Null Values
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property value is NULL. 
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X, optional Array Index = Y), property value = (Null)
+ 
+  -- Passing Result: The IUT shall respond with a Null value.
+
+--  DEPENDENCIES None
+
+--  REFERENCE (B) ReadProperty Service and (T) TBD
+
+--    SEND (
+
+--      PDU = Confirmed-Request
+--      Service = ReadPropertyMultiple
+--      Object = 0, OBJECT2
+--      OpenTag 1
+--         Property = 0, Priority-Array		; HARDCODE Read Priority-Array[2]
+--	   Unsigned = 1, 2			; get "unrecognized Packet keyword" error - ref pg 274 & pg 378 for syntax
+--      CloseTag 1
+--    )
+
+--    EXPECT (
+
+--      PDU = ComplexAck
+--      Service = ReadPropertyMultiple
+--      Object = 0, OBJECT2
+--      OpenTag 1
+--      Property = 2, Priority-Array
+--      Unsigned = 3, 2				; HARDCODE get "unrecognized Packet keyword" error
+--         OpenTag 4
+--            AL = {Priority-Array}             ; HARDCODE
+--         CloseTag 4
+--      CloseTag 1
+--    )
+
+ ;-------------------------------------------------------------------------------------
+ ;-------------------------------------------------------------------------------------
+ ;-------------------------------------------------------------------------------------
+
+  TEST #1o - Read Property Multiple, Type Boolean
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type Boolean. 
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (one of either TRUE or FALSE)
+ 
+  -- Passing Result: The IUT shall respond with the value of either TRUE or FALSE.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) TBD
+
+    SEND (
+       
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTOOBJ
+      OpenTag 1
+         Property = 0, OUT-OF-SERVICE	    ; HARDCODE Optional property of type Boolean
+      CloseTag 1
+    )
+
+    EXPECT (
+  
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTOOBJ
+      OpenTag 1
+         Property = 2, OUT-OF-SERVICE      ; HARDCODE
+         OpenTag 4
+            AL = {OUT-OF-SERVICE}          ; HARDCODE
+         CloseTag 4
+      CloseTag 1
+    )
+
+;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+  ;-------------------------------------------------------------------------------------
+  ; Note Test #1l is pending since VTS doesn't currently support UTC-Offset property
+  ;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+
+
+  ;-------------------------------------------------------------------------------------
+--  TEST MANAUL #1p - Read Property Multiple, Type Signed
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type Signed. 
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any valid Signed value)
+ 
+  -- Passing Result: Passing Result: The IUT shall respond with a valid Signed value.
+
+--  DEPENDENCIES None
+
+--  REFERENCE (B) ReadProperty Service and (T) TBD
+
+--    SEND (
+
+--      PDU = Confirmed-Request
+--      Service = ReadPropertyMultiple
+--      Object = 0, OBJECT1
+--      OpenTag 1
+--         Property = 0, UTC_Offset		; UTC_Offset is of type Signed
+--      CloseTag 1
+--    )
+
+--    EXPECT (
+
+--      PDU = ComplexAck
+--      Service = ReadPropertyMultiple
+--      Object = 0, OBJECT1
+--      OpenTag 1
+--         Property = 2, UTC_Offset
+--         OpenTag 4
+--            AL = {UTC_Offset}
+--         CloseTag 4
+--      CloseTag 1
+--    )
+
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1q - Read Property Multiple, Type Real
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type Real.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any valid Real value)
+ 
+  -- Passing Result: The IUT shall respond with any valid value of type Real.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) TBD
+
+    SEND (
+    
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTQOBJ
+      OpenTag 1
+         Property = 0, Present-Value		; HARDCODE Required property of type Real
+      CloseTag 1
+    )
+
+    EXPECT (
+   
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTQOBJ
+      OpenTag 1
+         Property = 2, Present-Value           ; HARDCODE
+         OpenTag 4 
+            AL = {Present-Value}               ; HARDCODE
+         CloseTag 4
+      CloseTag 1
+    )
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+  TEST #1r - Read Property Multiple, Type Time
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type Time. 
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any valid Time value)
+ 
+  -- Passing Result: The IUT shall respond with any valid value of type Time.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) TBD
+
+    SEND (
+     
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTROBJ
+      OpenTag 1
+         Property = 0, Local-Time		; HARDCODE Required property of type Time
+      CloseTag 1
+    )
+
+    EXPECT (
+    
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTROBJ
+      OpenTag 1
+         Property = 2, Local-Time	        ; HARDCODE
+         OpenTag 4			
+            AL = {Local-Time}                   ; HARDCODE
+         CloseTag 4			  
+      CloseTag 1
+    )
+
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------
+
+  TEST #1s - Read Property Multiple, Type Date
+
+  -- Purpose: This test case verifies that the IUT can execute ReadPropertyMultiple
+  -- service requests when the requested property is of type Date. 
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any valid Date value)
+ 
+  -- Passing Result: The IUT shall respond with any valid value of type Date.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) TBD
+
+    SEND (
+     
+      PDU = Confirmed-Request
+      Service = ReadPropertyMultiple
+      Object = 0, TESTSOBJ
+      OpenTag 1
+         Property = 0, Local-Date		; HARDCODE Required property of type Date
+      CloseTag 1
+    )
+
+    EXPECT (
+      
+      PDU = ComplexAck
+      Service = ReadPropertyMultiple
+      Object = 0, TESTSOBJ
+      OpenTag 1
+         Property = 2, Local-Date	; HARDCODE Test will fail using this script segment
+         OpenTag 4			;  in VTS V2.28 so verify date manually 
+            AL = {Local-Date}		; HARDCODE
+         CloseTag 4			 
+      CloseTag 1
+    )

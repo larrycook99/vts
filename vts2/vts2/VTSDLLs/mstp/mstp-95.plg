@@ -1,0 +1,51 @@
+--------------------Configuration: sjack32 - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\sjack\sjack32-95.dsp", at root.
+Active configuration is Win32 (x86) Static Library (based on Win32 (x86) Static Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release95/sjack32-95.pch" /YX /Fo"Release95/" /Fd"Release95/" /FD /c "
+			"Browser Database Maker" with flags "/nologo /o"Release95/sjack32-95.bsc" "
+			"Library Manager" with flags "/nologo /out:"Release95\sjack32.lib" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\TEMP\RSP593.tmp" with contents </nologo /Zp1 /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release95/sjack32-95.pch" /YX /Fo"Release95/" /Fd"Release95/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\sjack\sjack32.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP593.tmp" 
+Creating command line "link.exe -lib /nologo /out:"Release95\sjack32.lib"  ".\Release95\sjack32.obj"" 
+Compiling...
+sjack32.c
+Creating library...
+--------------------Configuration: mstp - Win32 Release--------------------
+Begining build with project "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\mstp\mstp-95.dsp", at root.
+Active configuration is Win32 (x86) Dynamic-Link Library (based on Win32 (x86) Dynamic-Link Library)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /Zp1 /MT /W3 /GX /O2 /I "..\Include95" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release95/mstp-95.pch" /YX /Fo"Release95/" /Fd"Release95/" /FD /c "
+			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
+			"Win32 Resource Compiler" with flags "/l 0x409 /fo"Release95/mstp.res" /d "NDEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Release95/mstp-95.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib shell32.lib winmm.lib sjack32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release95/mstp.pdb" /machine:I386 /def:".\mstp.def" /out:"Release95/mstp.dll" /implib:"Release95/mstp.lib" /libpath:"Release" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating command line "rc.exe /l 0x409 /fo"Release95/mstp.res" /d "NDEBUG" "D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\mstp\mstp.rc"" 
+Creating temp file "C:\TEMP\RSP594.tmp" with contents </nologo /Zp1 /MT /W3 /GX /O2 /I "..\Include95" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release95/mstp-95.pch" /YX /Fo"Release95/" /Fd"Release95/" /FD /c 
+"D:\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\mstp\mstp.c"
+>
+Creating command line "cl.exe @C:\TEMP\RSP594.tmp" 
+Creating temp file "C:\TEMP\RSP595.tmp" with contents <kernel32.lib user32.lib gdi32.lib shell32.lib winmm.lib sjack32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release95/mstp.pdb" /machine:I386 /def:".\mstp.def" /out:"Release95/mstp.dll" /implib:"Release95/mstp.lib" /libpath:"Release" 
+".\Release95\mstp.obj"
+".\Release95\mstp.res"
+"\users\mikeg\vts\distributions\vts with latest updates\VTSDLLs\sjack\Release95\sjack32.lib">
+Creating command line "link.exe @C:\TEMP\RSP595.tmp" 
+Compiling resources...
+Compiling...
+mstp.c
+Linking...
+   Creating library Release95/mstp.lib and object Release95/mstp.exp
+
+
+
+mstp.dll - 0 error(s), 0 warning(s)

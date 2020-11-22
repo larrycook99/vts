@@ -1,0 +1,258 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Loop Object Test
+  ;	Manipulated_Variable_Reference Tracking
+  ;
+  ;  LoopMVRTmmddyy.vts
+  ;
+  ;  Ver 1.0	05/13/01	P. Bowen	
+  ;
+  ;  Purpose: This test case verifies that the property referenced by 
+  ;	Manipulated_Variable_Reference tracks the Present_Value of the Loop object.
+  ;
+  ;  Dependencies: ReadProperty Service Execution Tests
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Loop Object Manipulated_Variable_Reference Tracking Test
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+	
+  TD_IP = 10.10.10.2
+
+  LOOP_OBJECT = Loop, 1		; Loop object being tested
+  REF_OBJECT = Analog-output, 1	; Object referenced by the loop object's...
+				; ...Manipulated_Variable_Reference property
+  REF_PROPERTY = Present-Value
+  P_VAL = 0.0			; Value of loop object's Present-Value property
+  P_WRITE = 11			; Value of loop object's Priority-for-Writing property
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  
+  IUT_IP = 10.10.10.100	; Address of IUT
+  
+  ;-------------------------------------------------------------------------------------
+
+  SECTION Loop Object Manipulated_Variable_Reference Tracking Test
+
+  -- Note: this test takes place over steps #1a - #1d so that the test can be 
+  -- paused to verify the Present-Value property of the referenced object.
+
+  -- Configuration Requirements: 
+  --	a) Configuration Requirements: The IUT shall be configured so that the 
+  --	   control output of the Loop object being tested remains constant for 
+  --	   the duration of the test. If this is not possible then this test shall
+  --	   be omitted.
+  --	b) IUT is on the same network as TD
+  --
+  --  Test Steps:
+  --
+  -- 1.	TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Manipulated_Variable_Reference
+  -- 2.	RECEIVE BACnet-ComplexACK-PDU,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Manipulated_Variable_Reference,
+  --		'Property Value' =	(any valid object property reference)
+  -- 3.	TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Priority_For_Writing
+  -- 4.	RECEIVE BACnet-ComplexACK-PDU,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Priority_For_Writing,
+  --		'Property Value' =	(any priority from 1 to 16)
+  -- 5.	TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Present_Value
+  -- 6.	RECEIVE BACnet-ComplexACK-PDU,
+  --		'Object Identifier' = 	(the Loop object being tested),
+  --		'Property Identifier' =	Present_Value,
+  --		'Property Value' =	(any valid value)
+  -- 7.	IF (the manipulated variable reference is commandable) THEN
+  --		VERIFY (the manipulated variable reference object), 
+  --		       (the referenced property) = (the Present_Value from step 6), 
+  --			ARRAY INDEX = (the Priority_For_Writing from step 4)
+  --	ELSE
+  --		VERIFY (the manipulated variable reference object), 
+  --		       (the referenced property) = (the Present_Value from step 6)
+
+  -- REFERENCE (B) Loop Object Type and (T) Loop Object Test
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Read the Object's Manipulated-Variable-Reference Property
+
+  DEPENDENCIES None
+
+  -- Steps #1 & #2: Read the loop object's Manipulated-Variable-Reference property
+
+    SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Manipulated-Variable-Reference
+    )
+
+    EXPECT (
+      	NETWORK = "Untitled"
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	SA = IUT_IP
+      	PDU = ComplexAck
+      	DER = FALSE
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Manipulated-Variable-Reference
+      	OpenTag 3		
+         	AL = {Manipulated-Variable-Reference}
+      	CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1b Read the Object's Priority-for-Writing Property
+
+  DEPENDENCIES None
+
+  -- Steps #3 & #4: Read the loop object's Priority-for-Writing property
+
+     SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Priority-for-Writing
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, LOOP_OBJECT
+      Property = 1, Priority-for-Writing
+      OpenTag 3		
+         AL = {Priority-for-Writing}
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1c Read the Object's Present-Value Property
+
+  DEPENDENCIES None
+
+  -- Steps #5 & #6: Read the loop object's Present-Value property
+
+     SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, LOOP_OBJECT
+      	Property = 1, Present-Value
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, LOOP_OBJECT
+      Property = 1, Present-Value
+      OpenTag 3			
+         REAL = P_VAL			; compare: Present-Value should = P_VAL
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1d Verify the Referenced Object's Present-Value Property
+
+  DEPENDENCIES None
+
+  -- Step #7: Read the referenced object's Present-Value property
+
+     SEND (
+      	NETWORK = "Untitled"
+      	DA = IUT_IP
+      	bvlci =ORIGINAL-UNICAST-NPDU
+      	DER = TRUE
+      	PDU = Confirmed-Request
+	SegMsg = 0
+      	SegResp = 0
+      	MaxResp = 1476
+	InVokeID = 3
+      	Service = ReadProperty
+      	Object = 0, REF_OBJECT
+      	Property = 1, REF_PROPERTY
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SA = IUT_IP
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, REF_OBJECT
+      Property = 1, REF_PROPERTY
+      OpenTag 3			
+         REAL = P_VAL			; compare: referenced property should = P_VAL
+      CloseTag 3
+    )
+
+  -- If the manipulated variable reference is commandable then use this
+  -- test to verify that the referenced property = the Present_Value (from 
+  -- step 6) and ARRAY INDEX = the Priority_For_Writing (from step 4)
+
+  --    SEND (
+  --     NETWORK = "Untitled"
+  --      DA = IUT_IP
+  --      DER = TRUE
+  --      PDU = Confirmed-Request
+  --      Service = ReadProperty
+  --      Object = 0, REF_OBJECT
+  --      Property = 1, Priority-Array
+  --      Unsigned = 2, P_WRITE		; Read Priority-Array[P_WRITE]
+  --    )
+
+  --    EXPECT (
+  --      NETWORK = "Untitled"
+  --      PDU = ComplexAck
+  --      DER = FALSE
+  --      Service = ReadProperty
+  --      Object = 0, OBJECT1
+  --      Property = 1, Priority-Array
+  --      Unsigned = 2, P_WRITE
+  --     OpenTag 3
+  --        REAL = P_VAL		; Verfiy that Priority-Array[P_WRITE] = P_VAL
+  --      CloseTag 3
+  --    )

@@ -1,0 +1,13 @@
+TARGETNAME=bacmacnt
+TARGETPATH=$(BASEDIR)\lib
+TARGETTYPE=DRIVER
+
+TARGETLIBS=$(BASEDIR)\lib\*\$(DDKBUILDENV)\ndis.lib
+
+INCLUDES=..\..\inc;..\inc
+
+SOURCES=bacmacnt.rc \
+		bacmacnt.c    \
+        openclos.c  \
+        read.c      \
+        write.c

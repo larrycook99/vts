@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>VTS Overview</title>
+</head>
+<body>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="ARCNET">
+	<param name="Keyword" value="Ethernet">
+	<param name="Keyword" value="MS/TP">
+	<param name="Keyword" value="PTP">
+	<param name="Keyword" value="Visual Test Shell">
+	<param name="Keyword" value="ANSI/ASHRAE Standard 135-1995 BACnet&#153 protocol">
+	<param name="Keyword" value="BACnet">
+	<param name="Keyword" value="VTS.EXE">
+	<param name="Keyword" value="BACPRIM32.DLL">
+	<param name="Keyword" value="DUDAPI32.DLL">
+	<param name="Keyword" value="VTSAPI32.DLL">
+	<param name="Keyword" value="NALSERV32.DLL">
+	<param name="Keyword" value="PTP.DLL">
+	<param name="Keyword" value="MSTP.DLL">
+	<param name="Keyword" value="BACMAC95.VXD">
+	<param name="Keyword" value="BACMACNT.SYS">
+	<param name="Keyword" value="VTS Status Window">
+	<param name="Keyword" value="NALSERV32 Status Window">
+	<param name="Keyword" value="PTP Status Window">
+	<param name="Keyword" value="MSTP Status Window">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>VTS Overview</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="3" align="right">
+	<a href="view.html"><img src="next.gif" border="0" width="20" height="20" alt="next"></a><a href="home.html"><img src="home.gif" border="0" width="20" height="20" alt="home"></a>
+	</td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	  <a href="#general">General Information</a><br>
+	  <a href="#vtsmodes">Operating Modes</a><br>
+	  <a href="#vtsdesktop">VTS Desktop</a><br>
+      <p>
+	  <a name="general"></a><b>General Information</b><br>
+      The Visual Test Shell (VTS) is a Windows&reg;-based test suite for the 
+      ANSI/ASHRAE Standard 135-1995 BACnet&#153 protocol. VTS consists of a 
+      collection of modules that act primarily as a BACnet client, capable of 
+      communicating with BACnet devices though the following data link/physical layers:<BR>
+      <ul>
+      <li>Ethernet
+      <li>ARCNET
+      <li>BACnet Master-Slave/Token Passing (MS/TP) on EIA-485
+      <li>BACnet Point-to-Point (PTP) on EIA-232 
+      </ul>
+	  </p>
+      <p>
+      VTS can operate with up to two Network Interface Cards of Ethernet and/or ARCNET type and 
+      one each MS/TP and PTP connection using the standard PC serial ports. VTS is compatible 
+	  with Windows 95/98 and Windows NT.
+	  </p>
+	  <p>
+	  The software components of VTS are illustrated in the following diagram:
+	  </p>
+	  <p>
+	  <img src="vtssystem.gif" border="0">
+	  </p>
+	  <p>
+	  <ul>
+	  <li><b>VTS.EXE</b> provides the Windows menus and dialogs to perform 
+	       on-demand testing, interpretation and evaluation of the BACnet protocol 
+	       with BACnet devices connected through any of the BACnet ports of the VTS PC.
+      <li><b>BACPRIM32.DLL</b> provides low-level BACnet data conversion and protocol primatives.  
+	  <li><b>DUDAPI32.DLL</b> provides an automated test suite.
+	  <li><b>VTSAPI32.DLL</b> provides interface routines for accessing PICs data for 
+	      automated testing.  
+	  <li><b>NALSERV32.DLL</b> provides BACnet network and application-level protocol 
+	      functions.
+	  <li><b>PTP.DLL</b> provides BACnet PTP protocol functions.
+	  <li><b>MSTP.DLL</b> provides BACnet MS/TP protocol functions.
+	  <li><b>BACMAC95.VXD/BACMACNT.SYS</b> provide the BACnet data link/physical layer 
+	      functionality for Ethernet and ARCNET.   
+	 </ul>
+	 </p>
+	 <a name="vtsmodes"></a><b>Operating Modes</b><br>
+	 VTS can be configured to operate in the following modes:
+	 </p>
+	 <ul>
+	 <li>An active <b>or</b> passive BACnet participant
+	 <li>A promiscuous <b>or</b> non-promiscuous device
+	 </ul>
+	 </p>
+	 <p>
+	 As an active BACnet participant, VTS responds automatically to the following BACnet packets:<br>
+	 <ul>
+	 <li>ReadProperty-Requests to its own Device Instance
+	 <li>Broadcast Who-Is-Requests
+	 <li>Who-Is-Requests directed to its own Device Instance
+	 <li>BACnet segmented packets directed to its own Device Instance (with BACnet-SegmentACK-PDUs)
+	 </ul>
+	 In addition, the NALSERV32 component of VTS can be configured to periodically transmit broadcast 
+	 Who-Is-Requests.
+	 </p>
+	 <p>
+	 VTS can be set up to be totally promiscuous in order to record all BACnet packets 
+	 to <b>any</b> destination node. In non-promiscuous mode, VTS records only BACnet 
+	 broadcast packets and packets directed at its MAC-layer address(es).
+	 <p>
+	 <a name="vtsdesktop"></a><b>VTS Desktop</b><br>
+	 The VTS visual desktop consists of the following primary status windows:
+	 <ul>
+	 <li><a href="#vtsstatus">VTS Status Window</a>
+	 <li><a href="#nalservstatus">NALSERV32 Status Window</a>
+	 <li><a href="#ptpstatus">PTP Status Window</a>
+	 <li><a href="#mstpstatus">MSTP Status Window</a>
+	 </ul>
+	 </p>
+	 <p>
+	 <a name="vtsstatus"></a><b>VTS Status Window</b><br>
+	 When you start VTS using My Computer, Windows Explorer, 
+	 the Windows Start/Programs Menu or a Windows desktop 
+	 shortcut, the main VTS dialog window is displayed as shown below.
+	 </p>
+	 <p>
+	 <img src="overview_vts.jpg" border="0">
+	 </p>
+	 <p>
+	 This window remains visible until you exit VTS using the VTS File/Close menu or the 
+	 standard close box in the window. You initiate all VTS functions using the VTS menu 
+	 after which additional VTS windows appear as required by the function.
+	 </p>
+	 <p>
+	 <a name="nalservstatus"></a><b>NALSERV32 Status Window</b><br>
+	 NALSERV32 has its own status window which is normally minimized in the form of an 
+	 icon in the Windows taskbar in the bottom righthand corner of your desktop.
+	 <p> 
+	 <img src="overview_toolbar.jpg" border="0">
+     </p>
+	 <p>
+	 Clicking on the NALSERV32 icon restores its status window as shown below. 
+	 </p>
+	 <p>
+	 <img src="overview_nalserv.jpg" border="0">
+	 </p>
+	 <p>
+	 The NALSERV32 window is used to indicate protocol activity in the form of raw BACnet packets and 
+	 also to configure BACnet Device properties for VTS. When you close the NALSERV32 window, 
+	 it returns to its iconic form in the Windows taskbar. The NALSERV32 window is closed and 
+	 disappears from the taskbar only when you exit VTS. Click 
+	 <a href="nalserv32.html#using">here</a> for more details about the NALSERV32 status window.
+	 </p>
+	 <p>
+	 <a name="ptpstatus"></a><b>PTP Status Window</b><br>
+	 PTP has its own status window which is normally minimized in the form of an 
+	 icon in the Windows taskbar in the bottom righthand corner of your desktop. This 
+	 icon appears only if you have configured NALSERV32 for PTP operation.
+	 </p>
+	 <p> 
+	 <img src="ptp_toolbar.jpg" border="0">
+     </p>
+	 <p>
+	 Clicking on the PTP icon restores its status window as shown below. 
+	 </p>
+	 <p>
+	 <img src="overview_ptp.jpg" border="0">
+	 </p>
+	 <p>
+	 The PTP window is used to indicate protocol activity in the form of raw PTP hex frames. 
+	 When you close the PTP window, it returns to its iconic form in the Windows taskbar. 
+	 The PTP window is closed and disappears from the taskbar when you exit VTS. Click 
+	 <a href="ptp.html#using">here</a> for more details about the PTP status window.
+	 </p>
+	 <p>
+	 <a name="mstpstatus"></a><b>MSTP Status Window</b><br>
+	 MSTP has its own status window which is normally minimized in the form of an 
+	 icon in the Windows taskbar in the bottom righthand corner of your desktop. This 
+	 icon appears only if you have configured NALSERV32 for MS/TP operation.
+	 </p>
+	 <p> 
+	 <img src="mstp_toolbar.jpg" border="0">
+     </p>
+	 <p>
+	 Clicking on the MSTP icon restores its status window as shown below. 
+	 </p>
+	 <p>
+	 <img src="overview_mstp.jpg" border="0">
+	 </p>
+	 <p>
+	 The MSTP window is used to indicate protocol activity in the form of raw MS/TP hex frames. 
+	 When you close the MSTP window, it returns to its iconic form in the Windows taskbar. 
+	 The MSTP window is closed and disappears from the taskbar when you exit VTS. Click 
+	 <a href="mstp.html#using">here</a> for more details about the MSTP status window.
+	 </p>
+	 <p>
+	 <a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	 <a href="view.html">Go to the <b>Next</b> VTS Help Topic.</a><br>
+	 </p>
+	 </font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

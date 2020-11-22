@@ -1,0 +1,153 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Positive SubscribeCOV Service Execution Tests
+  ;	Unconfirmed COV Notification Test Case
+  ;
+  ; UnconfirmedCOV.vts		UnconfCOVddmmyy.vts
+  ;
+  ;  Ver 0.1   06/02/01    P. Bowen	Initial version (untested)
+  ;
+  ;  Purpose: This test case verifies that the IUT correctly responds to a
+  ;	SubscribeCOV request to establish a subscription for Unconfirmed COV 
+  ;	notifications. An implementation that supports COV reporting cannot 
+  ;	respond with an error for both this test and and the "Confirmed COV 
+  ;	Notifications" test.
+  ;  
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Unconfirmed COV Notification Test Case
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+  TD_IP = 10.10.10.36
+  
+  OBJECT1 = Analog-Value, 1	; Object which is the subject of this test case
+
+  PID = 51			; Subscriber Process Identifier
+  LIFETIME = 600		; Subscription lifetime in seconds
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  
+  --IUT_IP = 10.10.10.100
+  IUT_IP = 208.6.162.35
+  ERROR_CLASS = 5		; Error class SERVICES
+  ERROR_CODE1 = 0		; Error code = OTHER
+  ERROR_CODE2 = 29		; Error code = SERVICE_REQUEST_DENIED
+ 
+  ;-------------------------------------------------------------------------------------
+ 
+   SECTION Unconfirmed COV Notification Test Case
+
+  -- This test takes place across test #1a - #1b so the TD can be manually paused
+  -- between tests. This is necessary since a time delay is needed in this test 
+  -- sequence and VTS currently doesn't give us a means for doing this within the 
+  -- script.
+
+  -- Configuration Requirements:
+  --	1) The IUT shall be configured with at least one object that supports
+  --		subscriptions for COV notifications.
+  --	2) IUT is on the same network as the TD.
+
+  -- Test Steps:
+  -- 1.	TRANSMIT SubscribeCOV-Request,
+  --	'Subscriber Process Identifier' = (any valid process identifier),
+  --	'Monitored Object Identifier' =	(any object supporting COV notifications),
+  --	'Issue Confirmed Notifications' = FALSE,
+  --	'Lifetime' = (any value > 0 if automatic cancellation is supported, 
+  --		otherwise 0)
+  -- 2.	RECEIVE BACnet-SimpleACK-PDU
+  -- 3.	WAIT Notification Fail Time
+  -- 4.	IF (the IUT supports confirmed notifications) THEN
+  --	  RECEIVE BACnetUnconfirmedCOVNotification-Request,
+  --	   'Subscriber Process Identifier' = (the same identifier used in the
+  --		subscription),
+  --	   'Initiating Device Identifier' = IUT,
+  --	   'Monitored Object Identifier' = (the same object used in the 
+  --		subscription),
+  --	   'Time Remaining' = (any value > 0 if automatic cancellation is
+  --		supported, otherwise 0),
+  --	   'List of Values' = (values appropriate to the object type of the
+  --		monitored object)
+  --	ELSE
+  --	   RECEIVE BACnet-Error PDU,
+  --		Error Class = SERVICES,
+  --		Error Code = SERVICE_REQUEST_DENIED | OTHER
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Transmit SubscribeCOV Request and Receive SimpleACK
+
+  DEPENDENCIES None
+
+  REFERENCE (B) SubscribeCOV Service and (T) Positive SubscribeCOV Service Execution Tests
+
+  -- Step #1 & 2: Subscribe to COV and Receive Simple ACK
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = SubscribeCOV
+      Unsigned = 0, PID			; Process-Identifier = PID
+      Object = 1, OBJECT1		; Object-Identifier = OBJECT1
+      Boolean = 2, FALSE		; Request Unconfirmed notifications
+      Unsigned = 3, LIFETIME		; Subscribe for LIFETIME seconds
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = SimpleAck
+      Service = SubscribeCOV
+    )
+
+  -- Step #3: Wait Notification Fail Time
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1b Receive Unconfirmed COV Notification Request or ERROR
+
+  -- Step #4: Receive Unconfirmed COV Notification Request or ERROR
+
+  EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Unconfirmed-Request
+      Service = UnconfirmedCOVNotification
+  )
+
+  OR (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Error
+      ERROR-CHOICE = SubscribeCOV
+      ENUMERATED = ERROR_CLASS		; class = SERVICES
+      ENUMERATED = ERROR_CODE1		; code = OTHER
+  )
+
+  OR (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Error
+      ERROR-CHOICE = SubscribeCOV
+      ENUMERATED = ERROR_CLASS		; class = SERVICES
+      ENUMERATED = ERROR_CODE2		; code = SERVICE_REQUEST_DENIED
+  )

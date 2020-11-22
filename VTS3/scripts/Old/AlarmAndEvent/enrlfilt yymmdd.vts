@@ -1,0 +1,159 @@
+ ;--------------------------------------------------------------
+  ; Testing Support for the Enrollment Filter test
+  ; 
+  ;
+  ; Exec_GetEnrollmentSummary_EnrollmentFilter.vts	enrlfiltmmddyy.vts
+  ; 9.5.2.1
+  ;   Ver 0.0   02/21/01    Steve Gillingham
+  ;
+  ;  In the REFERENCE sections "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;--------------------------------------------------------------
+  ;--------------------------------------------------------------
+  ;   INITIAL VALUES:
+  ;
+  ;   SCRIPT CHANGES REQUIRED:
+  ;       - The MACROs in TD_CONFIG must be assigned values that
+  ;       correctly reflect the setup of the VTS computer
+  ;       - The MACROs in IUT_CONFIG must be assigned values that
+  ;       accurately reflect the setup of the IUT device, the
+  ;       event generating object, and monitored object.
+  ;       - change address field for device in step 1
+  ;
+  ;   SCRIPT LIMITATIONS:
+  ;--------------------------------------------------------------
+
+
+SETUP Object Support Tests - Enrollment Filter test
+
+  ;--------------------------------------------------------------
+   IUT_IP = 208.6.162.35
+  
+  ;--------------------------------------------------------------
+  ;            CHANGE: MY_MAC address and "Untitled"
+  ; TD_CONFIG
+  ;
+  ;"Untitled" = 1, ETHERNET, 0
+  -- The network which is directly-connected to the TD
+  -- and can be used to reach the IUT.
+  -- Adjust the parameters as needed to reflect the actual
+  -- physical environment. The first value represents the 
+  -- physical network number, the second value the physical 
+  -- network type and the third value the physical port.
+
+  ;MY_MAC = 0000e8863bf9    -- MAC address of the TD
+                           -- replace with you TD address
+
+  ;--------------------------------------------------------------
+  ;              CHANGE:  IUT_IP, and DEVICE_ID
+  ; IUT_CONFIG
+  ;
+  TEST_YEAR   = XX              -- the year the test is executed
+  TEST_MONTH  = XX              -- the month the test is executed
+  TEST_DAY    = XX              -- the day the test is executed
+
+  ;IUT_IP =  0040ae000d71  -- MAC address of IUT
+                           -- replace with your IUT address
+                            
+  DEVICE_ID = DEVICE,700                -- Device object instance for IUT.
+
+  EVENT_ID = EVENT-ENROLLMENT, 1        -- the event generating object
+  MONITORED_ID = MULTISTATE-INPUT, 1    -- the monitored object, same as above
+                                        -- if intrinsic
+  MONITORED_PROP = Present-Value        -- the monitored property, present-value 
+                                        -- if intrinsic
+
+  NOTIFICATION_CLASS = 5        -- the notification class used by the event 
+                                -- generating object
+
+  OFFNORMAL_PRIORITY = 90       -- the priority at which offnormal transitions 
+                                -- will be generated
+  
+
+  ;--------------------------------------------------------------
+  ; BACnet enumerated values
+  ;--------------------------------------------------------------
+
+  EVENT_STATE_NORMAL = 0
+  EVENT_STATE_FAULT = 1
+  EVENT_STATE_OFFNORMAL = 2
+  EVENT_STATE_HILIMIT = 3
+  EVENT_STATE_LOLIMIT = 4
+
+  EVENT_TYPE_OUT_OF_RANGE = 5
+
+  NOTIFY_TYPE_ALARM = 0
+  NOTIFY_TYPE_EVENT = 1
+  NOTIFY_TYPE_ACK = 2
+
+  ACK_FILTER_ALL = 0
+  ACK_FILTER_ACKED = 1
+  ACK_FILTER_NOT_ACKED = 2
+
+  ;--------------------------------------------------------------
+
+  Section 9.5.2.1 Enrollment Filter
+
+  Test #9.5.2.1
+
+ DEPENDENCIES None
+
+ REFERENCE (B) 13.9
+
+  -- Purpose: This test case verifies that the IUT can execute the
+  --  GetEnrollmentSummary when the 'Enrollment Filter' is used.
+  -- 
+  -- Configuration Requirements: If possible, the IUT shall be configured so 
+  -- that there are at least two Enrollment Summaries to report with different 
+  -- (BACnetRecipient, Process Identifier) pairs.  The TD will use one of these 
+  -- combinations in the GetEnrollmentSummary service request.
+  
+
+  -- 1. TRANSMIT GetEnrollmentSummary-Request
+  --        'Acknowledgment Filter' =  ALL,
+  --        'Enrollment Filter' =      (one of the (BACnetRecipient, Process
+  --                                    Identifier) pairs configured for this 
+  --                                    test)
+
+    SEND (
+      NETWORK = "Untitled"
+      DA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 480
+      InVokeID = 3
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = GETENROLLMENTSUMMARY
+      ENUM = 0, ACK_FILTER_ALL
+      OpenTag 0
+        OpenTag 0
+          Object = 0, DEVICE_ID
+          -- Address = 1, IUT_IP  --CHANGE: MUST BE CONFIGURED FOR APPROPRIATE DEVICE
+        CloseTag 0
+      CloseTag 0
+      INTEGER = 1, PROCESS_ID
+      )
+
+  -- 2. RECEIVE GetEnrollmentSummary-ACK,
+  --             'List of Enrollment Summaries' =  (all enrollments configured 
+  --                                                with this (BACnetRecipient, 
+  --                                                Process Identifier) pair)
+
+    EXPECT (
+      NETWORK = "Untitled"
+      SA = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      DER = TRUE
+      PDU = Confirmed-Request
+      Service = GETENROLLMENTSUMMARY
+      Object PROCESS_ID
+      ENUM EVENT_TYPE_OUT_OF_RANGE
+      ENUM EVENT_STATE_NORMAL
+      INTEGER OFFNORMAL_PRIORITY
+      Object PROCESS_ID
+      ENUM EVENT_TYPE_OUT_OF_RANGE
+      ENUM EVENT_STATE_OFFNORMAL
+      INTEGER OFFNORMAL_PRIORITY
+      )

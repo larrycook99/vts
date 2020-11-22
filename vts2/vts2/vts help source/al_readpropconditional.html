@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>BACnet ReadPropertyConditional-Request</title>
+</head>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="application layer">
+	<param name="Keyword" value="request">
+	<param name="Keyword" value="ReadPropertyConditional">
+	<param name="Keyword" value="Object Identifier">
+	<param name="Keyword" value="Property Identifier">
+	<param name="Keyword" value="OPTIONAL">
+	<param name="Keyword" value="REQUIRED">
+	<param name="Keyword" value="Relation Specifier">
+	<param name="Keyword" value="Comparison Value">
+	<param name="Keyword" value="List of Selection Criteria">
+	<param name="Keyword" value="List of Property References">
+	<param name="Keyword" value="Selection Logic">
+	<param name="Keyword" value="BACnetPropertyReference">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>BACnet ReadPropertyConditional-Request</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="3" align="right">
+	<a href="al.html"><img src="prev.gif" border="0" width="20" height="20" alt="previous"></a><a href="home.html"><img src="home.gif" border="0" width="20" height="20" alt="home"></a>
+	</td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	 <a href="#standard">ReadPropertyConditional-Request</a><br>
+	 <a href="target.html">Selecting a Target Device</a><br>
+	 <p>
+	 <a name="standard"></a><b>ReadPropertyConditional-Request</b><br>
+	 The following is a step-by-step procedure for making a standard 
+	 ReadPropertyConditional-Request.
+	 </p>
+	 <p>
+	 <img src="al_readpropc1.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol>
+	 <li>Click the "Edit" button. 
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_readpropc2.jpg" border="0">
+	 </p>
+	 <p>
+	 In the "Edit Property Value" window:
+	 <ol start=2>
+	 <li>Select a standard 'Property Identifier' from the drop-down list. All the standard BACnet properties 
+	 are included in this list as well as selections for OPTIONAL and REQUIRED.
+	 <li>Select the 'Relation Specifier' from the drop-down list.
+	 <li>Type the 'Comparison Value' into value edit box. Note that VTS 
+	 automatically determines the type of constant value you can enter into the edit box based on the 
+	 'Property Identifier' you select and displays the appropriate type of edit box.
+	 <li>Click the "OK" button. 
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_readpropc3.jpg" border="0">
+	 </p>
+	 <p>
+	 The "property identifier (rel) value" section, is filled in with you selections from steps
+	 2-5. If you want to select multiple criteria for the 'List of Selection Criteria', 
+	 go to step 6. If you do <b>not</b> want to select 
+	 multiple criteria for the 'List of Selection Criteria' go to step 13.  
+	 </p>
+	 <p>
+	 <img src="al_readpropc4.jpg" border="0">
+	 </p>
+     <p>
+	 <ol start=6>
+	 <li>Make sure the "Multiple Criteria?" box is checked.
+	 <li>Make sure the 'List of Selection Criteria' at the bottom of the dialog is clear.
+	 <li>Make a 'Selection Logic' choice from the drop-down list at the top of the dialog. 
+	 <li>Click the "add" button. 
+	 </ol>
+	 </p>
+     <p>
+	 <img src="al_readpropc5.jpg" border="0">
+	 </p>
+     <p>
+	 <ol start=10>
+	 <li>Repeat steps 1-5 and 8 as needed to complete the 'List of Selection Criteria'.
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_readpropc6.jpg" border="0">
+	 </p>
+     <p>
+     If you need to remove conditions from the list:
+	 </p>
+	 <p>
+	 <img src="al_readpropc7.jpg" border="0">
+	 </p>
+  	 <ol start=11>
+	 <li>Select the condition in 'List of Selection Criteria' to delete.
+	 <li>Click the "delete" button.
+	 </ol>
+	 </p>
+	 <p>
+	 If you want to include an optional 'List of Property References', go to step 13. If you 
+	 do <b>not</b> want to include a 'List of Property References', i.e. you want ALL properties of 
+	 an object that match the selection criteria, go to step 23. 
+	 <p>
+	 <img src="al_readpropc8.jpg" border="0">
+	 </p>
+     <p>
+	 <ol start=13>
+	 <li>Make sure the "Include Reference List?" box is checked.
+	 <li>Click the "Refs" button.
+	 </ol>
+	 </p>
+	 <p>
+	 If you want a single BACnetPropertyReference, go to step 15. If you want multiple 
+	 BACnetPropertyReferences, go to step 17.
+	 <p>
+	 <img src="al_readpropc9.jpg" border="0">
+	 </p>
+	 <p>
+	 In the "Edit Property References" window:
+	 <ol start=15>
+	 <li>Select a standard 'Property Identifier' from the drop-down list.
+	 <li>Click the "OK" button.
+	 </ol>
+	 Go to step 23.
+	 </p>
+	 <p>
+	 <img src="al_readpropc10.jpg" border="0">
+	 </p>
+	 <p>
+	 In the "Edit Property References" window:
+	 <ol start=17>
+	 <li>Make sure the "Multiple References?" box is checked.
+	 <li>Make sure the 'List of Property References' at the bottom of the dialog is clear.
+	 <li>Select a standard 'Property Identifier' from the drop-down list.
+	 <li>Click the "add" button.
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_readpropc11.jpg" border="0">
+	 </p>
+	 <p>
+	 <ol start=21>
+	 <li>Repeat steps 19-20 until your 'List of Property References' is complete.
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_readpropc12.jpg" border="0">
+	 </p>
+	 <p>
+	 When you've completed the 'List of Property References':
+	 <ol start=22>
+	 <li>Click the "OK" button. 
+	 </ol>
+	 </p>
+	 <p>
+	 <img src="al_readpropc13.jpg" border="0">
+	 </p>
+	 <p>
+	 When you've completed the 'List of Selection Criteria' and 'List of Property References':
+	 <ol start=23>
+	 <li>Make sure you have selected a <a href="target.html">target device</a>.
+	 <li>Click the "Send" button. 
+	 </ol>
+	 </p>
+	 <p>
+ 	 <a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	 <a href="al.html">Go to the <b>Previous</b> VTS Help Topic.</a><br>
+	 </p>
+	 </font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

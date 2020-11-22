@@ -1,0 +1,111 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Negative SubscribeCOV Service Execution Tests
+  ;	The Monitored Object Does Not Support COV Notification
+  ;
+  ;  NegSubscribedCOV.vts	NegCOVddmmyy-01.vts
+  ;
+  ;  Ver 0.1   06/02/01    P. Bowen	Initial version (untested)
+  ;
+  ;  Purpose:  This test case verifies that the IUT correctly responds to a 
+  ;	SubscribeCOV request to establish a subscription when the monitored
+  ;	object does not support COV notifications. 
+  ;  
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Negative SubscribeCOV Service Execution Test
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+  TD_IP = 10.10.10.36
+
+  OBJECT1 = Device, 245146	; Any object that does not support COV notifications
+ 
+  PID = 41			; Any valid process identifier
+  LIFETIME = 60			; Subscription lifetime in secs (0 = indefinite)
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; IUT_CONFIG
+  ;
+  
+  --IUT_IP = 10.10.10.100
+   IUT_IP = 208.6.162.35
+
+  ERROR_CLASS = 5		; Error class SERVICES
+  ERROR_CODE1 = 0		; Error code = OTHER
+  ERROR_CODE2 = 29		; Error code = SERVICE_REQUEST_DENIED
+	                            
+  ;-------------------------------------------------------------------------------------
+ 
+   SECTION Negative SubscribeCOV Service Execution Test
+
+  -- Configuration Requirements: IUT is on the same network as the TD.
+
+  -- Test Concept: : This test case verifies that the IUT correctly responds to
+  -- a SubscribeCOV request to establish a subscription when the monitored 
+  -- object does not support COV notifications. 
+
+  -- Test Steps:	
+  -- 1.	TRANSMIT SubscribeCOV-Request,
+  --	  'Subscriber Process Identifier' = (any valid process identifier),
+  --	  'Monitored Object Identifier' = (any object that does not support
+  --		COV notifications),
+  --	  'Issue Confirmed Notifications' = TRUE,
+  --	  'Lifetime' = 60
+  -- 2.	RECEIVE BACnet-Error PDU,
+  --	  Error Class  = SERVICES,
+  --	  Error Code  = SERVICE_REQUEST_DENIED | OTHER
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a Verify That The Monitored Object Does Not Support COV Notification
+
+  DEPENDENCIES None
+
+  REFERENCE (B) Subscribe COV Service and (T) Negative SubscribeCOV Service Execution Tests
+
+  -- Step #1: Transmit Subscribe COV Request
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      Der = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 1
+      Service = SubscribeCOV
+      Unsigned = 0, PID			; Process-Identifier = PID
+      Object = 1, OBJECT1		; Object-Identifier = OBJECT1
+      Boolean = 2, TRUE			; Request confirmed notifications
+      Unsigned = 3, LIFETIME		; Subscribe for LIFETIME seconds
+    )
+
+  -- Step #2: Receive Error Response "OTHER" or "SERVICE_REQUEST_DENIED"
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Error
+      ERROR-CHOICE = SubscribeCOV
+      ENUMERATED = ERROR_CLASS		; class = SERVICES
+      ENUMERATED = ERROR_CODE1		; code = OTHER
+    )
+
+    OR (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      Der = FALSE
+      BVLCI = ORIGINAL-UNICAST-NPDU      
+      PDU = Error
+      ERROR-CHOICE = SubscribeCOV
+      ENUMERATED = ERROR_CLASS		; class = SERVICES
+      ENUMERATED = ERROR_CODE2		; code = SERVICE_REQUEST_DENIED
+    )

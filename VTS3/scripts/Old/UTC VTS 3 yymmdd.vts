@@ -1,0 +1,364 @@
+  ;-------------------------------------------------------------------------------------
+  ;  Positive UTC Time Synchronization Service Execution Tests
+  ;
+  ;  PosUTCTimeSynch.vts	utcmmddyy.vts
+  ;
+  ;  Ver 0.1	02/06/01	P. Bowen
+  ;  Ver 0.2	03/04/01	P. Bowen	Added SA address to time synch Xmit
+  ;
+  ;  The purpose of this test group is to verify correct execution of 
+  ;  the UTC Time Synchronization service requests under circumstances 
+  ;  where the service is expected to be successfully completed.
+  ;
+  ;  In the REFERENCE section "(B)" refers to the BACnet standard and
+  ;  "(T)" refers to the testing addendum.
+  ;-------------------------------------------------------------------------------------
+  
+  SETUP Positive UTC Time Synchronization Service Execution Tests
+
+  ;-------------------------------------------------------------------------------------
+  ;
+  ; TD_CONFIG
+  ;
+
+  OBJECT1 = Device, 3050000
+  TESTDATE = MON, JANUARY 01, 2001
+  TESTTIME = 01:02:03.00 AM
+  
+  ;-------------------------------------------------------------------------------------
+
+  SECTION Positive UTC Time Synchronization Service Execution Tests
+
+  -- Configuration Requirements: IUT is on the same network as TD
+
+  -- Reference (T) UTC Time Synchronization Service Execution Tests
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1a 
+  -- UTC Time Synchronization Service - Local Broadcast
+
+  DEPENDENCIES None
+
+  REFERENCE (B) UTC Time Synchronization Service and (T) Local Broadcast
+
+  -- Test Steps:
+  --	1. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Date
+  --	2. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Date,
+  --		'Property Value' = (any valid date referred to as InitialDate below)
+  --	3. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Time
+  --	4. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Time,
+  --		'Property Value' = (any valid time referred to as InitialTime below)
+  --	5. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	UTC_Offset
+  --	6. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	UTC_Offset,
+  --		'Property Value' = (any valid offset referred to as InitialUTC_Offset below)
+  --	7. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Daylight_Savings_Status
+  --	8. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Daylight_Savings_Status,
+  --		'Property Value' = (any valid status referred to as InitialDaylight_Savings_Status below)
+  --	9. TRANSMIT 
+  --		DA = LOCAL BROADCAST,
+  --		SA = TD, 
+  --		BACnet-Unconfirmed-Request-PDU,
+  --  		'Service Choice' = UTCTimeSynchronization-Request,
+  --		date = (any date other than InitialDate),
+  --		time = (any time that does not correspond to InitialTime)
+  --	10. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Date
+  --	11. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Date,
+  --		'Property Value' = (the date specified in step 9)
+  --	12. TRANSMIT ReadProperty-Request,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Time
+  --	13. RECEIVE ReadProperty-ACK,
+  --		'Object Identifier' = (the IUT's Device object),
+  --		'Property Identifier' =	Local_Time,
+  --		'Property Value' = (the time specified in step 9)
+
+  -- Note: If the time returned by the IUT indicates that a small amount of 
+  -- time has passed (< 1 second) since the UTC Time Synchronization request 
+  -- was received the result shall be considered to be a pass
+
+  -- Step #1 & 2: Verify (read) device's local date
+
+    SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Date
+   )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Date
+      OpenTag 3
+         AL != X'0000000000'
+      CloseTag 3
+    )
+
+  -- Step #3 & 4: Verify (read) device's local time
+
+    SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Time
+    )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Time
+      OpenTag 3
+         AL != X'0000000000'
+      CloseTag 3
+    )
+
+  -- Step #5 & 6: Verify (read) device's UTC offset
+
+    SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, UTC-Offset
+    )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, UTC-Offset
+      OpenTag 3
+         AL != X'0000'
+      CloseTag 3
+    )
+ 
+  -- Step #7 & 8: Verify (read) device's daylight savings status
+
+    SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+     Property = 1, Daylight-Savings-Status
+    )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Daylight-Savings-Status
+      OpenTag 3
+         AL != X'00'
+      CloseTag 3
+    )
+
+  -- Step #9: Transmit via local broadcast new time & date
+
+    SEND (
+      PDU = Unconfirmed-Request
+      Service = UTCTimeSynchronization
+      Date = MON, JANUARY 01, 2001
+      Time = 01:02:03.00 AM
+--    Date = TESTDATE			; V2.26 won't accept (load) this statement
+--    Time = TESTTIME			; V2.26 won't accept (load) this statement
+    )
+
+  -- Step #10 & 11: Verify (read) device's new local date
+
+    SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Date
+   )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Date
+      OpenTag 3
+         AL != X'0000000000'
+      CloseTag 3
+    )
+   
+  -- Step #12 & 13: Verify (read) device's new local time
+
+      SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Time
+    )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Time
+      OpenTag 3
+         AL != X'0000000000'
+      CloseTag 3
+    )
+
+  ;-------------------------------------------------------------------------------------
+  TEST #1b
+  -- UTC Time Synchronization Service  - Directed to the IUT
+ 
+  -- This test case verifies that the IUT resets its local time and date in response
+  -- to a UTC Time Synchronization service request directed to the IUT's MAC address.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) UTC Time Synchronization Service and (T) Local Broadcast
+
+  -- Test Steps: Same as test #1a except that the service request is directed to
+  -- the IUT's MAC address.
+
+  -- Note: If the time returned by the IUT indicates that a small amount of 
+  -- time has passed (< 1 second) since the UTC Time Synchronization request 
+  -- was received the result shall be considered to be a pass
+
+  -- Step #1 & 2: Verify (read) device's local date
+
+    SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Date
+   )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Date
+      OpenTag 3
+         AL != X'0000000000'
+      CloseTag 3
+    )
+
+  -- Step #3 & 4: Verify (read) device's local time
+
+    SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Time
+    )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Time
+      OpenTag 3
+         AL != X'0000000000'
+      CloseTag 3
+    )
+
+  -- Step #5 & 6: Verify (read) device's UTC offset
+
+    SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, UTC-Offset
+    )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, UTC-Offset
+      OpenTag 3
+         AL != X'0000'
+      CloseTag 3
+    )
+ 
+  -- Step #7 & 8: Verify (read) device's daylight savings status
+
+    SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+     Property = 1, Daylight-Savings-Status
+    )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Daylight-Savings-Status
+      OpenTag 3
+         AL != X'00'
+      CloseTag 3
+    )
+
+  -- Step #9: Transmit new time & date direct to IUT
+
+    SEND (
+      PDU = Unconfirmed-Request
+      Service = UTCTimeSynchronization		; UTCTimeSynchronization
+      Date = MON, JULY 02, 2001
+      Time = 03:04:05.00 PM
+    )
+
+  -- Step #10 & 11: Verify (read) device's new local date
+
+    SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Date
+   )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Date
+      OpenTag 3
+         AL != X'0000000000'
+      CloseTag 3
+    )
+   
+  -- Step #12 & 13: Verify (read) device's new local time
+
+      SEND (
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Time
+    )
+
+    EXPECT (
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Time
+      OpenTag 3
+         AL != X'0000000000'
+      CloseTag 3
+    )
+

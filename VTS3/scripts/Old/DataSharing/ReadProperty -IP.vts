@@ -1,0 +1,702 @@
+  
+  SETUP Positive ReadProperty Tests
+
+  
+  IUT_IP = 10.10.10.100:0xBAC0
+  
+  OBJECT1 = Device, 1967	; DEVICE OBJECT
+  OBJECT2 = analog-VALUE, 1	; Object which is the subject of the Read Prop tests
+  OBJECT3 = analog-INPUT, 1 	; Object which is the subject of the Read Prop tests
+  OBJECT4 = File, 104		; Object which is the subject of the Read Prop tests
+  OBJECT5 = binary-VALUE,1
+
+  INDEX0 = 0		; Index used in any test to read array length
+  INDEX1 = 1		; Array index for test #1g "Read a Single Element of an Array"
+  INDEX2 = 2		; Array index for test #1j "Read Property - Read Null Values"
+  INDEX3 = 3
+  INDEX4 = 4
+  INDEX5 = 5
+  
+SECTION ReadProperty Service Execution Tests
+
+ ;-------------------------------------------------------------------------------------
+  TEST #1a - Read Property of Type Object Identifier
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type BACnetObjectIdentifier.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any value of type BACnetObjectIdentifier)
+ 
+  -- Passing Result: The IUT shall respond as indicated conveying the value 
+  -- specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading Object Identifiers
+
+  SEND (
+      NETWORK = "untitled"
+      Da = IUT_IP
+      DER = TRUE
+      bvlci =ORIGINAL-UNICAST-NPDU   
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1470
+      InvokeID = 1
+      Object = 0, OBJECT1
+      Property = 1, Object-Identifier	; Type BACnetObjectIdentifier
+    )
+
+    EXPECT (
+      NETWORK = "untitled"
+      DER = FALSE
+      Sa  = IUT_IP   
+      PDU = ComplexAck
+      bvlci =ORIGINAL-UNICAST-NPDU 
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Object-Identifier
+      OpenTag 3
+      --   AL = {Object-Identifier}
+      OBJECTIDENTIFIER = OBJECT1     ; {Object-Identifier}
+      CloseTag 3
+    )
+
+
+;-------------------------------------------------------------------------------------
+  Test #1b - Read Property of Type Enumerated
+ 
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type Enumerated.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any value of type Enumerated)
+
+  -- Passing Result: The IUT shall respond as indicated conveying the value 
+  -- specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading Enumerated Values
+
+    SEND (
+      NETWORK = "untitled"
+      DA = IUT_IP
+      DER = TRUE
+      BVLCI =ORIGINAL-UNICAST-NPDU 
+      PDU = Confirmed-Request
+      Service = ReadProperty
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1470
+      InvokeID = 2
+      Object = 0, OBJECT1
+      Property = 1, Object-Type		
+    )
+
+    EXPECT (
+      NETWORK = "untitled"
+      DER = FALSE
+      BVLCI =ORIGINAL-UNICAST-NPDU 
+      Sa  = IUT_IP
+      PDU = ComplexAck
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Object-Type
+      OpenTag 3
+        AL = {Object-Type}
+      CloseTag 3                                   
+    )
+--------------------------------------------------------------------------------------
+Test #1c - Read Property of Type CharacterString
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type CharacterString. 
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any value of type CharacterString)
+ 
+  -- Passing Result: The IUT shall respond as indicated conveying the value
+  -- specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading CharacterString Values
+
+
+    SEND (
+      NETWORK = "untitled"
+      DA = IUT_IP
+      DER = TRUE
+      PDU = Confirmed-Request
+      bvlci =ORIGINAL-UNICAST-NPDU
+      Service = ReadProperty
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InVokeID = 3
+      Object = 0, OBJECT1
+      Property = 1, Vendor-Name		
+    )
+
+    EXPECT (
+      NETWORK = "untitled"
+      DER = FALSE
+      PDU = ComplexAck
+      sa = IUT_IP
+      bvlci =ORIGINAL-UNICAST-NPDU
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Vendor-Name
+      OpenTag 3
+        AL = {Vendor-Name}
+      CloseTag 3                                   
+    )
+
+
+;-------------------------------------------------------------------------------------
+  Test #1d - Read Property of Type Unsigned
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type Unsigned.
+ 
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any value of type Unsigned)
+ 
+  -- Passing Result: The IUT shall respond as indicated conveying the value 
+  -- specified in the EPICS.
+ 
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading Unsigned Values
+
+    SEND (
+      NETWORK = "untitled"
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Da = IUT_IP
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg=0
+      SegResp=0
+      MaxResp=1476
+      InvokeID=4
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Vendor-Identifier		
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa=IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Vendor-Identifier	
+      OpenTag 3
+        AL = {Vendor-Identifier}
+      CloseTag 3                                   
+    )  
+    
+;-------------------------------------------------------------------------------------
+  Test #1e - Read an Entire Array
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type Array and the entire array is 
+  -- requested.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (an entire array)
+
+  -- Passing Result: The IUT shall respond as indicated conveying values specified
+  -- in the EPICS. If segmentation is not supported and the object list is too long
+  -- to return without segmentation an abort message indicating "segmentation not
+  -- supported" is a passing result. If an abort message is received and the IUT
+  -- has another array that is small enough to read in its entirety without 
+  -- segmentation, then this test shall be repeated using that array. A passing 
+  -- result in that case is that the entire array is returned in response to the 
+  -- ReadProperty request.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading Entire Arrays
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      DER = TRUE
+      BVLCI=ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg=0
+      SegResp=0
+      MaxResp=1476
+      InvokeID=5
+      Service = ReadProperty
+      Object = 0, OBJECT5
+      Property = 1, Priority-Array	
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa=IUT_IP
+      BVLCI=ORIGINAL-UNICAST-NPDU
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT5
+      Property = 1, Priority-Array
+      OpenTag 3
+         AL = {Priority-Array}
+      CloseTag 3			
+    )					
+    
+
+ ;-------------------------------------------------------------------------------------
+  Test #1f - Read the Size of an Array
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type Array and the length of the 
+  -- array is read.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X, Array Index = 0), property value = (the array length)
+
+  -- Passing Result: The IUT shall respond as indicated conveying the array length 
+  -- as specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading the Size of an Array
+
+    SEND (
+      NETWORK = "Untitled"
+      Da = IUT_IP
+      DER = TRUE
+      BVLCI=ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg=0
+      SegResp=0
+      MaxResp=1476
+      InvokeID=6
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Object-List
+      Unsigned = 2,INDEX0
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa=IUT_IP
+      BVLCI=ORIGINAL-UNICAST-NPDU
+      PDU = ComplexAck
+      DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Object-List
+      Unsigned = 2,INDEX0
+      OpenTag 3
+         AL = {Object-List}
+      CloseTag 3			
+    )					
+ ;------------------------------------------------------------------------------------- 
+ TEST #1g - Read a Single Element of an Array
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type Array and a single element of
+  -- the array is read.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X, Array Index = Y), property value = (the value of the
+  --	Yth element of the array)
+
+  -- Passing Result: The IUT shall respond as indicated conveying the value of the 
+  -- Yth element as specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading a Single Element of an Array
+
+    SEND (
+      NETWORK ="Untitled"
+      Da = IUT_IP
+      DER = TRUE
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = Confirmed-Request
+      SegMsg = 0
+      SegResp = 0
+      MaxResp = 1476
+      InvokeID = 7
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Object-List
+      Unsigned = 2, INDEX1		
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa = IUT_IP
+      BVLCI = ORIGINAL-UNICAST-NPDU
+      PDU = ComplexAck
+     DER = FALSE
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Object-List
+      Unsigned = 2, INDEX1
+      OpenTag 3
+        AL = {Object-List}	
+      CloseTag 3
+    )
+
+ ;------------------------------------------------------------------------------------- 
+  TEST #1h - Read Property of Type Bitstring
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type Bitstring.
+
+  -- Test Steps:
+  --	1. VERIFY (Object, X), property value = (any valid bitstring)
+
+  -- Passing Result: The IUT shall respond as indicated conveying the value of
+  -- the bitstring as specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) Reading Bitstring Values
+ 
+  SEND (
+      NETWORK = "untitled"
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Da = IUT_IP
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg=0
+      SegResp=0
+      MaxResp=1476
+      InvokeID=8
+      Service = ReadProperty
+      Object = 0, OBJECT2
+      Property = 1, Status-Flags		
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa=IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Service = ReadProperty
+      Object = 0, OBJECT2
+      Property = 1, Status-Flags	
+      OpenTag 3
+        AL = {Status-Flags}
+      CloseTag 3                                   
+    )
+
+;-------------------------------------------------------------------------------------
+  Test #1i - Read Property of Entire List
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type List and the value read is an
+  -- entire list. 
+
+  -- Test Step:
+  --	1. VERIFY (Object, X), property value = (an entire list)
+  
+  -- Passing Result: The IUT shall respond as indicated conveying the values in the
+  -- list as specified in the EPICS.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) TBD
+   SEND (
+      NETWORK = "untitled"
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Da = IUT_IP
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg=0
+      SegResp=0
+      MaxResp=1476
+      InvokeID=9
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Device-Address-Binding
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa=IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1,Device-Address-Binding	
+      OpenTag 3
+        --AL = {Device-Address-Binding}
+      CloseTag 3                                   
+    )
+;------------------------------------------------------------------------------------- 
+   
+ Test #1j - Read Property - Read Null Values
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property value is NULL. 
+
+  -- Test Step:
+  --	1. VERIFY (Object, X, optional Array Index = Y), property value = (Null)
+ 
+  -- Passing Result: The IUT shall respond with a Null value.
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) TBD
+ SEND (
+      NETWORK = "untitled"
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Da = IUT_IP
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg=0
+      SegResp=0
+      MaxResp=1476
+      InvokeID=10
+      Service = ReadProperty
+      Object = 0, OBJECT5
+      Property = 1, Priority-Array
+      Unsigned = 2,INDEX2
+    )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa=IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Service = ReadProperty
+      Object = 0, OBJECT5
+      Property = 1, Priority-Array
+      Unsigned = 2,INDEX2
+      OpenTag 3
+        AL = {Priority-Array}
+      CloseTag 3                                   
+    )    
+
+;-------------------------------------------------------------------------------------
+ Test #1k - Read Property of Type Boolean
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type Boolean. 
+
+  -- Test Step:
+  --	1. VERIFY (Object, X), property value = (one of either TRUE or FALSE)
+ 
+  -- Passing Result: The IUT shall respond with the value of either TRUE or FALSE.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) TBD
+   SEND (
+      NETWORK = "untitled"
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Da = IUT_IP
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg=0
+      SegResp=0
+      MaxResp=1476
+      InvokeID=11
+      Service = ReadProperty
+      Object = 0, OBJECT2
+      Property = 1, OUT-OF-SERVICE
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa=IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Service = ReadProperty
+      Object = 0, OBJECT2
+      Property = 1, OUT-OF-SERVICE
+      OpenTag 3
+        AL ={OUT-OF-SERVICE}
+      CloseTag 3                                   
+    )    
+;-------------------------------------------------------------------------------------
+  Test #1l - Read Property of Type Signed
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type Signed. 
+
+  -- Test Step:
+  --	1. 1. VERIFY (Object, X), property value = (any valid Signed value)
+
+  -- Passing Result: The IUT shall respond with a valid Signed value.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) TBD
+   SEND (
+      NETWORK = "untitled"
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Da = IUT_IP
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg=0
+      SegResp=0
+      MaxResp=1476
+      InvokeID=12
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, UTC-OFFSET
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa=IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, UTC-OFFSET
+      OpenTag 3
+        AL ={UTC-OFFSET}
+       --  AL = X'32012C'
+      CloseTag 3                                   
+    )
+;-------------------------------------------------------------------------------------
+  Test #1m - Read Property of Type Real
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type Real. 
+
+  -- Test Step:
+  --	1. VERIFY (Object, X), property value = (any valid Real value)
+ 
+  -- Passing Result: The IUT shall respond with any valid value of type Real.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) TBD   
+  SEND (
+      NETWORK = "untitled"
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Da = IUT_IP
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg=0
+      SegResp=0
+      MaxResp=1476
+      InvokeID=13
+      Service = ReadProperty
+      Object = 0, OBJECT2
+      Property = 1, Present-Value
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa=IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Service = ReadProperty
+      Object = 0, OBJECT2
+      Property = 1, Present-Value
+      OpenTag 3
+        AL ={Present-Value}
+      CloseTag 3                                   
+    )
+;-------------------------------------------------------------------------------------
+Test #10 - Read Property of Type Time ; 
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type Time. 
+
+  -- Test Step:
+  --	1. VERIFY (Object, X), property value = (any valid Time value)
+ 
+  -- Passing Result: The IUT shall respond with any valid value of type Time.
+
+ DEPENDENCIES None
+
+ REFERENCE (B) ReadProperty Service and (T) TBD
+  SEND (
+      NETWORK = "untitled"
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Da = IUT_IP
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg=0
+      SegResp=0
+      MaxResp=1476
+      InvokeID=14
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Time
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa=IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Time
+      OpenTag 3
+       AL ={Local-Time}
+       --AL = X'B40C22384E'
+      CloseTag 3                                   
+    )
+ ;-------------------------------------------------------------------------------------
+  Test #1p - Read Property of Type Date
+
+  -- Purpose: This test case verifies that the IUT can execute ReadProperty service
+  -- requests when the requested property is of type Date. 
+
+  -- Test Step:
+  --	1. VERIFY (Object, X), property value = (any valid Date value)
+ 
+  -- Passing Result: The IUT shall respond with any valid value of type Date.
+
+  DEPENDENCIES None
+
+  REFERENCE (B) ReadProperty Service and (T) TBD
+
+  SEND (
+      NETWORK = "untitled"
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Da = IUT_IP
+      DER = TRUE
+      PDU = Confirmed-Request
+      SegMsg=0
+      SegResp=0
+      MaxResp=1476
+      InvokeID=16
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Date
+     )
+
+    EXPECT (
+      NETWORK = "Untitled"
+      Sa=IUT_IP
+      DER = FALSE
+      PDU = ComplexAck
+      bvlci=ORIGINAL-UNICAST-NPDU
+      Service = ReadProperty
+      Object = 0, OBJECT1
+      Property = 1, Local-Date
+      OpenTag 3
+        AL ={Local-Date}
+     --AL = X'A4600A0506'
+      CloseTag 3                                   
+    )    
+    

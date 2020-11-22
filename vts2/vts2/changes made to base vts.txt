@@ -1,0 +1,69 @@
+Changes made to base VTS
+By Michael A. Galler
+Note: Changes in source code (usually) designated by following '// MAG (date) (description)'
+Last updated 01 MAR 2001
+
+Changes in Visual C code (dll's)
+
+BACPRIM32
+For eGetEnrollmentSummaryService(), changed 4th argument in declaration from word to dword, to conform
+to the definition and the VB usage of this subroutine.  File bacprim32.h.
+
+For eSubscribeCOVService(), changed 6th argument in declaration from word to dword, to conform
+to the definition and the VB usage of this subroutine.  File bacprim32.h.
+
+Changed line 'min==0;' to read 'min=0;'.  Line 1733, file bacprim32.h
+
+Added support for short signed int type (ssint) in subroutine eAny to enable UTC_OFFSET.
+Files bacprim32.h, props.h (for NT and 95), stdobjpr.h (for NT and 95), and vtsapi32.c
+
+Add pre-declaration for function eWORD().  File bacprim32.c
+
+VTSAPI32
+Fix ) test parse error in stavals case in ParseProperty().  File vtsapi32.c
+
+Add case for ssint type in ParseProperty().  File vtsapi32.c (also listed in bacprim32 section)
+
+Add bugfix to uw case in ParseProperty().  Fixes priority object.  File vtsapi32.c
+
+Fix { bracket test in ParseRASlist().  File vtsapi32.c
+
+Fix } bracket test in ParseRASlist().  File vtsapi32.c
+
+Fix parse error in ) test in ParseRASlist().  File vtsapi32.c
+
+Fix ( test parse error in ParseRASlist().  File vtsapi32.c
+
+Fix (( parse error in ParseExceptionSchedule().  File vtsapi32.c
+
+Fix (( parse error in ParseTVList().  File vtsapi32.c
+
+Fix ,!( parse error in ParseTVList().  File vtsapi32.c
+
+Fix )EOL parse error in ParseRefList().  File vtsapi32.c
+
+Fix (( parse error in ParseReference().  File vtsapi32.c
+
+Fix { bracket test in ParseCalist().  File vtsapi32.c
+
+Fix } bracket test in ParseCalist().  File vtsapi32.c
+
+Add debug function mprintf().  Used liberally throughout project.
+
+PACKET32
+Add include for bacoid.h so project will compile correctly.
+
+MISC
+Removed unsupported CODE and DATA lines from .DEF file for each project.
+
+
+Changes in Visual Basic code (list incomplete)
+
+In visual basic file vts.bas, changed to declaration of eCreateObjectService function in response to
+complaints of a crash caused by using the 'create object' function of the Object form (objform.frm) by adding
+the '&' specification to the hwnd variable:
+Public Declare Function eCreateObjectService Lib "BACPRIM32.DLL" (ByVal apdu$, ByVal apdumax, ByVal ObjId&, ByVal useinstance, ByVal hwnd&) ' add & to hwnd MAG
+NOTE: later changed all instances of hwnd to long (&) type to avoid other crashes
+
+In visual basic file objform.frm, in the function SendButton_Click, changed the string length of the
+apdu variable from 409 to 4096.

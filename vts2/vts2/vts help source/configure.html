@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<title>VTS Configuration</title>
+</head>
+<body>
+<body bgcolor="#FFFFFF" link="990099" alink="CC9900">
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="configure">
+	<param name="Keyword" value="VTS.INI">
+	<param name="Keyword" value="VTSAlias.INI">
+	<param name="Keyword" value="VTSRoute.INI">
+	<param name="Keyword" value="VTSBind.INI">
+	<param name="Keyword" value="NALSERV32.INI">
+	<param name="Keyword" value="MSTP.INI">
+	<param name="Keyword" value="PTP.INI">
+	<param name="Keyword" value="VendorID">
+	<param name="Keyword" value="alias files">
+	<param name="Keyword" value="target device alias files">
+	<param name="Keyword" value="BACnetRecipient">
+	<param name="Keyword" value="BACnetAddress">
+</OBJECT>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr bgcolor="#999999">
+    <td width="11" align="left">
+	  <img src="pixel.gif" width="11" height="64" border="0">
+	</td>
+    <td width="500" align="left">
+	  <font face="arial, helvetica" color="#FFFFFF" size="+1">
+	  <b>VTS Configuration</b>
+	  </font>
+	</td>
+    <td width="64" align="right">
+	  <img src="vts64x64.jpg" width="64" height="64" border="0">
+	</td>
+  </tr>
+  <tr bgcolor="#FFFFFF">
+    <td colspan="3" align="right">
+	<a href="ptp.html"><img src="prev.gif" border="0" width="20" height="20" alt="previous"></a><a href="home.html"><img src="home.gif" border="0" width="20" height="20" alt="home"></a>
+	</td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="575">
+  <tr>
+    <td width="575" align="left">
+	<font face="arial, helvetica">
+	<p>
+	<a name="setup"></a><b>Setting up VTS</b><br>
+	Before you can use VTS you must setup the following files:
+	<ul>
+	<li><a href="#vtsini">VTS.INI</a> is the main VTS initialization file
+	<li><a href="#vtsalias">VTSAlias.INI</a> is a BACnet target device alias file
+	<li><a href="#vtsalias">VTSRoute.INI</a> is a BACnet router alias file
+	<li><a href="#vtsbind">VTSBind.INI</a> is a BACnetRecipient alias file
+	<li><a href="nalserv32.html#nalserv32ini">NALSERV32.INI</a> or preferably the <a href="nalserv32.html#config">NALSERV32 Configuration Menu</a>
+	<li><a href="mstp.html#mstpini">MSTP.INI</a> if you are using BACnet MS/TP
+	<li><a href="ptp.html#ptpini">PTP.INI</a> if you are using BACnet PTP
+	</ul>
+	</p>
+	<p>
+	<a name="vtsini"></a><b>VTS.INI</b><br>
+	<b>VTS.INI</b> is the primary initialization file that defines the parameters used by 
+	VTS. A default VTS.INI is saved in the <b>\Windows</b> or <b>\WINNT</b> folder when 
+	VTS is installed. The default VTS.INI normally does not require modification, however 
+	in case you need to make changes, the parameters of VTS.INI are explained below:
+	</p>
+	<p>
+	<img src="config1.jpg" border="0">
+	</p>
+	<p>
+	<ol>
+	<li><b><i>[General]</i></b> is the main section header for the file.
+	<li><b><i>Version</i></b> defines the version number of VTS (normally set to 2.00) 
+	<li><b><i>DLLs</i></b> defines an absolute path to the VTS support DLLS including 
+	NALSERV32.DLL, BACPRIM32.DLL, etc.
+	<li><b><i>[VendorID]</i></b> is the vendor section header for the file.
+	<li><b><i>MaxID</i></b> identifies the maximum vendor ID number in the vendor list
+	which follows.
+    <li><b><i>vendorid=VendorName</i></b> defines the vendors by their Vendor_Identifier and 
+    Vendor_Name. Note that because of screen size restrictions, all of the current vendors 
+    are not shown in the list above .
+    </ol>
+	</p>   
+	<p>
+	<a name="vtsalias"></a><b>Target Device and Router Alias Files</b><br>
+	Normally these files are created using the Targer Device dialog.
+	<p>
+	</p>
+	<p>
+	<img src="config3.jpg" border="0">
+	</p>
+	<p>
+	<ol>
+	<li>Type the hex MAC address for the target device or router.
+	<li>Type the alias you wish to use for the device or router. 
+	<li>Click the appropriate "new alias" button.
+	</ol>										
+	</p>
+	<p>
+	<img src="config2.jpg" border="0">
+	</p>
+	<p>
+	The new alias is added to the VTSAlias.INI file or the VTSRoute.INI file. 
+	Both files are plain-text files and are editable using any plain-text editor 
+	such as Notpad.
+	</p>
+	<p>
+	<a name="vtsbind"></a><b>BACnetRecipient Binding Alias Files</b><br>
+	Normally these files are created using the BACnetRecipient dialog.
+	<p>
+	</p>
+	<p>
+	<img src="config5.jpg" border="0">
+	</p>
+	<p>
+	<ol>
+	<li>Type the decimal value for the network-number of the BACnetRecipient's BACnetAddress.
+	<li>Type the hex value for the  mac-address of the BACnetRecipient's BACnetAddress.
+	<li>Type the alias you wish to use for the recipient. 
+	<li>Click the appropriate "new alias" button.
+	</ol>										
+	</p>
+	<p>
+	<img src="config4.jpg" border="0">
+	</p>
+	<p>
+	The new alias is added to the VTSBind.INI file, which is a plain-text file 
+	and can be edited using any plain-text editor such as Notepad.
+	</p>
+	<p>
+ 	<a href="home.html">Return to the VTS Help <b>Home</b> Page.</a><br>
+	<a href="ptp.html">Go to the <b>Previous</b> VTS Help Topic.</a><br>
+	</p>
+	</font>
+	</td>
+  </tr>
+</table>
+</body>
+</html>
